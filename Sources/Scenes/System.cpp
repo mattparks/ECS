@@ -1,4 +1,4 @@
-#include "System.hpp"
+#include "System.inl"
 
 #include <algorithm>
 #include "World.hpp"

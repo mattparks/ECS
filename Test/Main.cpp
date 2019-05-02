@@ -1,12 +1,12 @@
 #include <iostream>
 
 #include <Scenes/Component.hpp>
-#include <Scenes/Entity.hpp>
+#include <Scenes/Entity.inl>
 #include <Scenes/Event.hpp>
 #include <Scenes/EventDispatcher.hpp>
 #include <Scenes/Log.hpp>
-#include <Scenes/System.hpp>
-#include <Scenes/World.hpp>
+#include <Scenes/System.inl>
+#include <Scenes/World.inl>
 
 class Material :
 	public ecs::Component

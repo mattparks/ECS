@@ -1,4 +1,4 @@
-#include "Entity.hpp"
+#include "Entity.inl"
 
 #include "World.hpp"
 

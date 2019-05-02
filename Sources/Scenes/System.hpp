@@ -10,7 +10,6 @@
 #include "Detail/TypeInfo.hpp"
 #include "Entity.hpp"
 #include "Event.hpp"
-#include "Log.hpp"
 #include "EventDispatcher.hpp"
 
 namespace ecs
@@ -47,16 +46,7 @@ public:
 
 	// Iterate through all enabled Entities
 	template<class Func>
-	void ForEach(Func &&func)
-	{
-		for (const auto& entity : m_enabledEntities)
-		{
-			if (entity.IsValid())
-			{
-				func(entity);
-			}
-		}
-	}
+	void ForEach(Func &&func);
 
 	// Triggered on System start up
 	virtual void OnStart();
@@ -94,22 +84,11 @@ protected:
 
 	// Emit Event T
 	template<class T>
-	void EmitEvent(T const &evt) const
-	{
-		GetWorld().m_evtDispatcher.Emit(evt);
-	}
+	void EmitEvent(T const &evt) const;
 
 	// Connect function Func to Event T
 	template<class T, class Func>
-	Event::Id ConnectEvent(Func &&func)
-	{
-		const auto id = GetWorld().m_evtDispatcher.template Connect<T>(std::forward<Func>(func));
-
-		// Save connection ID
-		m_events.insert(id);
-
-		return id;
-	}
+	Event::Id ConnectEvent(Func &&func);
 
 	// Clear connected function ID
 	void DisconnectEvent(Event::Id id);
@@ -137,17 +116,7 @@ private:
 
 	// Call an event
 	template<class Func>
-	void CallEvent(Func &&func)
-	{
-		try
-		{
-			func();
-		}
-		catch (std::exception const& e)
-		{
-			Log::Error(e.what());
-		}
-	}
+	void CallEvent(Func &&func);
 
 	// Start event
 	void StartEvent();
@@ -210,10 +179,5 @@ private:
 
 // Get the Type ID for the System T
 template<class T>
-TypeId GetSystemTypeId() noexcept
-{
-	static_assert(std::is_base_of<System, T>::value, "T must be a System.");
-
-	return TypeInfo<System>::GetTypeId<T>();
-}
+TypeId GetSystemTypeId() noexcept;
 }

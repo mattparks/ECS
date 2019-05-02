@@ -1,8 +1,9 @@
-#include "World.hpp"
+#include "World.inl"
 
 #include <exception>
-#include "Log.hpp"
 #include "Entity.hpp"
+#include "Log.hpp"
+#include "Entity.inl"
 
 namespace ecs
 {

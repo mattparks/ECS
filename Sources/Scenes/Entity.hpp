@@ -43,41 +43,23 @@ public:
 
 	// Add the Component T to the Entity
 	template<class T, class... Args>
-	T &AddComponent(Args &&...args)
-	{
-		m_world.value()->m_components.template AddComponent<T>(m_id, std::make_unique<T>(std::forward<Args>(args)...));
-		m_world.value()->RefreshEntity(m_id);
-		return GetComponent<T>();
-	}
+	T &AddComponent(Args &&...args);
 
 	// Get the Component T from the Entity
 	template<class T>
-	T &GetComponent()
-	{
-		return m_world.value()->m_components.template GetComponent<T>(m_id);
-	}
+	T &GetComponent();
 
 	// Get the Component T from the Entity
 	template<class T>
-	T const &GetComponent() const
-	{
-		return m_world.value()->m_components.template GetComponent<T>(m_id);
-	}
+	T const &GetComponent() const;
 
 	// Check whether the Entity has the Component T or not
 	template<class T>
-	bool HasComponent() const
-	{
-		return m_world.value()->m_components.template HasComponent<T>(m_id);
-	}
+	bool HasComponent() const;
 
 	// Remove the Component T from the Entity
 	template<class T>
-	void RemoveComponent()
-	{
-		m_world.value()->m_components.template RemoveComponent<T>(m_id);
-		m_world.value()->RefreshEntity(m_id);
-	}
+	void RemoveComponent();
 
 	// Remove all components from the Entity
 	void RemoveAllComponents();
