@@ -22,31 +22,33 @@ public:
 
 	~Reference() = default;
 
-	Reference(const Reference &) noexcept = default;
+	// Access the stored reference
+	T &get() const noexcept { return *m_reference; }
 
-	Reference(Reference &&) noexcept = default;
-
-	Reference &operator=(const Reference &) noexcept = default;
-
-	Reference &operator=(Reference &&) noexcept = default;
-
-	// Call the function of the stored reference
-	T *operator->() const noexcept { return m_reference; }
+	// Access the stored reference
+	constexpr operator T &() const noexcept { return *m_reference; }
 
 	// Get the address of the stored reference
 	T *operator&() const noexcept { return m_reference; }
 
-	// Access the stored reference
-	operator T &() const noexcept { return *m_reference; }
-
-	// Access the stored reference
-	T &get() const noexcept { return *m_reference; }
+	// Call the function of the stored reference
+	T *operator->() const noexcept { return m_reference; }
 
 	// Call the stored function
 	template<typename... Args>
 	std::invoke_result_t<T &, Args...> operator()(Args &&...args) const
 	{
 		return std::invoke(get(), std::forward<Args>(args)...);
+	}
+
+	bool operator==(const Reference &other) const noexcept
+	{
+		return m_reference == other.m_reference;
+	}
+
+	bool operator!=(const Reference &other) const noexcept
+	{
+		return !(*this == other);
 	}
 
 private:

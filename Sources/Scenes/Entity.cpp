@@ -58,7 +58,7 @@ void Entity::Remove()
 
 bool Entity::operator==(const Entity &other) const
 {
-	return m_id == other.m_id && &m_world.value() == &other.m_world.value();
+	return m_id == other.m_id && m_world == other.m_world;
 }
 
 bool Entity::operator!=(const Entity &other) const

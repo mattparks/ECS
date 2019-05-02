@@ -66,16 +66,17 @@ int main(int argc, char **argv)
 	auto entitySphereRef = *world.GetEntity("Sphere");
 	entitySphereRef.AddComponent<Transform>();
 	entitySphereRef.AddComponent<MaterialDefault>();
-
-	auto entitySkybox = world.CreateEntity();
-	entitySkybox.AddComponent<Transform>();
-	entitySkybox.AddComponent<MaterialSkybox>();
+	Log::Out("Entity ref == entity: %i\n", entitySphere == entitySphereRef);
 
 	if (entitySphere.HasComponent<MaterialDefault>())
 	{
 		Log::Out("Entity has default material!\n");
 		auto &materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>();
 	}
+
+	auto entitySkybox = world.CreateEntity();
+	entitySkybox.AddComponent<Transform>();
+	entitySkybox.AddComponent<MaterialSkybox>();
 
 	world.Update(1.0f / 60.0f);
 
