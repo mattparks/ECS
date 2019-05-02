@@ -10,10 +10,6 @@ constexpr std::size_t MAX_COMPONENTS = 64;
 
 class Component
 {
-public:
-	Component() = default;
-
-	virtual ~Component() = default;
 };
 
 // Get the Type ID for the Component T

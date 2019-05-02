@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <utility>
 #include "Entity.hpp"
 #include "World.hpp"
 
@@ -12,7 +11,6 @@ T &Entity::AddComponent(Args &&...args)
 {
 	m_world.value()->m_components.AddComponent<T>(m_id, std::make_unique<T>(std::forward<Args>(args)...));
 	m_world.value()->RefreshEntity(m_id);
-
 	return GetComponent<T>();
 }
 

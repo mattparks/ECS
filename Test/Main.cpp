@@ -8,8 +8,10 @@
 #include <Scenes/System.inl>
 #include <Scenes/World.inl>
 
+using namespace ecs;
+
 class Transform :
-	public ecs::Component
+	public Component
 {
 public:
 	float m_x, m_y, m_z;
@@ -17,54 +19,62 @@ public:
 	float m_scale;
 };
 
-class Material :
-	public ecs::Component
+class MaterialDefault :
+	public Component
 {
 public:
-	float m_pipeline;
+	float m_pipeline = -11.9f;
 };
 
 class MaterialSkybox :
-	public Material
+	public Component
 {
 public:
+	float m_pipeline = 4.1f;
 };
 
-class MaterialSystem :
-	public ecs::System
+class MaterialSkyboxSystem :
+	public System
 {
 public:
-	MaterialSystem()
+	MaterialSkyboxSystem()
 	{
 		GetFilter().Require<Transform>();
-		GetFilter().Require<Material>();
+		//GetFilter().Require<Mesh || MeshAnimated>();
+		GetFilter().Require<MaterialSkybox>();
 	}
 
-	void OnEntityAttached(ecs::Entity entity)
+	void OnEntityAttached(Entity entity)
 	{
-		ecs::Log::Out("Entity created!");
+		Log::Out("Entity with skybox material created: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
 	}
 };
 
 int main(int argc, char **argv)
 {
-	ecs::World world;
+	World world;
 
-	world.AddSystem<MaterialSystem>(0);
+	world.AddSystem<MaterialSkyboxSystem>(0);
 
-	if (world.HasSystem<MaterialSystem>())
+	if (world.HasSystem<MaterialSkyboxSystem>())
 	{
-		auto &materialSystem = world.GetSystem<MaterialSystem>();
+		auto &materialSkyboxSystem = world.GetSystem<MaterialSkyboxSystem>();
 	}
 
-	auto entity = world.CreateEntity();
-	entity.AddComponent<Transform>();
-	entity.AddComponent<Material>();
+	auto entitySphere = world.CreateEntity("Sphere");
 
-	if (entity.HasComponent<Material>())
+	auto entitySphereRef = *world.GetEntity("Sphere");
+	entitySphereRef.AddComponent<Transform>();
+	entitySphereRef.AddComponent<MaterialDefault>();
+
+	auto entitySkybox = world.CreateEntity();
+	entitySkybox.AddComponent<Transform>();
+	entitySkybox.AddComponent<MaterialSkybox>();
+
+	if (entitySphere.HasComponent<MaterialDefault>())
 	{
-		auto &materialComponent = entity.GetComponent<Material>();
-		materialComponent.m_pipeline = 10.0f;
+		Log::Out("Entity has default material!\n");
+		auto &materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>();
 	}
 
 	world.Update(1.0f / 60.0f);

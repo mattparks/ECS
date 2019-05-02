@@ -14,26 +14,11 @@ public:
 	// Entity ID type
 	using Id = std::size_t;
 
-	class Hash
-	{
-	public:
-		// Compute Entity hash
-		std::size_t operator()(const Entity &entity) const;
-	};
-
 	Entity() = default;
 
+	Entity(const Id &id, World &world);
+
 	~Entity() = default;
-
-	Entity(Id id, World &world);
-
-	Entity(const Entity &) = default;
-
-	Entity(Entity &&) noexcept = default;
-
-	Entity &operator=(const Entity &) = default;
-
-	Entity &operator=(Entity &&) noexcept = default;
 
 	// Cast Entity into its ID
 	operator Id() const noexcept;
@@ -82,15 +67,27 @@ public:
 	// Remove the Entity
 	void Remove();
 
-	bool operator==(const Entity &rhs) const;
+	bool operator==(const Entity &other) const;
 
-	bool operator!=(const Entity &rhs) const;
+	bool operator!=(const Entity &other) const;
 
 private:
 	// Entity ID
-	Id m_id{ 0 };
+	Id m_id = 0;
 
 	// The World that this Entity belongs to
 	std::optional<Reference<World>> m_world;
+};
+}
+
+namespace std
+{
+template<>
+struct hash<ecs::Entity>
+{
+	size_t operator()(const ecs::Entity &entity) const noexcept
+	{
+		return hash<ecs::Entity::Id>()(entity.GetId());
+	}
 };
 }

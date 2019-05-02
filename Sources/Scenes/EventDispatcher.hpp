@@ -4,25 +4,19 @@
 #include <unordered_map>
 #include <type_traits>
 #include <utility>
+#include "Helpers/NonCopyable.hpp"
 #include "Detail/TypeInfo.hpp"
 #include "Event.hpp"
 
 namespace ecs
 {
-class EventDispatcher
+class EventDispatcher :
+	public NonCopyable
 {
 public:
 	EventDispatcher() = default;
 
 	~EventDispatcher() = default;
-
-	EventDispatcher(const EventDispatcher &) = delete;
-
-	EventDispatcher(EventDispatcher &&) = default;
-
-	EventDispatcher &operator=(const EventDispatcher &) = delete;
-
-	EventDispatcher &operator=(EventDispatcher &&) = default;
 
 	// Emit Event T
 	template<typename T>
@@ -86,6 +80,6 @@ private:
 	std::unordered_multimap<TypeId, EventReceiverAttributes> m_listeners;
 
 	// Next Event handler ID
-	Event::Id m_nextId;
+	Event::Id m_nextId = 0;
 };
 }

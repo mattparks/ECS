@@ -21,10 +21,6 @@ public:
 
 	~ComponentHolder() = default;
 
-	ComponentHolder(ComponentHolder &&) = default;
-
-	ComponentHolder &operator=(ComponentHolder &&) = default;
-
 	// Add the component T to the Entity
 	template<typename T>
 	void AddComponent(Entity::Id id, std::unique_ptr<T> &&component)

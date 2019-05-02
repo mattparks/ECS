@@ -21,10 +21,6 @@ public:
 
 	~SystemHolder();
 
-	SystemHolder(SystemHolder &&) = default;
-
-	SystemHolder &operator=(SystemHolder &&) = default;
-
 	// Add a System
 	template<typename T>
 	void AddSystem(std::size_t priority, std::unique_ptr<T> &&system)

@@ -10,17 +10,9 @@ class ComponentFilter
 public:
 	using Mask = std::bitset<MAX_COMPONENTS>;
 
-	ComponentFilter() noexcept = default;
+	ComponentFilter() = default;
 
 	~ComponentFilter() = default;
-
-	ComponentFilter(const ComponentFilter &) noexcept = default;
-
-	ComponentFilter(ComponentFilter &&) noexcept = default;
-
-	ComponentFilter &operator=(const ComponentFilter &) noexcept = default;
-
-	ComponentFilter &operator=(ComponentFilter &&) noexcept = default;
 
 	// Check if an Entity matches the requirements
 	bool Check(const Mask &mask) const;

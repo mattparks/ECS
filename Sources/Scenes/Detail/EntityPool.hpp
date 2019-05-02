@@ -14,10 +14,6 @@ public:
 
 	~EntityPool() = default;
 
-	EntityPool(EntityPool &&) = default;
-
-	EntityPool &operator=(EntityPool &&) = default;
-
 	// Create an Entity ID
 	Entity::Id Create();
 
@@ -33,6 +29,6 @@ private:
 	std::vector<Entity::Id> m_storedIds;
 
 	// Next Entity ID
-	Entity::Id m_nextId{ 0 };
+	Entity::Id m_nextId = 0;
 };
 }

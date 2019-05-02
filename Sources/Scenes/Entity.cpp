@@ -4,7 +4,7 @@
 
 namespace ecs
 {
-Entity::Entity(Id id, World &world) :
+Entity::Entity(const Id &id, World &world) :
 	m_id(id),
 	m_world(world)
 {
@@ -56,18 +56,13 @@ void Entity::Remove()
 	m_world.value()->RemoveEntity(m_id);
 }
 
-bool Entity::operator==(const Entity &rhs) const
+bool Entity::operator==(const Entity &other) const
 {
-	return m_id == rhs.m_id && &m_world.value() == &rhs.m_world.value();
+	return m_id == other.m_id && &m_world.value() == &other.m_world.value();
 }
 
-bool Entity::operator!=(const Entity &rhs) const
+bool Entity::operator!=(const Entity &other) const
 {
-	return !operator==(rhs);
-}
-
-std::size_t Entity::Hash::operator()(const Entity &entity) const
-{
-	return std::hash<Entity::Id>()(entity.m_id);
+	return !(*this == other);
 }
 }
