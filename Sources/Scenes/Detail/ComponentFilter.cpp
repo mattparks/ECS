@@ -13,7 +13,7 @@ void ComponentFilter::ExcludeNotRequired() noexcept
 	m_excluded = ~m_required;
 }
 
-bool ComponentFilter::Check(Mask const &mask) const
+bool ComponentFilter::Check(const Mask &mask) const
 {
 	const auto excludeMask = m_excluded & mask;
 

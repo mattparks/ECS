@@ -22,11 +22,11 @@ public:
 
 	~Reference() = default;
 
-	Reference(Reference const &) noexcept = default;
+	Reference(const Reference &) noexcept = default;
 
 	Reference(Reference &&) noexcept = default;
 
-	Reference &operator=(Reference const &) noexcept = default;
+	Reference &operator=(const Reference &) noexcept = default;
 
 	Reference &operator=(Reference &&) noexcept = default;
 
@@ -43,7 +43,7 @@ public:
 	T &get() const noexcept { return *m_reference; }
 
 	// Call the stored function
-	template<class... Args>
+	template<typename... Args>
 	std::invoke_result_t<T &, Args...> operator()(Args &&...args) const
 	{
 		return std::invoke(get(), std::forward<Args>(args)...);

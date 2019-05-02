@@ -13,7 +13,7 @@ public:
 	TypeInfo() = delete;
 
 	// Get the type ID of K which is a base of T
-	template<class K>
+	template<typename K>
 	static TypeId GetTypeId() noexcept
 	{
 		static const auto id = NextTypeId();

@@ -18,7 +18,7 @@ public:
 	{
 	public:
 		// Compute Entity hash
-		std::size_t operator()(Entity const &entity) const;
+		std::size_t operator()(const Entity &entity) const;
 	};
 
 	Entity() = default;
@@ -27,11 +27,11 @@ public:
 
 	Entity(Id id, World &world);
 
-	Entity(Entity const &) = default;
+	Entity(const Entity &) = default;
 
 	Entity(Entity &&) noexcept = default;
 
-	Entity &operator=(Entity const &) = default;
+	Entity &operator=(const Entity &) = default;
 
 	Entity &operator=(Entity &&) noexcept = default;
 
@@ -42,23 +42,23 @@ public:
 	Id GetId() const noexcept;
 
 	// Add the Component T to the Entity
-	template<class T, class... Args>
+	template<typename T, typename... Args>
 	T &AddComponent(Args &&...args);
 
 	// Get the Component T from the Entity
-	template<class T>
+	template<typename T>
 	T &GetComponent();
 
 	// Get the Component T from the Entity
-	template<class T>
-	T const &GetComponent() const;
+	template<typename T>
+	const T &GetComponent() const;
 
 	// Check whether the Entity has the Component T or not
-	template<class T>
+	template<typename T>
 	bool HasComponent() const;
 
 	// Remove the Component T from the Entity
-	template<class T>
+	template<typename T>
 	void RemoveComponent();
 
 	// Remove all components from the Entity
@@ -82,9 +82,9 @@ public:
 	// Remove the Entity
 	void Remove();
 
-	bool operator==(Entity const &rhs) const;
+	bool operator==(const Entity &rhs) const;
 
-	bool operator!=(Entity const &rhs) const;
+	bool operator!=(const Entity &rhs) const;
 
 private:
 	// Entity ID

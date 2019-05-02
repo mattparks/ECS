@@ -6,7 +6,7 @@
 
 namespace ecs
 {
-template<class T, class... Args>
+template<typename T, typename... Args>
 T &World::AddSystem(std::size_t priority, Args &&...args)
 {
 	m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
@@ -19,35 +19,34 @@ T &World::AddSystem(std::size_t priority, Args &&...args)
 	return GetSystem<T>();
 }
 
-template<class T>
+template<typename T>
 T &World::GetSystem()
 {
 	return m_systems.GetSystem<T>();
 }
 
-template<class T>
-T const &World::GetSystem() const
+template<typename T>
+const T &World::GetSystem() const
 {
 	return m_systems.GetSystem<T>();
 }
 
-template<class T>
+template<typename T>
 bool World::HasSystem() const
 {
 	return m_systems.HasSystem<T>();
 }
 
-template<class T>
+template<typename T>
 void World::RemoveSystem()
 {
 	m_systems.RemoveSystem<T>();
 }
 
-template<class Func>
+template<typename Func>
 void World::UpdateSystems(Func &&func)
 {
 	UpdateEntities();
-
 	m_systems.ForEach(std::forward<Func>(func));
 }
 }

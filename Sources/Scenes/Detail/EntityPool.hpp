@@ -1,22 +1,20 @@
 #pragma once
 
 #include <vector>
+#include "Helpers/NonCopyable.hpp"
 #include "Scenes/Entity.hpp"
 
 namespace ecs
 {
-class EntityPool
+class EntityPool :
+	public NonCopyable
 {
 public:
 	EntityPool() = default;
 
 	~EntityPool() = default;
 
-	EntityPool(EntityPool const &) = delete;
-
 	EntityPool(EntityPool &&) = default;
-
-	EntityPool &operator=(EntityPool const &) = delete;
 
 	EntityPool &operator=(EntityPool &&) = default;
 

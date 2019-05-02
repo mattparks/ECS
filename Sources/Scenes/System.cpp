@@ -31,7 +31,7 @@ void System::DetachAll()
 	m_status.clear();
 }
 
-void System::AttachEntity(Entity const &entity)
+void System::AttachEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::NotAttached)
 	{
@@ -44,7 +44,7 @@ void System::AttachEntity(Entity const &entity)
 	}
 }
 
-void System::DetachEntity(Entity const &entity)
+void System::DetachEntity(const Entity &entity)
 {
 	const auto status = GetEntityStatus(entity);
 
@@ -67,7 +67,7 @@ void System::DetachEntity(Entity const &entity)
 	}
 }
 
-void System::EnableEntity(Entity const &entity)
+void System::EnableEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::Disabled)
 	{
@@ -82,7 +82,7 @@ void System::EnableEntity(Entity const &entity)
 	}
 }
 
-void System::DisableEntity(Entity const &entity)
+void System::DisableEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::Enabled)
 	{
@@ -122,27 +122,27 @@ void System::PostUpdateEvent(float elapsed)
 	CallEvent(std::bind(&System::OnPostUpdate, this, elapsed));
 }
 
-void System::AttachEvent(Entity const &entity)
+void System::AttachEvent(const Entity &entity)
 {
 	CallEvent(std::bind(&System::OnEntityAttached, this, entity));
 }
 
-void System::DetachEvent(Entity const &entity)
+void System::DetachEvent(const Entity &entity)
 {
 	CallEvent(std::bind(&System::OnEntityDetached, this, entity));
 }
 
-void System::EnableEvent(Entity const &entity)
+void System::EnableEvent(const Entity &entity)
 {
 	CallEvent(std::bind(&System::OnEntityEnabled, this, entity));
 }
 
-void System::DisableEvent(Entity const &entity)
+void System::DisableEvent(const Entity &entity)
 {
 	CallEvent(std::bind(&System::OnEntityDisabled, this, entity));
 }
 
-std::vector<Entity> const &System::GetEntities() const
+const std::vector<Entity> &System::GetEntities() const
 {
 	return m_enabledEntities;
 }
@@ -162,7 +162,7 @@ World &System::GetWorld()
 	return m_world.value();
 }
 
-World const &System::GetWorld() const
+const World &System::GetWorld() const
 {
 	if (!m_world.has_value())
 	{

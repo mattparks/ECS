@@ -32,23 +32,23 @@ public:
 	World &operator=(World &&) = default;
 
 	// Add a System
-	template<class T, class... Args>
+	template<typename T, typename... Args>
 	T &AddSystem(std::size_t priority = 0, Args &&...args);
 
 	// Get a System
-	template<class T>
+	template<typename T>
 	T &GetSystem();
 
 	// Get a System
-	template<class T>
-	T const &GetSystem() const;
+	template<typename T>
+	const T &GetSystem() const;
 
 	// Check whether a System exists or not
-	template<class T>
+	template<typename T>
 	bool HasSystem() const;
 
 	// Remove a System
-	template<class T>
+	template<typename T>
 	void RemoveSystem();
 
 	// Remove all Systems
@@ -58,13 +58,13 @@ public:
 	Entity CreateEntity();
 
 	// Create a new named Entity
-	Entity CreateEntity(std::string const &name);
+	Entity CreateEntity(const std::string &name);
 
 	// Get Entity by ID
 	std::optional<ecs::Entity> GetEntity(Entity::Id id) const;
 
 	// Get Entity by name
-	std::optional<ecs::Entity> GetEntity(std::string const &name) const;
+	std::optional<ecs::Entity> GetEntity(const std::string &name) const;
 
 	// Get Entity name
 	std::string GetEntityName(Entity::Id id) const;
@@ -135,14 +135,14 @@ private:
 	void RefreshEntity(Entity::Id id);
 
 	// Update the Systems
-	template<class Func>
+	template<typename Func>
 	void UpdateSystems(Func &&func);
 
 	// Update the Entities within the World (enable, disable, remove)
 	void UpdateEntities();
 
 	// Execute an action
-	void ExecuteAction(EntityAction const &action);
+	void ExecuteAction(const EntityAction &action);
 
 	// Add Entity to the Systems it meets the requirements
 	void ActionEnable(Entity::Id id);

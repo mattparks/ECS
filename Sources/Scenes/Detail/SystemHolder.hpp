@@ -6,8 +6,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <stdexcept>
+#include "Engine/Log.hpp"
 #include "Helpers/NonCopyable.hpp"
-#include "Scenes/Log.hpp"
 #include "Scenes/System.hpp"
 #include "TypeInfo.hpp"
 
@@ -26,7 +26,7 @@ public:
 	SystemHolder &operator=(SystemHolder &&) = default;
 
 	// Add a System
-	template<class T>
+	template<typename T>
 	void AddSystem(std::size_t priority, std::unique_ptr<T> &&system)
 	{
 		// Remove previous System, if exists
@@ -42,7 +42,7 @@ public:
 	}
 
 	// Get a System
-	template<class T>
+	template<typename T>
 	T &GetSystem()
 	{
 		auto it = m_systems.find(GetSystemTypeId<T>());
@@ -56,8 +56,8 @@ public:
 	}
 
 	// Get a System
-	template<class T>
-	T const &GetSystem() const
+	template<typename T>
+	const T &GetSystem() const
 	{
 		auto it = m_systems.find(GetSystemTypeId<T>());
 
@@ -70,7 +70,7 @@ public:
 	}
 
 	// Check whether a System exists or not
-	template<class T>
+	template<typename T>
 	bool HasSystem() const
 	{
 		const auto it = m_systems.find(GetSystemTypeId<T>());
@@ -79,7 +79,7 @@ public:
 	}
 
 	// Remove a System
-	template<class T>
+	template<typename T>
 	void RemoveSystem()
 	{
 		const auto typeId = GetSystemTypeId<T>();
@@ -103,7 +103,7 @@ public:
 	void RemoveAllSystems();
 
 	// Iterate through all valid Systems
-	template<class Func>
+	template<typename Func>
 	void ForEach(Func &&func)
 	{
 		for (const auto &typeId : m_priorities)
@@ -116,7 +116,7 @@ public:
 				{
 					func(*system, typeId.second);
 				}
-				catch (std::exception const &e)
+				catch (const std::exception &e)
 				{
 					Log::Error(e.what());
 				}

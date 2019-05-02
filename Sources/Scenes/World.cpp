@@ -1,8 +1,8 @@
 #include "World.inl"
 
 #include <exception>
+#include "Engine/Log.hpp"
 #include "Entity.hpp"
-#include "Log.hpp"
 #include "Entity.inl"
 
 namespace ecs
@@ -36,7 +36,7 @@ Entity World::CreateEntity()
 	return m_entities[id].entity;
 }
 
-Entity World::CreateEntity(std::string const &name)
+Entity World::CreateEntity(const std::string &name)
 {
 	if (m_names.find(name) != m_names.end())
 	{
@@ -61,7 +61,7 @@ std::optional<Entity> World::GetEntity(Entity::Id id) const
 	return m_entities[id].entity;
 }
 
-std::optional<Entity> World::GetEntity(std::string const &name) const
+std::optional<Entity> World::GetEntity(const std::string &name) const
 {
 	const auto it = m_names.find(name);
 
@@ -202,14 +202,14 @@ void World::UpdateEntities()
 		{
 			ExecuteAction(action);
 		}
-		catch (std::exception const &e)
+		catch (const std::exception &e)
 		{
 			Log::Error(e.what());
 		}
 	}
 }
 
-void World::ExecuteAction(EntityAction const &action)
+void World::ExecuteAction(const EntityAction &action)
 {
 	if (!IsEntityValid(action.id))
 	{

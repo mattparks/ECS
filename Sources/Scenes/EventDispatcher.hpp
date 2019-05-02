@@ -16,17 +16,17 @@ public:
 
 	~EventDispatcher() = default;
 
-	EventDispatcher(EventDispatcher const &) = delete;
+	EventDispatcher(const EventDispatcher &) = delete;
 
 	EventDispatcher(EventDispatcher &&) = default;
 
-	EventDispatcher &operator=(EventDispatcher const &) = delete;
+	EventDispatcher &operator=(const EventDispatcher &) = delete;
 
 	EventDispatcher &operator=(EventDispatcher &&) = default;
 
 	// Emit Event T
-	template<class T>
-	void Emit(T const &evt = T()) const
+	template<typename T>
+	void Emit(const T &evt = T()) const
 	{
 		static_assert(std::is_base_of<Event, T>::value, "T must be an Event.");
 
@@ -39,7 +39,7 @@ public:
 	}
 
 	// Connect function Func to Event T
-	template<class T, class Func>
+	template<typename T, typename Func>
 	Event::Id Connect(Func &&func)
 	{
 		static_assert(std::is_base_of<Event, T>::value, "T must be an Event.");
@@ -59,7 +59,7 @@ public:
 	}
 
 	// Clear all connected functions to Event T
-	template<class T>
+	template<typename T>
 	void Clear()
 	{
 		static_assert(std::is_base_of<Event, T>::value, "T must be an Event.");

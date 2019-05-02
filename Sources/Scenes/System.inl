@@ -2,13 +2,13 @@
 
 #include <type_traits>
 #include <utility>
+#include "Engine/Log.hpp"
 #include "EventDispatcher.hpp"
-#include "Log.hpp"
 #include "World.hpp"
 
 namespace ecs
 {
-template<class Func>
+template<typename Func>
 void System::ForEach(Func &&func)
 {
 	for (const auto &entity : m_enabledEntities)
@@ -20,13 +20,13 @@ void System::ForEach(Func &&func)
 	}
 }
 
-template<class T>
-void System::EmitEvent(T const &evt) const
+template<typename T>
+void System::EmitEvent(const T &evt) const
 {
 	GetWorld().m_evtDispatcher.Emit(evt);
 }
 
-template<class T, class Func>
+template<typename T, typename Func>
 Event::Id System::ConnectEvent(Func &&func)
 {
 	const auto id = GetWorld().m_evtDispatcher.Connect<T>(std::forward<Func>(func));
@@ -37,20 +37,20 @@ Event::Id System::ConnectEvent(Func &&func)
 	return id;
 }
 
-template<class Func>
+template<typename Func>
 void System::CallEvent(Func &&func)
 {
 	try
 	{
 		func();
 	}
-	catch (std::exception const &e)
+	catch (const std::exception &e)
 	{
 		Log::Error(e.what());
 	}
 }
 
-template<class T>
+template<typename T>
 TypeId GetSystemTypeId() noexcept
 {
 	static_assert(std::is_base_of<System, T>::value, "T must be a System.");

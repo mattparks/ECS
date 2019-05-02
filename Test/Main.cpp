@@ -1,12 +1,21 @@
 #include <iostream>
 
+#include <Engine/Log.hpp>
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
 #include <Scenes/Event.hpp>
 #include <Scenes/EventDispatcher.hpp>
-#include <Scenes/Log.hpp>
 #include <Scenes/System.inl>
 #include <Scenes/World.inl>
+
+class Transform :
+	public ecs::Component
+{
+public:
+	float m_x, m_y, m_z;
+	float m_pitch, m_yaw, m_roll;
+	float m_scale;
+};
 
 class Material :
 	public ecs::Component
@@ -27,12 +36,13 @@ class MaterialSystem :
 public:
 	MaterialSystem()
 	{
+		GetFilter().Require<Transform>();
 		GetFilter().Require<Material>();
 	}
 
 	void OnEntityAttached(ecs::Entity entity)
 	{
-		ecs::Log::Warning("Entity created!");
+		ecs::Log::Out("Entity created!");
 	}
 };
 
@@ -48,11 +58,13 @@ int main(int argc, char **argv)
 	}
 
 	auto entity = world.CreateEntity();
+	entity.AddComponent<Transform>();
 	entity.AddComponent<Material>();
 
 	if (entity.HasComponent<Material>())
 	{
 		auto &materialComponent = entity.GetComponent<Material>();
+		materialComponent.m_pipeline = 10.0f;
 	}
 
 	world.Update(1.0f / 60.0f);

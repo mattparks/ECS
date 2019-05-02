@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <vector>
+#include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
 #include "Scenes/Component.hpp"
 #include "Scenes/Entity.hpp"
@@ -12,23 +13,20 @@
 
 namespace ecs
 {
-class ComponentHolder
+class ComponentHolder :
+	public NonCopyable
 {
 public:
 	ComponentHolder() = default;
 
 	~ComponentHolder() = default;
 
-	ComponentHolder(ComponentHolder const &) = delete;
-
 	ComponentHolder(ComponentHolder &&) = default;
-
-	ComponentHolder &operator=(ComponentHolder const &) = delete;
 
 	ComponentHolder &operator=(ComponentHolder &&) = default;
 
 	// Add the component T to the Entity
-	template<class T>
+	template<typename T>
 	void AddComponent(Entity::Id id, std::unique_ptr<T> &&component)
 	{
 		if (id >= m_components.size())
@@ -48,7 +46,7 @@ public:
 	}
 
 	// Get the Component T from the Entity
-	template<class T>
+	template<typename T>
 	T &GetComponent(Entity::Id id)
 	{
 		auto component = GetComponentPtr<T>(id);
@@ -62,7 +60,7 @@ public:
 	}
 
 	// Check whether the Entity has the Component T or not
-	template<class T>
+	template<typename T>
 	bool HasComponent(Entity::Id id) const
 	{
 		// Is the Entity ID and the Component type ID known
@@ -81,7 +79,7 @@ public:
 	}
 
 	// Remove the Component T from the Entity
-	template<class T>
+	template<typename T>
 	void RemoveComponent(Entity::Id id)
 	{
 		auto component = GetComponentPtr<T>(id);
@@ -106,9 +104,8 @@ public:
 	void Clear() noexcept;
 
 private:
-	template<class T> std::optional<Reference < std::unique_ptr<Component>>>
-	GetComponentPtr(Entity::Id
-	id)
+	template<typename T> std::optional<Reference < std::unique_ptr<Component>>>
+	GetComponentPtr(Entity::Id id)
 	{
 		if (!HasComponent<T>(id))
 		{

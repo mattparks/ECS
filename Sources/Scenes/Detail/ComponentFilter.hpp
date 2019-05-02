@@ -14,19 +14,19 @@ public:
 
 	~ComponentFilter() = default;
 
-	ComponentFilter(ComponentFilter const &) noexcept = default;
+	ComponentFilter(const ComponentFilter &) noexcept = default;
 
 	ComponentFilter(ComponentFilter &&) noexcept = default;
 
-	ComponentFilter &operator=(ComponentFilter const &) noexcept = default;
+	ComponentFilter &operator=(const ComponentFilter &) noexcept = default;
 
 	ComponentFilter &operator=(ComponentFilter &&) noexcept = default;
 
 	// Check if an Entity matches the requirements
-	bool Check(Mask const &mask) const;
+	bool Check(const Mask &mask) const;
 
 	// Make a Component required
-	template<class T>
+	template<typename T>
 	void Require()
 	{
 		m_required.set(GetComponentTypeId<T>());
@@ -34,7 +34,7 @@ public:
 	}
 
 	// Make a Component excluded
-	template<class T>
+	template<typename T>
 	void Exclude()
 	{
 		m_required.reset(GetComponentTypeId<T>());
@@ -48,7 +48,7 @@ public:
 	void ExcludeAll() noexcept;
 
 	// Remove a Component from both lists
-	template<class T>
+	template<typename T>
 	void Ignore()
 	{
 		m_required.reset(GetComponentTypeId<T>());

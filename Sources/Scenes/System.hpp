@@ -30,13 +30,13 @@ public:
 	System &operator=(System &&) = default;
 
 	// Get Entities attached to this System
-	std::vector<Entity> const &GetEntities() const;
+	const std::vector<Entity> &GetEntities() const;
 
 	// Get the World that the System belongs to
 	World &GetWorld();
 
 	// Get the World that the System belongs to
-	World const &GetWorld() const;
+	const World &GetWorld() const;
 
 	// Get Entity count
 	std::size_t GetEntityCount() const noexcept;
@@ -45,7 +45,7 @@ public:
 	void DetachAll();
 
 	// Iterate through all enabled Entities
-	template<class Func>
+	template<typename Func>
 	void ForEach(Func &&func);
 
 	// Triggered on System start up
@@ -83,11 +83,11 @@ protected:
 	ComponentFilter &GetFilter();
 
 	// Emit Event T
-	template<class T>
-	void EmitEvent(T const &evt) const;
+	template<typename T>
+	void EmitEvent(const T &evt) const;
 
 	// Connect function Func to Event T
-	template<class T, class Func>
+	template<typename T, typename Func>
 	Event::Id ConnectEvent(Func &&func);
 
 	// Clear connected function ID
@@ -103,19 +103,19 @@ private:
 	};
 
 	// Attach an Entity to the System
-	void AttachEntity(Entity const &entity);
+	void AttachEntity(const Entity &entity);
 
 	// Detach an Entity from the System
-	void DetachEntity(Entity const &entity);
+	void DetachEntity(const Entity &entity);
 
 	// Enable Entity
-	void EnableEntity(Entity const &entity);
+	void EnableEntity(const Entity &entity);
 
 	// Disable Entity
-	void DisableEntity(Entity const &entity);
+	void DisableEntity(const Entity &entity);
 
 	// Call an event
-	template<class Func>
+	template<typename Func>
 	void CallEvent(Func &&func);
 
 	// Start event
@@ -134,16 +134,16 @@ private:
 	void PostUpdateEvent(float elapsed);
 
 	// Attach event
-	void AttachEvent(Entity const &entity);
+	void AttachEvent(const Entity &entity);
 
 	// Detach event
-	void DetachEvent(Entity const &entity);
+	void DetachEvent(const Entity &entity);
 
 	// Enable event
-	void EnableEvent(Entity const &entity);
+	void EnableEvent(const Entity &entity);
 
 	// Disable event
-	void DisableEvent(Entity const &entity);
+	void DisableEvent(const Entity &entity);
 
 	// Get Entity status
 	EntityStatus GetEntityStatus(Entity::Id id) const;
@@ -178,6 +178,6 @@ private:
 };
 
 // Get the Type ID for the System T
-template<class T>
+template<typename T>
 TypeId GetSystemTypeId() noexcept;
 }

@@ -21,6 +21,11 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       ARCHITECTURE: x86
       GEN: "Visual Studio 15 2017"
+      CFG: Debug
+      BUILD_OUT: "x86-Debug"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      ARCHITECTURE: x86
+      GEN: "Visual Studio 15 2017"
       CFG: Release
       BUILD_OUT: "x86-Release"
   NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip

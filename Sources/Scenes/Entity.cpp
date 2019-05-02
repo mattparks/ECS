@@ -56,17 +56,17 @@ void Entity::Remove()
 	m_world.value()->RemoveEntity(m_id);
 }
 
-bool Entity::operator==(Entity const &rhs) const
+bool Entity::operator==(const Entity &rhs) const
 {
 	return m_id == rhs.m_id && &m_world.value() == &rhs.m_world.value();
 }
 
-bool Entity::operator!=(Entity const &rhs) const
+bool Entity::operator!=(const Entity &rhs) const
 {
 	return !operator==(rhs);
 }
 
-std::size_t Entity::Hash::operator()(Entity const &entity) const
+std::size_t Entity::Hash::operator()(const Entity &entity) const
 {
 	return std::hash<Entity::Id>()(entity.m_id);
 }
