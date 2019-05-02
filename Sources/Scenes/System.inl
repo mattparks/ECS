@@ -49,9 +49,9 @@ void ecs::System::CallEvent(Func &&func)
 }
 
 template<class T>
-ecs::detail::TypeId ecs::GetSystemTypeId() noexcept
+ecs::TypeId ecs::GetSystemTypeId() noexcept
 {
 	static_assert(std::is_base_of<System, T>::value, "T must be a System.");
 
-	return detail::TypeInfo<System>::GetTypeId<T>();
+	return TypeInfo<System>::GetTypeId<T>();
 }

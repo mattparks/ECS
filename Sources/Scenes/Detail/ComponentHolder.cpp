@@ -1,6 +1,6 @@
 #include "ComponentHolder.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 	void ComponentHolder::RemoveAllComponents(Entity::Id id)
 	{

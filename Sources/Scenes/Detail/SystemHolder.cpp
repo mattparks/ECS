@@ -1,6 +1,6 @@
 #include "SystemHolder.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 	SystemHolder::~SystemHolder()
 	{
@@ -22,7 +22,7 @@ namespace ecs::detail
 		m_priorities.clear();
 	}
 
-	void SystemHolder::RemoveSystemPriority(detail::TypeId id)
+	void SystemHolder::RemoveSystemPriority(TypeId id)
 	{
 		for (auto it = m_priorities.begin(); it != m_priorities.end();)
 		{

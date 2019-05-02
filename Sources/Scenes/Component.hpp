@@ -18,10 +18,10 @@ public:
 
 // Get the Type ID for the Component T
 template<class T>
-detail::TypeId GetComponentTypeId() noexcept
+TypeId GetComponentTypeId() noexcept
 {
 	static_assert(std::is_base_of<Component, T>::value, "T must be a Component.");
 
-	return detail::TypeInfo<Component>::GetTypeId<T>();
+	return TypeInfo<Component>::GetTypeId<T>();
 }
 }

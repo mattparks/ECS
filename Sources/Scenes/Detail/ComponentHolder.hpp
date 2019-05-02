@@ -5,15 +5,12 @@
 #include <optional>
 #include <vector>
 #include "Helpers/Reference.hpp"
-#include "ECS/Exceptions/InvalidComponent.hpp"
-#include "ECS/Exceptions/InvalidEntity.hpp"
-#include "ECS/Component.hpp"
-#include "ECS/Entity.hpp"
-#include "ECS/Exceptions/Exception.hpp"
+#include "Scenes/Component.hpp"
+#include "Scenes/Entity.hpp"
 #include "ComponentFilter.hpp"
 #include "TypeInfo.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 class ComponentHolder
 {
@@ -36,16 +33,14 @@ public:
 	{
 		if (id >= m_components.size())
 		{
-			// The Entity ID is out of range
-			throw InvalidEntity("ecs::Entity::AddComponent()");
+			throw std::exception("Entity ID is out of range");
 		}
 
 		const auto typeId = GetComponentTypeId<T>();
 
 		if (typeId >= m_components[id].size())
 		{
-			// The Component type ID is out of range
-			throw InvalidComponent("ecs::Entity::AddComponent()");
+			throw std::exception("Component type ID is out of range");
 		}
 
 		m_components[id][typeId] = std::move(component);
@@ -60,7 +55,7 @@ public:
 
 		if (!component.has_value() || component.value().get() == nullptr)
 		{
-			throw Exception("Entity does not have this Component.", "ecs::Entity::GetComponent()");
+			throw std::exception("Entity does not have requected Component");
 		}
 
 		return *static_cast<T*>(component.value()->get());

@@ -3,8 +3,6 @@
 
 #include <stdexcept>
 #include "Entity.hpp"
-#include "Exceptions/Exception.hpp"
-#include "Exceptions/InvalidEntity.hpp"
 #include "Log.hpp"
 #include "Entity.inl"
 
@@ -43,7 +41,7 @@ namespace ecs
 	{
 		if (m_names.find(name) != m_names.end())
 		{
-			throw Exception("Entity name already used.", "World::CreateEntity()");
+			throw std::exception("Entity name already in use");
 		}
 
 		const auto entity = CreateEntity();
@@ -80,7 +78,7 @@ namespace ecs
 	{
 		if (!IsEntityValid(id))
 		{
-			throw InvalidEntity("World::GetEntityName()");
+			throw std::exception("Entity ID is not valid");
 		}
 
 		if (m_entities[id].name.has_value())
@@ -95,7 +93,7 @@ namespace ecs
 	{
 		if (!IsEntityValid(id))
 		{
-			throw InvalidEntity("World::EnableEntity()");
+			throw std::exception("Entity ID is not valid");
 		}
 
 		m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Enable });
@@ -105,7 +103,7 @@ namespace ecs
 	{
 		if (!IsEntityValid(id))
 		{
-			throw InvalidEntity("World::DisableEntity()");
+			throw std::exception("Entity ID is not valid");
 		}
 
 		m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Disable });
@@ -115,7 +113,7 @@ namespace ecs
 	{
 		if (!IsEntityValid(id))
 		{
-			throw InvalidEntity("World::RefreshEntity()");
+			throw std::exception("Entity ID is not valid");
 		}
 
 		m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Refresh });
@@ -130,7 +128,7 @@ namespace ecs
 	{
 		if (!IsEntityValid(id))
 		{
-			throw InvalidEntity("World::RemoveEntity()");
+			throw std::exception("Entity ID is not valid");
 		}
 
 		m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Remove });
@@ -163,17 +161,17 @@ namespace ecs
 
 		m_newSystems.clear();
 
-		UpdateSystems([elapsed](System & system, detail::TypeId)
+		UpdateSystems([elapsed](System & system, TypeId)
 			{
 				system.PreUpdateEvent(elapsed);
 			});
 
-		UpdateSystems([elapsed](System & system, detail::TypeId)
+		UpdateSystems([elapsed](System & system, TypeId)
 			{
 				system.UpdateEvent(elapsed);
 			});
 
-		UpdateSystems([elapsed](System & system, detail::TypeId)
+		UpdateSystems([elapsed](System & system, TypeId)
 			{
 				system.PostUpdateEvent(elapsed);
 			});
@@ -216,7 +214,7 @@ namespace ecs
 	{
 		if (!IsEntityValid(action.id))
 		{
-			throw InvalidEntity("World::ExecuteAction()");
+			throw std::exception("Entity action ID is not valid");
 		}
 
 		switch (action.action)
@@ -238,7 +236,7 @@ namespace ecs
 
 	void World::ActionEnable(Entity::Id id)
 	{
-		m_systems.ForEach([&](System & system, detail::TypeId systemId)
+		m_systems.ForEach([&](System & system, TypeId systemId)
 			{
 				const auto status = TryAttach(system, systemId, id);
 
@@ -254,7 +252,7 @@ namespace ecs
 	{
 		m_entities[id].isEnabled = false;
 
-		m_systems.ForEach([&](System & system, detail::TypeId systemId)
+		m_systems.ForEach([&](System & system, TypeId systemId)
 			{
 				// Is the Entity attached to the System ?
 				if (systemId < m_entities[id].systems.size() && m_entities[id].systems[systemId])
@@ -266,7 +264,7 @@ namespace ecs
 
 	void World::ActionRefresh(Entity::Id id)
 	{
-		m_systems.ForEach([&](System & system, detail::TypeId systemId)
+		m_systems.ForEach([&](System & system, TypeId systemId)
 			{
 				const auto status = TryAttach(system, systemId, id);
 
@@ -281,7 +279,7 @@ namespace ecs
 
 	void World::ActionRemove(Entity::Id id)
 	{
-		m_systems.ForEach([&](System & system, detail::TypeId systemId)
+		m_systems.ForEach([&](System & system, TypeId systemId)
 			{
 				// Is the Entity attached to the System ?
 				if (systemId < m_entities[id].systems.size() && m_entities[id].systems[systemId])
@@ -306,7 +304,7 @@ namespace ecs
 		m_pool.Store(id);
 	}
 
-	World::AttachStatus World::TryAttach(System & system, detail::TypeId systemId, Entity::Id id)
+	World::AttachStatus World::TryAttach(System & system, TypeId systemId, Entity::Id id)
 	{
 		// Does the Entity match the requirements to be part of the System ?
 		if (system.GetFilter().Check(m_components.GetComponentsMask(id)))

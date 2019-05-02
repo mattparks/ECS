@@ -1,6 +1,5 @@
 #include <algorithm>
 
-#include "Exceptions/Exception.hpp"
 #include "System.hpp"
 #include "World.hpp"
 #include "System.inl"
@@ -158,7 +157,7 @@ namespace ecs
 	{
 		if (!m_world.has_value())
 		{
-			throw Exception("System is not attached to any World.", "System::GetWorld()");
+			throw std::exception("System is not attached to any World");
 		}
 
 		return m_world.value();
@@ -168,7 +167,7 @@ namespace ecs
 	{
 		if (!m_world.has_value())
 		{
-			throw Exception("System is not attached to any World.", "System::GetWorld()");
+			throw std::exception("System is not attached to any World");
 		}
 
 		return m_world.value();
@@ -192,7 +191,7 @@ namespace ecs
 
 	void System::OnEntityDisabled(Entity) { }
 
-	detail::ComponentFilter& System::GetFilter()
+	ComponentFilter& System::GetFilter()
 	{
 		return m_filter;
 	}

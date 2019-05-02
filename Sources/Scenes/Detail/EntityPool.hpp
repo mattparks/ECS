@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "ECS/Entity.hpp"
+#include "Scenes/Entity.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 class EntityPool
 {

@@ -83,7 +83,7 @@ private:
 	};
 
 	// Lister list
-	std::unordered_multimap<detail::TypeId, EventReceiverAttributes> m_listeners;
+	std::unordered_multimap<TypeId, EventReceiverAttributes> m_listeners;
 
 	// Next Event handler ID
 	Event::Id m_nextId;

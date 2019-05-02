@@ -7,12 +7,11 @@
 #include <algorithm>
 #include <stdexcept>
 #include "Helpers/NonCopyable.hpp"
-#include "ECS/Exceptions/Exception.hpp"
-#include "ECS/Log.hpp"
-#include "ECS/System.hpp"
+#include "Scenes/Log.hpp"
+#include "Scenes/System.hpp"
 #include "TypeInfo.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 class SystemHolder :
 	public NonCopyable
@@ -50,7 +49,7 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw Exception("World does not have this System.", "ecs::World::GetSystem()");
+			throw std::exception("World does not have requested System");
 		}
 
 		return *static_cast<T*>(it->second.get());
@@ -64,7 +63,7 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw Exception("World does not have this System.", "ecs::World::GetSystem()");
+			throw std::exception("World does not have requested System.");
 		}
 
 		return *static_cast<T*>(it->second.get());
@@ -127,12 +126,12 @@ public:
 
 private:
 	// Remove System from the priority list
-	void RemoveSystemPriority(detail::TypeId id);
+	void RemoveSystemPriority(TypeId id);
 
 	// List of all Systems
-	std::unordered_map<detail::TypeId, std::unique_ptr<System>> m_systems;
+	std::unordered_map<TypeId, std::unique_ptr<System>> m_systems;
 
 	// List of systems priorities
-	std::multimap<std::size_t, detail::TypeId, std::greater<std::size_t>> m_priorities;
+	std::multimap<std::size_t, TypeId, std::greater<std::size_t>> m_priorities;
 };
 }

@@ -1,16 +1,16 @@
 #include <iostream>
 
-#include <ECS/Component.hpp>
-#include <ECS/Entity.hpp>
-#include <ECS/Event.hpp>
-#include <ECS/EventDispatcher.hpp>
-#include <ECS/Log.hpp>
-#include <ECS/System.hpp>
-#include <ECS/World.hpp>
-
-#include <ECS/World.inl>
-#include <ECS/Entity.inl>
-#include <ECS/System.inl>
+#include <Scenes/Component.hpp>
+#include <Scenes/Entity.hpp>
+#include <Scenes/Event.hpp>
+#include <Scenes/EventDispatcher.hpp>
+#include <Scenes/Log.hpp>
+#include <Scenes/System.hpp>
+#include <Scenes/World.hpp>
+		  
+#include <Scenes/World.inl>
+#include <Scenes/Entity.inl>
+#include <Scenes/System.inl>
 
 class Health :
 	public ecs::Component

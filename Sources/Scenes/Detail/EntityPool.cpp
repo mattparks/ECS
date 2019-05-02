@@ -1,6 +1,6 @@
 #include "EntityPool.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 	ecs::Entity::Id EntityPool::Create()
 	{

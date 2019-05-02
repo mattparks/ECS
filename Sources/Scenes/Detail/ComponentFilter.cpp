@@ -1,6 +1,6 @@
 #include "ComponentFilter.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 	void ComponentFilter::ExcludeAll() noexcept
 	{

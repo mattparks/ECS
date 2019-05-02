@@ -12,10 +12,10 @@ struct Event
 
 // Get the Type ID for the Event T
 template<class T>
-detail::TypeId GetEventTypeId() noexcept
+TypeId GetEventTypeId() noexcept
 {
 	static_assert(std::is_base_of<Event, T>::value, "T must be an Event.");
 
-	return detail::TypeInfo<Event>::GetTypeId<T>();
+	return TypeInfo<Event>::GetTypeId<T>();
 }
 }

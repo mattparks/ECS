@@ -80,7 +80,7 @@ protected:
 	System() = default;
 
 	// Access to the filter
-	detail::ComponentFilter &GetFilter();
+	ComponentFilter &GetFilter();
 
 	// Emit Event T
 	template<class T>
@@ -165,19 +165,19 @@ private:
 
 	// The mask that the Entities must matched to be
 	// attached to this System
-	detail::ComponentFilter m_filter;
+	ComponentFilter m_filter;
 
 	// List of the Events this System is listening to
 	std::unordered_set<std::size_t> m_events;
 
-	// Only World can access detail::ComponentFilter
+	// Only World can access ComponentFilter
 	friend class World;
 
-	// detail::SystemHolder needs to trigger onShutdown event
-	friend class detail::SystemHolder;
+	// SystemHolder needs to trigger onShutdown event
+	friend class SystemHolder;
 };
 
 // Get the Type ID for the System T
 template<class T>
-detail::TypeId GetSystemTypeId() noexcept;
+TypeId GetSystemTypeId() noexcept;
 }

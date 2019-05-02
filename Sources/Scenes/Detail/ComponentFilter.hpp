@@ -1,9 +1,9 @@
 #pragma once
 
 #include <bitset>
-#include "ECS/Component.hpp"
+#include "Scenes/Component.hpp"
 
-namespace ecs::detail
+namespace ecs
 {
 class ComponentFilter
 {

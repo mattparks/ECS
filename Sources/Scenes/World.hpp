@@ -109,7 +109,7 @@ private:
 		std::optional<std::string> name;
 
 		// The Systems this Entity is attached
-		std::vector<detail::TypeId> systems;
+		std::vector<TypeId> systems;
 	};
 
 	struct EntityAction
@@ -160,7 +160,7 @@ private:
 
 	// Checks the requirements the Entity meets for each Systems
 	// Used by actionEnable and actionRefresh
-	AttachStatus TryAttach(System &system, detail::TypeId systemId, Entity::Id id);
+	AttachStatus TryAttach(System &system, TypeId systemId, Entity::Id id);
 
 	// Extend the Entity and Component arrays
 	void Extend(std::size_t size);
@@ -176,21 +176,21 @@ private:
 	std::unordered_map<std::string, Entity::Id> m_names;
 
 	// List of all Components of all Entities of the World
-	detail::ComponentHolder m_components;
+	ComponentHolder m_components;
 
 	// List of all Systems of the World
-	detail::SystemHolder m_systems;
+	SystemHolder m_systems;
 
 	// List of all System waiting to be started
 	std::vector<Reference<System>> m_newSystems;
 
 	// ID Pool
-	detail::EntityPool m_pool;
+	EntityPool m_pool;
 
 	// Event Dispacher
 	EventDispatcher m_evtDispatcher;
 
-	// Only Entity is able to use the detail::ComponentHolder
+	// Only Entity is able to use the ComponentHolder
 	friend class Entity;
 
 	// Only System is able to use the EventDispatcher

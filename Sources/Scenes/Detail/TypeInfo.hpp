@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace ecs::detail
+namespace ecs
 {
 using TypeId = std::size_t;
 
