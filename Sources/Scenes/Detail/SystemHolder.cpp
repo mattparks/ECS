@@ -22,7 +22,7 @@ void SystemHolder::RemoveAllSystems()
 	m_priorities.clear();
 }
 
-void SystemHolder::RemoveSystemPriority(TypeId id)
+void SystemHolder::RemoveSystemPriority(const TypeId &id)
 {
 	for (auto it = m_priorities.begin(); it != m_priorities.end();)
 	{

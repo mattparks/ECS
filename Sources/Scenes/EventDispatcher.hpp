@@ -62,7 +62,7 @@ public:
 	}
 
 	// Clear connected function ID
-	void Clear(Event::Id id);
+	void Clear(const Event::Id &id);
 
 	// Clear all Events
 	void ClearAll();

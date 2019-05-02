@@ -1,7 +1,6 @@
 #pragma once
 
 #include <type_traits>
-#include <utility>
 #include "Engine/Log.hpp"
 #include "EventDispatcher.hpp"
 #include "World.hpp"

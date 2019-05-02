@@ -20,7 +20,7 @@ ecs::Entity::Id EntityPool::Create()
 	return id;
 }
 
-void EntityPool::Store(Entity::Id id)
+void EntityPool::Store(const Entity::Id &id)
 {
 	if (id < m_nextId)
 	{

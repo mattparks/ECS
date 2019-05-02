@@ -2,7 +2,7 @@
 
 namespace ecs
 {
-void ComponentHolder::RemoveAllComponents(Entity::Id id)
+void ComponentHolder::RemoveAllComponents(const Entity::Id &id)
 {
 	if (id < m_components.size())
 	{
@@ -15,7 +15,7 @@ void ComponentHolder::RemoveAllComponents(Entity::Id id)
 	}
 }
 
-ComponentFilter::Mask ComponentHolder::GetComponentsMask(Entity::Id id) const
+ComponentFilter::Mask ComponentHolder::GetComponentsMask(const Entity::Id& id) const
 {
 	if (id < m_componentsMasks.size())
 	{
@@ -25,7 +25,7 @@ ComponentFilter::Mask ComponentHolder::GetComponentsMask(Entity::Id id) const
 	return {};
 }
 
-void ComponentHolder::Resize(std::size_t size)
+void ComponentHolder::Resize(const std::size_t &size)
 {
 	m_components.resize(size);
 	m_componentsMasks.resize(size);

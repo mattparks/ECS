@@ -51,7 +51,7 @@ Entity World::CreateEntity(const std::string &name)
 	return entity;
 }
 
-std::optional<Entity> World::GetEntity(Entity::Id id) const
+std::optional<Entity> World::GetEntity(const Entity::Id &id) const
 {
 	if (!IsEntityValid(id))
 	{
@@ -73,7 +73,7 @@ std::optional<Entity> World::GetEntity(const std::string &name) const
 	return GetEntity(it->second);
 }
 
-std::string World::GetEntityName(Entity::Id id) const
+std::string World::GetEntityName(const Entity::Id &id) const
 {
 	if (!IsEntityValid(id))
 	{
@@ -88,7 +88,7 @@ std::string World::GetEntityName(Entity::Id id) const
 	return {};
 }
 
-void World::EnableEntity(Entity::Id id)
+void World::EnableEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -98,7 +98,7 @@ void World::EnableEntity(Entity::Id id)
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Enable });
 }
 
-void World::DisableEntity(Entity::Id id)
+void World::DisableEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -108,7 +108,7 @@ void World::DisableEntity(Entity::Id id)
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Disable });
 }
 
-void World::RefreshEntity(Entity::Id id)
+void World::RefreshEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -118,12 +118,12 @@ void World::RefreshEntity(Entity::Id id)
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Refresh });
 }
 
-bool World::IsEntityEnabled(Entity::Id id) const
+bool World::IsEntityEnabled(const Entity::Id &id) const
 {
 	return IsEntityValid(id) && m_entities[id].isEnabled;
 }
 
-void World::RemoveEntity(Entity::Id id)
+void World::RemoveEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -145,12 +145,12 @@ void World::RemoveAllEntities()
 	}
 }
 
-bool World::IsEntityValid(Entity::Id id) const
+bool World::IsEntityValid(const Entity::Id &id) const
 {
 	return id < m_entities.size() && m_entities[id].isValid;
 }
 
-void World::Update(float elapsed)
+void World::Update(const float &delta)
 {
 	// Start new Systems
 	for (auto &system : m_newSystems)
@@ -160,19 +160,19 @@ void World::Update(float elapsed)
 
 	m_newSystems.clear();
 
-	UpdateSystems([elapsed](System &system, TypeId)
+	UpdateSystems([delta](System &system, TypeId)
 	{
-		system.PreUpdateEvent(elapsed);
+		system.PreUpdateEvent(delta);
 	});
 
-	UpdateSystems([elapsed](System &system, TypeId)
+	UpdateSystems([delta](System &system, TypeId)
 	{
-		system.UpdateEvent(elapsed);
+		system.UpdateEvent(delta);
 	});
 
-	UpdateSystems([elapsed](System &system, TypeId)
+	UpdateSystems([delta](System &system, TypeId)
 	{
-		system.PostUpdateEvent(elapsed);
+		system.PostUpdateEvent(delta);
 	});
 }
 
@@ -233,7 +233,7 @@ void World::ExecuteAction(const EntityAction &action)
 	}
 }
 
-void World::ActionEnable(Entity::Id id)
+void World::ActionEnable(const Entity::Id &id)
 {
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
@@ -247,7 +247,7 @@ void World::ActionEnable(Entity::Id id)
 	});
 }
 
-void World::ActionDisable(Entity::Id id)
+void World::ActionDisable(const Entity::Id &id)
 {
 	m_entities[id].isEnabled = false;
 
@@ -261,7 +261,7 @@ void World::ActionDisable(Entity::Id id)
 	});
 }
 
-void World::ActionRefresh(Entity::Id id)
+void World::ActionRefresh(const Entity::Id &id)
 {
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
@@ -276,7 +276,7 @@ void World::ActionRefresh(Entity::Id id)
 	});
 }
 
-void World::ActionRemove(Entity::Id id)
+void World::ActionRemove(const Entity::Id &id)
 {
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
@@ -303,7 +303,7 @@ void World::ActionRemove(Entity::Id id)
 	m_pool.Store(id);
 }
 
-World::AttachStatus World::TryAttach(System &system, TypeId systemId, Entity::Id id)
+World::AttachStatus World::TryAttach(System &system, const TypeId &systemId, const Entity::Id &id)
 {
 	// Does the Entity match the requirements to be part of the System ?
 	if (system.GetFilter().Check(m_components.GetComponentsMask(id)))
@@ -320,29 +320,30 @@ World::AttachStatus World::TryAttach(System &system, TypeId systemId, Entity::Id
 			system.AttachEntity(m_entities[id].entity);
 
 			// The Entity has been attached to the System
-			return AttachStatus::Attached;
+			return Attached;
 		}
 
 		// Otherwise, if the Entity is already attached to the System
-		return AttachStatus::AlreadyAttached;
+		return AlreadyAttached;
 	}
-		// If the Entity is already attached to the System but doest not
-		// match the requirements anymore, we detach it from the System
-	else if (systemId < m_entities[id].systems.size() && m_entities[id].systems[systemId])
+
+	// If the Entity is already attached to the System but doest not
+	// match the requirements anymore, we detach it from the System
+	if (systemId < m_entities[id].systems.size() && m_entities[id].systems[systemId])
 	{
 		system.DetachEntity(m_entities[id].entity);
 		m_entities[id].systems[systemId] = false;
 
 		// The Entity has been detached from the System
-		return AttachStatus::Detached;
+		return Detached;
 	}
 
 	// Nothing happened because the Entity is not attached to the System
 	// and does not match the requirements to be part of it
-	return AttachStatus::NotAttached;
+	return NotAttached;
 }
 
-void World::Extend(std::size_t size)
+void World::Extend(const std::size_t &size)
 {
 	if (size > m_entities.size())
 	{

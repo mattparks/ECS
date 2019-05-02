@@ -18,7 +18,7 @@ public:
 	Entity::Id Create();
 
 	// Store an Entity ID
-	void Store(Entity::Id id);
+	void Store(const Entity::Id &id);
 
 	// Remove all Entity IDs stored within the pool and
 	// reset the next Entity ID value

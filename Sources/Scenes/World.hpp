@@ -7,12 +7,10 @@
 
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
-#include "Detail/ComponentFilter.hpp"
 #include "Detail/ComponentHolder.hpp"
 #include "Detail/EntityPool.hpp"
 #include "Detail/SystemHolder.hpp"
 #include "Detail/TypeInfo.hpp"
-#include "Component.hpp"
 #include "Entity.hpp"
 #include "EventDispatcher.hpp"
 #include "System.hpp"
@@ -33,7 +31,7 @@ public:
 
 	// Add a System
 	template<typename T, typename... Args>
-	T &AddSystem(std::size_t priority = 0, Args &&...args);
+	T &AddSystem(const std::size_t &priority = 0, Args &&...args);
 
 	// Get a System
 	template<typename T>
@@ -61,34 +59,34 @@ public:
 	Entity CreateEntity(const std::string &name);
 
 	// Get Entity by ID
-	std::optional<ecs::Entity> GetEntity(Entity::Id id) const;
+	std::optional<ecs::Entity> GetEntity(const Entity::Id &id) const;
 
 	// Get Entity by name
 	std::optional<ecs::Entity> GetEntity(const std::string &name) const;
 
 	// Get Entity name
-	std::string GetEntityName(Entity::Id id) const;
+	std::string GetEntityName(const Entity::Id &id) const;
 
 	// Enable the Entity
-	void EnableEntity(Entity::Id id);
+	void EnableEntity(const Entity::Id &id);
 
 	// Disable the Entity
-	void DisableEntity(Entity::Id id);
+	void DisableEntity(const Entity::Id &id);
 
 	// Check whether the Entity is enabled or not
-	bool IsEntityEnabled(Entity::Id id) const;
+	bool IsEntityEnabled(const Entity::Id &id) const;
 
 	// Remove the Entity
-	void RemoveEntity(Entity::Id id);
+	void RemoveEntity(const Entity::Id &id);
 
 	// Remove all Entities
 	void RemoveAllEntities();
 
 	// Check whether an Entity is valid or not
-	bool IsEntityValid(Entity::Id id) const;
+	bool IsEntityValid(const Entity::Id &id) const;
 
 	// Update the World
-	void Update(float elapsed);
+	void Update(const float & delta);
 
 	// Clear the World by removing all Systems and Entities
 	void Clear();
@@ -100,10 +98,10 @@ private:
 		Entity entity;
 
 		// Is this Entity valid (hasn't been removed)
-		bool isValid;
+		bool isValid{true};
 
 		// Is this Entity enabled
-		bool isEnabled;
+		bool isEnabled{true};
 
 		// Entity name
 		std::optional<std::string> name;
@@ -132,7 +130,7 @@ private:
 	};
 
 	// Refresh the Entity Systems list
-	void RefreshEntity(Entity::Id id);
+	void RefreshEntity(const Entity::Id &id);
 
 	// Update the Systems
 	template<typename Func>
@@ -145,25 +143,25 @@ private:
 	void ExecuteAction(const EntityAction &action);
 
 	// Add Entity to the Systems it meets the requirements
-	void ActionEnable(Entity::Id id);
+	void ActionEnable(const Entity::Id &id);
 
 	// Remove Entity from the Systems it meets the requirements
-	void ActionDisable(Entity::Id id);
+	void ActionDisable(const Entity::Id &id);
 
 	// Attach the Entity to the Systems it meets the requirements or detach
 	// it from the Systems it does not meet the requirements anymore
 	// Used after addComponent and removeComponent
-	void ActionRefresh(Entity::Id id);
+	void ActionRefresh(const Entity::Id &id);
 
 	// Remove Entity data from the World
-	void ActionRemove(Entity::Id id);
+	void ActionRemove(const Entity::Id &id);
 
 	// Checks the requirements the Entity meets for each Systems
 	// Used by actionEnable and actionRefresh
-	AttachStatus TryAttach(System &system, TypeId systemId, Entity::Id id);
+	AttachStatus TryAttach(System &system, const TypeId &systemId, const Entity::Id &id);
 
 	// Extend the Entity and Component arrays
-	void Extend(std::size_t size);
+	void Extend(const std::size_t &size);
 
 	// List of all Entities
 	std::vector<EntityAttributes> m_entities;

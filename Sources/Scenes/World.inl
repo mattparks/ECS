@@ -1,13 +1,12 @@
 #pragma once
 
 #include <memory>
-#include <utility>
 #include "World.hpp"
 
 namespace ecs
 {
 template<typename T, typename... Args>
-T &World::AddSystem(std::size_t priority, Args &&...args)
+T &World::AddSystem(const std::size_t &priority, Args &&...args)
 {
 	m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
 

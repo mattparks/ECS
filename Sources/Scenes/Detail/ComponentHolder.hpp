@@ -9,7 +9,6 @@
 #include "Scenes/Component.hpp"
 #include "Scenes/Entity.hpp"
 #include "ComponentFilter.hpp"
-#include "TypeInfo.hpp"
 
 namespace ecs
 {
@@ -23,7 +22,7 @@ public:
 
 	// Add the component T to the Entity
 	template<typename T>
-	void AddComponent(Entity::Id id, std::unique_ptr<T> &&component)
+	void AddComponent(const Entity::Id &id, std::unique_ptr<T> &&component)
 	{
 		if (id >= m_components.size())
 		{
@@ -43,13 +42,13 @@ public:
 
 	// Get the Component T from the Entity
 	template<typename T>
-	T &GetComponent(Entity::Id id)
+	T &GetComponent(const Entity::Id &id)
 	{
 		auto component = GetComponentPtr<T>(id);
 
 		if (!component.has_value() || component.value().get() == nullptr)
 		{
-			throw std::runtime_error("Entity does not have requected Component");
+			throw std::runtime_error("Entity does not have requested Component");
 		}
 
 		return *static_cast<T *>(component.value()->get());
@@ -57,7 +56,7 @@ public:
 
 	// Check whether the Entity has the Component T or not
 	template<typename T>
-	bool HasComponent(Entity::Id id) const
+	bool HasComponent(const Entity::Id &id) const
 	{
 		// Is the Entity ID and the Component type ID known
 		if (id < m_components.size())
@@ -76,7 +75,7 @@ public:
 
 	// Remove the Component T from the Entity
 	template<typename T>
-	void RemoveComponent(Entity::Id id)
+	void RemoveComponent(const Entity::Id &id)
 	{
 		auto component = GetComponentPtr<T>(id);
 
@@ -88,20 +87,20 @@ public:
 	}
 
 	// Remove all components from the Entity
-	void RemoveAllComponents(Entity::Id id);
+	void RemoveAllComponents(const Entity::Id &id);
 
 	// Get the Component mask for the given Entity
-	ComponentFilter::Mask GetComponentsMask(Entity::Id id) const;
+	ComponentFilter::Mask GetComponentsMask(const Entity::Id &id) const;
 
 	// Resize the Component array
-	void Resize(std::size_t size);
+	void Resize(const std::size_t &size);
 
 	// Clear all Components
 	void Clear() noexcept;
 
 private:
-	template<typename T> std::optional<Reference < std::unique_ptr<Component>>>
-	GetComponentPtr(Entity::Id id)
+	template<typename T> 
+	std::optional<Reference < std::unique_ptr<Component>>> GetComponentPtr(const Entity::Id &id)
 	{
 		if (!HasComponent<T>(id))
 		{

@@ -7,7 +7,7 @@ void EventDispatcher::ClearAll()
 	m_listeners.clear();
 }
 
-void EventDispatcher::Clear(Event::Id id)
+void EventDispatcher::Clear(const Event::Id &id)
 {
 	for (auto it = m_listeners.begin(); it != m_listeners.end();)
 	{

@@ -107,19 +107,19 @@ void System::ShutdownEvent()
 	CallEvent(std::bind(&System::OnShutdown, this));
 }
 
-void System::PreUpdateEvent(float elapsed)
+void System::PreUpdateEvent(const float &delta)
 {
-	CallEvent(std::bind(&System::OnPreUpdate, this, elapsed));
+	CallEvent(std::bind(&System::OnPreUpdate, this, delta));
 }
 
-void System::UpdateEvent(float elapsed)
+void System::UpdateEvent(const float &delta)
 {
-	CallEvent(std::bind(&System::OnUpdate, this, elapsed));
+	CallEvent(std::bind(&System::OnUpdate, this, delta));
 }
 
-void System::PostUpdateEvent(float elapsed)
+void System::PostUpdateEvent(const float &delta)
 {
-	CallEvent(std::bind(&System::OnPostUpdate, this, elapsed));
+	CallEvent(std::bind(&System::OnPostUpdate, this, delta));
 }
 
 void System::AttachEvent(const Entity &entity)
@@ -176,26 +176,26 @@ void System::OnStart() { }
 
 void System::OnShutdown() { }
 
-void System::OnPreUpdate(float) { }
+void System::OnPreUpdate(const float &delta) { }
 
-void System::OnUpdate(float) { }
+void System::OnUpdate(const float &delta) { }
 
-void System::OnPostUpdate(float) { }
+void System::OnPostUpdate(const float &delta) { }
 
-void System::OnEntityAttached(Entity) { }
+void System::OnEntityAttached(Entity entity) { }
 
-void System::OnEntityDetached(Entity) { }
+void System::OnEntityDetached(Entity entity) { }
 
-void System::OnEntityEnabled(Entity) { }
+void System::OnEntityEnabled(Entity entity) { }
 
-void System::OnEntityDisabled(Entity) { }
+void System::OnEntityDisabled(Entity entity) { }
 
 ComponentFilter &System::GetFilter()
 {
 	return m_filter;
 }
 
-void System::DisconnectEvent(Event::Id id)
+void System::DisconnectEvent(const Event::Id &id)
 {
 	if (m_events.find(id) != m_events.end())
 	{
@@ -216,7 +216,7 @@ void System::DisconnectAllEvents()
 	m_events.clear();
 }
 
-System::EntityStatus System::GetEntityStatus(Entity::Id id) const
+System::EntityStatus System::GetEntityStatus(const Entity::Id &id) const
 {
 	const auto it = m_status.find(id);
 
@@ -228,7 +228,7 @@ System::EntityStatus System::GetEntityStatus(Entity::Id id) const
 	return EntityStatus::NotAttached;
 }
 
-void System::SetEntityStatus(Entity::Id id, EntityStatus status)
+void System::SetEntityStatus(const Entity::Id &id, const EntityStatus &status)
 {
 	if (status == EntityStatus::NotAttached)
 	{

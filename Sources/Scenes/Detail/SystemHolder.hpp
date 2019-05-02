@@ -122,7 +122,7 @@ public:
 
 private:
 	// Remove System from the priority list
-	void RemoveSystemPriority(TypeId id);
+	void RemoveSystemPriority(const TypeId &id);
 
 	// List of all Systems
 	std::unordered_map<TypeId, std::unique_ptr<System>> m_systems;

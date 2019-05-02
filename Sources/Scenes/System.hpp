@@ -3,14 +3,12 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
 #include "Detail/ComponentFilter.hpp"
 #include "Detail/TypeInfo.hpp"
 #include "Entity.hpp"
 #include "Event.hpp"
-#include "EventDispatcher.hpp"
 
 namespace ecs
 {
@@ -55,13 +53,13 @@ public:
 	virtual void OnShutdown();
 
 	// Triggered before each refresh
-	virtual void OnPreUpdate(float elapsed);
+	virtual void OnPreUpdate(const float &delta);
 
 	// Triggered for each refresh
-	virtual void OnUpdate(float elapsed);
+	virtual void OnUpdate(const float &delta);
 
 	// Triggered after each refresh
-	virtual void OnPostUpdate(float elapsed);
+	virtual void OnPostUpdate(const float &delta);
 
 	// Triggered when an Entity has been attached to the System
 	virtual void OnEntityAttached(Entity entity);
@@ -91,7 +89,7 @@ protected:
 	Event::Id ConnectEvent(Func &&func);
 
 	// Clear connected function ID
-	void DisconnectEvent(Event::Id id);
+	void DisconnectEvent(const Event::Id &id);
 
 	// Clear all Events
 	void DisconnectAllEvents();
@@ -125,13 +123,13 @@ private:
 	void ShutdownEvent();
 
 	// Pre-update event
-	void PreUpdateEvent(float elapsed);
+	void PreUpdateEvent(const float &delta);
 
 	// Update event
-	void UpdateEvent(float elapsed);
+	void UpdateEvent(const float &delta);
 
 	// Post-update event
-	void PostUpdateEvent(float elapsed);
+	void PostUpdateEvent(const float &delta);
 
 	// Attach event
 	void AttachEvent(const Entity &entity);
@@ -146,10 +144,10 @@ private:
 	void DisableEvent(const Entity &entity);
 
 	// Get Entity status
-	EntityStatus GetEntityStatus(Entity::Id id) const;
+	EntityStatus GetEntityStatus(const Entity::Id &id) const;
 
 	// Set Entity status
-	void SetEntityStatus(Entity::Id id, EntityStatus status);
+	void SetEntityStatus(const Entity::Id &id, const EntityStatus &status);
 
 	// Enabled Entities attached to this System
 	std::vector<Entity> m_enabledEntities;
