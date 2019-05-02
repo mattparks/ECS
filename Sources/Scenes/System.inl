@@ -21,13 +21,13 @@ void ecs::System::ForEach(Func &&func)
 template<class T>
 void ecs::System::EmitEvent(T const &evt) const
 {
-	getWorld().m_evtDispatcher.Emit(evt);
+	GetWorld().m_evtDispatcher.Emit(evt);
 }
 
 template<class T, class Func>
 ecs::Event::Id ecs::System::ConnectEvent(Func &&func)
 {
-	const auto id = GetWorld().m_evtDispatcher.connect<T>(std::forward<Func>(func));
+	const auto id = GetWorld().m_evtDispatcher.Connect<T>(std::forward<Func>(func));
 
 	// Save connection ID
 	m_events.insert(id);

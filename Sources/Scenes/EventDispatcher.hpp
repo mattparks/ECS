@@ -44,16 +44,16 @@ public:
 	{
 		static_assert(std::is_base_of<Event, T>::value, "T must be an Event.");
 
-		auto slot = [func](void const* evt)
+		auto slot = [func](void const *evt)
 		{
-			func(*static_cast<T const*>(evt));
+			func(*static_cast<T const *>(evt));
 		};
 
 		// Event handler ID
 		const auto id = m_nextId;
 		++m_nextId;
 
-		m_listeners.insert({ GetEventTypeId<T>(), EventReceiverAttributes{ id, slot } });
+		m_listeners.insert({ GetEventTypeId<T>(), EventReceiverAttributes{ id, slot }});
 
 		return id;
 	}

@@ -2,38 +2,38 @@
 
 namespace ecs
 {
-	SystemHolder::~SystemHolder()
-	{
-		RemoveAllSystems();
-	}
+SystemHolder::~SystemHolder()
+{
+	RemoveAllSystems();
+}
 
-	void SystemHolder::RemoveAllSystems()
+void SystemHolder::RemoveAllSystems()
+{
+	for (auto &system : m_systems)
 	{
-		for (auto &system : m_systems)
+		if (system.second != nullptr)
 		{
-			if (system.second != nullptr)
-			{
-				system.second->ShutdownEvent();
-				system.second->DetachAll();
-			}
-		}
-
-		m_systems.clear();
-		m_priorities.clear();
-	}
-
-	void SystemHolder::RemoveSystemPriority(TypeId id)
-	{
-		for (auto it = m_priorities.begin(); it != m_priorities.end();)
-		{
-			if (it->second == id)
-			{
-				it = m_priorities.erase(it);
-			}
-			else
-			{
-				++it;
-			}
+			system.second->ShutdownEvent();
+			system.second->DetachAll();
 		}
 	}
+
+	m_systems.clear();
+	m_priorities.clear();
+}
+
+void SystemHolder::RemoveSystemPriority(TypeId id)
+{
+	for (auto it = m_priorities.begin(); it != m_priorities.end();)
+	{
+		if (it->second == id)
+		{
+			it = m_priorities.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
 }

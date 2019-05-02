@@ -49,10 +49,10 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw std::exception("World does not have requested System");
+			throw std::runtime_error("World does not have requested System");
 		}
 
-		return *static_cast<T*>(it->second.get());
+		return *static_cast<T *>(it->second.get());
 	}
 
 	// Get a System
@@ -63,10 +63,10 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw std::exception("World does not have requested System.");
+			throw std::runtime_error("World does not have requested System.");
 		}
 
-		return *static_cast<T*>(it->second.get());
+		return *static_cast<T *>(it->second.get());
 	}
 
 	// Check whether a System exists or not
@@ -106,9 +106,9 @@ public:
 	template<class Func>
 	void ForEach(Func &&func)
 	{
-		for (const auto& typeId : m_priorities)
+		for (const auto &typeId : m_priorities)
 		{
-			auto& system = m_systems[typeId.second];
+			auto &system = m_systems[typeId.second];
 
 			if (system != nullptr)
 			{
@@ -116,7 +116,7 @@ public:
 				{
 					func(*system, typeId.second);
 				}
-				catch (std::exception const& e)
+				catch (std::exception const &e)
 				{
 					Log::Error(e.what());
 				}

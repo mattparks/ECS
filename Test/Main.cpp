@@ -7,32 +7,36 @@
 #include <Scenes/Log.hpp>
 #include <Scenes/System.hpp>
 #include <Scenes/World.hpp>
-		  
+
 #include <Scenes/World.inl>
 #include <Scenes/Entity.inl>
 #include <Scenes/System.inl>
 
-class Health :
+class Material :
 	public ecs::Component
 {
 public:
-	float healthPoints;
-	float maxHealthPoints;
-	float shield;
+	float m_pipeline;
 };
 
-class HealthSystem :
+class MaterialSkybox :
+	public Material
+{
+public:
+};
+
+class MaterialSystem :
 	public ecs::System
 {
 public:
-	HealthSystem()
+	MaterialSystem()
 	{
-		GetFilter().Require<Health>();
+		GetFilter().Require<Material>();
 	}
 
 	void OnEntityAttached(ecs::Entity entity)
 	{
-		ecs::Log::Info("Entity created!");
+		ecs::Log::Warning("Entity created!");
 	}
 };
 
@@ -40,19 +44,19 @@ int main(int argc, char **argv)
 {
 	ecs::World world;
 
-	world.AddSystem<HealthSystem>(0);
+	world.AddSystem<MaterialSystem>(0);
 
-	if (world.HasSystem<HealthSystem>())
+	if (world.HasSystem<MaterialSystem>())
 	{
-		auto &healthSystem = world.GetSystem<HealthSystem>();
+		auto &materialSystem = world.GetSystem<MaterialSystem>();
 	}
 
 	auto entity = world.CreateEntity();
-	entity.AddComponent<Health>();
+	entity.AddComponent<Material>();
 
-	if (entity.HasComponent<Health>())
+	if (entity.HasComponent<Material>())
 	{
-		auto &healthComponent = entity.GetComponent<Health>();
+		auto &materialComponent = entity.GetComponent<Material>();
 	}
 
 	world.Update(1.0f / 60.0f);

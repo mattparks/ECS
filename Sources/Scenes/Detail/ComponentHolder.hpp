@@ -33,14 +33,14 @@ public:
 	{
 		if (id >= m_components.size())
 		{
-			throw std::exception("Entity ID is out of range");
+			throw std::runtime_error("Entity ID is out of range");
 		}
 
 		const auto typeId = GetComponentTypeId<T>();
 
 		if (typeId >= m_components[id].size())
 		{
-			throw std::exception("Component type ID is out of range");
+			throw std::runtime_error("Component type ID is out of range");
 		}
 
 		m_components[id][typeId] = std::move(component);
@@ -55,10 +55,10 @@ public:
 
 		if (!component.has_value() || component.value().get() == nullptr)
 		{
-			throw std::exception("Entity does not have requected Component");
+			throw std::runtime_error("Entity does not have requected Component");
 		}
 
-		return *static_cast<T*>(component.value()->get());
+		return *static_cast<T *>(component.value()->get());
 	}
 
 	// Check whether the Entity has the Component T or not
@@ -89,7 +89,7 @@ public:
 		if (component.has_value())
 		{
 			component.value()->reset();
-			m_componentsMasks[id].reset(getComponentTypeId<T>());
+			m_componentsMasks[id].reset(GetComponentTypeId<T>());
 		}
 	}
 
@@ -106,8 +106,9 @@ public:
 	void Clear() noexcept;
 
 private:
-	template<class T> 
-	std::optional<Reference<std::unique_ptr<Component>>> GetComponentPtr(Entity::Id id)
+	template<class T> std::optional<Reference < std::unique_ptr<Component>>>
+	GetComponentPtr(Entity::Id
+	id)
 	{
 		if (!HasComponent<T>(id))
 		{

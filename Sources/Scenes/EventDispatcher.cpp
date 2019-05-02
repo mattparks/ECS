@@ -2,23 +2,23 @@
 
 namespace ecs
 {
-	void EventDispatcher::ClearAll()
-	{
-		m_listeners.clear();
-	}
+void EventDispatcher::ClearAll()
+{
+	m_listeners.clear();
+}
 
-	void EventDispatcher::Clear(Event::Id id)
+void EventDispatcher::Clear(Event::Id id)
+{
+	for (auto it = m_listeners.begin(); it != m_listeners.end();)
 	{
-		for (auto it = m_listeners.begin(); it != m_listeners.end();)
+		if (it->second.id == id)
 		{
-			if (it->second.id == id)
-			{
-				it = m_listeners.erase(it);
-			}
-			else
-			{
-				++it;
-			}
+			it = m_listeners.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
+}
 }
