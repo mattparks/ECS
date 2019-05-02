@@ -8,10 +8,6 @@
 #include <Scenes/System.hpp>
 #include <Scenes/World.hpp>
 
-#include <Scenes/World.inl>
-#include <Scenes/Entity.inl>
-#include <Scenes/System.inl>
-
 class Material :
 	public ecs::Component
 {

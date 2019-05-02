@@ -1,8 +1,7 @@
-#include <algorithm>
-
 #include "System.hpp"
+
+#include <algorithm>
 #include "World.hpp"
-#include "System.inl"
 
 namespace ecs
 {

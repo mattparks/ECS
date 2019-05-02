@@ -1,5 +1,6 @@
-#include "Entity.inl"
-#include "World.inl"
+#include "Entity.hpp"
+
+#include "World.hpp"
 
 namespace ecs
 {

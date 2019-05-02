@@ -33,23 +33,45 @@ public:
 
 	// Add a System
 	template<class T, class... Args>
-	T &AddSystem(std::size_t priority = 0, Args &&...args);
+	T &AddSystem(std::size_t priority = 0, Args &&...args)
+	{
+		m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
+
+		m_newSystems.emplace_back(GetSystem<T>());
+
+		// Set System's World
+		GetSystem<T>().m_world = *this;
+
+		return GetSystem<T>();
+	}
 
 	// Get a System
 	template<class T>
-	T &GetSystem();
+	T &GetSystem()
+	{
+		return m_systems.GetSystem<T>();
+	}
 
 	// Get a System
 	template<class T>
-	T const &GetSystem() const;
+	T const &GetSystem() const
+	{
+		return m_systems.GetSystem<T>();
+	}
 
 	// Check whether a System exists or not
 	template<class T>
-	bool HasSystem() const;
+	bool HasSystem() const
+	{
+		return m_systems.HasSystem<T>();
+	}
 
 	// Remove a System
 	template<class T>
-	void RemoveSystem();
+	void RemoveSystem()
+	{
+		m_systems.RemoveSystem<T>();
+	}
 
 	// Remove all Systems
 	void RemoveAllSystems();
@@ -136,7 +158,11 @@ private:
 
 	// Update the Systems
 	template<class Func>
-	void UpdateSystems(Func &&func);
+	void UpdateSystems(Func &&func)
+	{
+		UpdateEntities();
+		m_systems.ForEach(std::forward<Func>(func));
+	}
 
 	// Update the Entities within the World (enable, disable, remove)
 	void UpdateEntities();
