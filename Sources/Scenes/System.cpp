@@ -199,14 +199,14 @@ void System::DisconnectEvent(const Event::Id &id)
 {
 	if (m_events.find(id) != m_events.end())
 	{
-		GetWorld().m_evtDispatcher.Clear(id);
+		GetWorld().m_eventDispatcher.Clear(id);
 		m_events.erase(id);
 	}
 }
 
 void System::DisconnectAllEvents()
 {
-	auto &evtDispatcher = GetWorld().m_evtDispatcher;
+	auto &evtDispatcher = GetWorld().m_eventDispatcher;
 
 	for (auto id : m_events)
 	{

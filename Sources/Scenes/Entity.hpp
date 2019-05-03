@@ -35,8 +35,8 @@ public:
 	/**
 	 * Adds the Component to the Entity.
 	 * @tparam T The Component type.
-	 * @tparam Args The arg type.
-	 * @param args The arguments.
+	 * @tparam Args The constructor arg types.
+	 * @param args The constructor arguments.
 	 * @return The Component.
 	 */
 	template<typename T, typename... Args>

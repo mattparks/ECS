@@ -22,15 +22,15 @@ void System::ForEach(Func &&func)
 template<typename T>
 void System::EmitEvent(const T &evt) const
 {
-	GetWorld().m_evtDispatcher.Emit(evt);
+	GetWorld().m_eventDispatcher.Emit(evt);
 }
 
 template<typename T, typename Func>
 Event::Id System::ConnectEvent(Func &&func)
 {
-	const auto id = GetWorld().m_evtDispatcher.Connect<T>(std::forward<Func>(func));
+	const auto id = GetWorld().m_eventDispatcher.Connect<T>(std::forward<Func>(func));
 
-	// Save connection ID
+	// Save connection ID.
 	m_events.insert(id);
 
 	return id;

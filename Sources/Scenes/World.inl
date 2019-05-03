@@ -45,7 +45,6 @@ void World::RemoveSystem()
 template<typename Func>
 void World::UpdateSystems(Func &&func)
 {
-	UpdateEntities();
 	m_systems.ForEach(std::forward<Func>(func));
 }
 }

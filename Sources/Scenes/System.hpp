@@ -12,11 +12,6 @@
 
 namespace ecs
 {
-namespace detail
-{
-class SystemHolder;
-}
-
 class System :
 	public NonCopyable
 {
@@ -147,6 +142,9 @@ private:
 	// Set Entity status.
 	void SetEntityStatus(const Entity::Id &id, const EntityStatus &status);
 
+	friend class World;
+	friend class SystemHolder;
+
 	// Enabled Entities attached to this System.
 	std::vector<Entity> m_enabledEntities;
 
@@ -164,12 +162,6 @@ private:
 
 	// List of the Events this System is listening to.
 	std::unordered_set<std::size_t> m_events;
-
-	// Only World can access ComponentFilter.
-	friend class World;
-
-	// SystemHolder needs to trigger OnShutdown event.
-	friend class SystemHolder;
 };
 
 // Get the Type ID for the System T

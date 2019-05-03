@@ -40,7 +40,7 @@ public:
 	MaterialSkyboxSystem()
 	{
 		GetFilter().Require<Transform>();
-		//GetFilter().Require<Mesh || MeshAnimated>();
+		//GetFilter().Require<Mesh | MeshAnimated>();
 		GetFilter().Require<MaterialSkybox>();
 	}
 
