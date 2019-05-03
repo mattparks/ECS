@@ -12,14 +12,14 @@ System::~System()
 
 void System::DetachAll()
 {
-	// Enabled Entities
+	// Enabled Entities.
 	for (auto &entity : m_enabledEntities)
 	{
 		DisableEvent(entity);
 		DetachEvent(entity);
 	}
 
-	// Disabled Entities
+	// Disabled Entities.
 	for (auto &entity : m_disabledEntities)
 	{
 		DetachEvent(entity);
@@ -35,8 +35,8 @@ void System::AttachEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::NotAttached)
 	{
-		// Add Entity to the Disabled list
-		// The Entity is not enabled by default
+		// Add Entity to the Disabled list.
+		// The Entity is not enabled by default.
 		m_disabledEntities.emplace_back(entity);
 
 		AttachEvent(entity);
@@ -52,13 +52,13 @@ void System::DetachEntity(const Entity &entity)
 	{
 		if (status == EntityStatus::Enabled)
 		{
-			// Remove Entity from Enabled list
+			// Remove Entity from Enabled list.
 			m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
 			DisableEvent(entity);
 		}
 		else
 		{
-			// Remove Entity from Disabled list
+			// Remove Entity from Disabled list.
 			m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
 		}
 
@@ -71,10 +71,10 @@ void System::EnableEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::Disabled)
 	{
-		// Remove Entity from Disabled list
+		// Remove Entity from Disabled list.
 		m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
 
-		// Then, add it to the Enabled list
+		// Then, add it to the Enabled list.
 		m_enabledEntities.emplace_back(entity);
 
 		EnableEvent(entity);
@@ -86,10 +86,10 @@ void System::DisableEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::Enabled)
 	{
-		// Remove Entity from Enabled list
+		// Remove Entity from Enabled list.
 		m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
 
-		// Then, add it to the Disabled list
+		// Then, add it to the Disabled list.
 		m_disabledEntities.emplace_back(entity);
 
 		DisableEvent(entity);

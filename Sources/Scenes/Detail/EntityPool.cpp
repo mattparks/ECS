@@ -24,7 +24,7 @@ void EntityPool::Store(const Entity::Id &id)
 {
 	if (id < m_nextId)
 	{
-		// We cannot store an ID that haven't been generated before
+		// Cannot store an ID that haven't been generated before.
 		m_storedIds.emplace_back(id);
 	}
 }

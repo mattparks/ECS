@@ -1,16 +1,22 @@
 #pragma once
 
 #include <type_traits>
-#include "Detail/TypeInfo.hpp"
+#include "Helpers/TypeInfo.hpp"
 
 namespace ecs
 {
-struct Event
+class Event
 {
+public:
+	// Event ID type.
 	using Id = std::size_t;
 };
 
-// Get the Type ID for the Event T
+/**
+ * Gets the Type ID for the Event.
+ * @tparam T The Event type.
+ * @return The Type ID.
+ */
 template<typename T>
 TypeId GetEventTypeId() noexcept
 {

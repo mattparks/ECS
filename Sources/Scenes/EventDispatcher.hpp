@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <utility>
 #include "Helpers/NonCopyable.hpp"
-#include "Detail/TypeInfo.hpp"
+#include "Helpers/TypeInfo.hpp"
 #include "Event.hpp"
 
 namespace ecs
@@ -18,7 +18,11 @@ public:
 
 	~EventDispatcher() = default;
 
-	// Emit Event T
+	/**
+	 * Emits a Event.
+	 * @tparam T The Event type.
+	 * @param evt The Event.
+	 */
 	template<typename T>
 	void Emit(const T &evt = T()) const
 	{
@@ -32,7 +36,13 @@ public:
 		}
 	}
 
-	// Connect function Func to Event T
+	/**
+	 * Connects a function to a Event.
+	 * @tparam T The Event type.
+	 * @tparam Func The function type.
+	 * @param func The function.
+	 * @return The Event ID.
+	 */
 	template<typename T, typename Func>
 	Event::Id Connect(Func &&func)
 	{
@@ -52,7 +62,10 @@ public:
 		return id;
 	}
 
-	// Clear all connected functions to Event T
+	/**
+	 * Clears all connected functions to Event.
+	 * @tparam T The Event type.
+	 */
 	template<typename T>
 	void Clear()
 	{
@@ -61,10 +74,15 @@ public:
 		m_listeners.erase(GetEventTypeId<T>());
 	}
 
-	// Clear connected function ID
+	/**
+	 * Clears connected Event ID.
+	 * @param id The Event ID.
+	 */
 	void Clear(const Event::Id &id);
 
-	// Clear all Events
+	/**
+	 * Clears all Events.
+	 */
 	void ClearAll();
 
 private:
@@ -76,10 +94,10 @@ private:
 		EventReceiver func;
 	};
 
-	// Lister list
+	// Lister list.
 	std::unordered_multimap<TypeId, EventReceiverAttributes> m_listeners;
 
-	// Next Event handler ID
+	// Next Event handler ID.
 	Event::Id m_nextId = 0;
 };
 }

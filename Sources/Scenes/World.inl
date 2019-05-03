@@ -12,7 +12,7 @@ T &World::AddSystem(const std::size_t &priority, Args &&...args)
 
 	m_newSystems.emplace_back(GetSystem<T>());
 
-	// Set System's World
+	// Sets the System World.
 	GetSystem<T>().m_world = *this;
 
 	return GetSystem<T>();

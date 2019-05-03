@@ -14,21 +14,28 @@ public:
 
 	~EntityPool() = default;
 
-	// Create an Entity ID
+	/**
+	 * Creates an Entity ID.
+	 * @return The Entity ID.
+	 */
 	Entity::Id Create();
 
-	// Store an Entity ID
+	/**
+	 * Stores an Entity ID.
+	 * @param id The Entity ID.
+	 */
 	void Store(const Entity::Id &id);
 
-	// Remove all Entity IDs stored within the pool and
-	// reset the next Entity ID value
+	/**
+	 * Removes all Entity IDs stored within the pool and resets the next Entity ID value.
+	 */
 	void Reset() noexcept;
 
 private:
-	// List of stored Entities IDs
+	// List of stored Entities IDs that are not in use.
 	std::vector<Entity::Id> m_storedIds;
 
-	// Next Entity ID
+	// The next available Entity ID.
 	Entity::Id m_nextId = 0;
 };
 }

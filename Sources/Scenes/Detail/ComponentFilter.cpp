@@ -17,7 +17,7 @@ bool ComponentFilter::Check(const Mask &mask) const
 {
 	const auto excludeMask = m_excluded & mask;
 
-	// Check if there is an excluded component
+	// Checks if there is an excluded component.
 	if (excludeMask.any())
 	{
 		return false;
@@ -27,7 +27,7 @@ bool ComponentFilter::Check(const Mask &mask) const
 	{
 		if (m_required[i] && !mask[i])
 		{
-			// A required component is missing
+			// A required component is missing.
 			return false;
 		}
 	}

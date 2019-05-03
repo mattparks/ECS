@@ -14,10 +14,17 @@ public:
 
 	~ComponentFilter() = default;
 
-	// Check if an Entity matches the requirements
+	/**
+	 * Checks if an Entity matches the requirements.
+	 * @param mask The requirements mask.
+	 * @return If the Entity matches.
+	 */
 	bool Check(const Mask &mask) const;
 
-	// Make a Component required
+	/**
+	 * Makes a Component required.
+	 * @tparam T The Component type.
+	 */
 	template<typename T>
 	void Require()
 	{
@@ -25,7 +32,10 @@ public:
 		m_excluded.reset(GetComponentTypeId<T>());
 	}
 
-	// Make a Component excluded
+	/**
+	 * Makes a Component excluded.
+	 * @tparam T The Component type.
+	 */
 	template<typename T>
 	void Exclude()
 	{
@@ -33,13 +43,20 @@ public:
 		m_excluded.set(GetComponentTypeId<T>());
 	}
 
-	// Exclude all Components that are not required
+	/**
+	 * Exclude all Components that are not required.
+	 */
 	void ExcludeNotRequired() noexcept;
 
-	// Exclude all Components
+	/**
+	 * Exclude all Components.
+	 */
 	void ExcludeAll() noexcept;
 
-	// Remove a Component from both lists
+	/**
+	 * Removes a Component from both required and excluded lists.
+	 * @tparam T The Component type.
+	 */
 	template<typename T>
 	void Ignore()
 	{

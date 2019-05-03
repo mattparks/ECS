@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include "Engine/Log.hpp"
 #include "Helpers/NonCopyable.hpp"
+#include "Helpers/TypeInfo.hpp"
 #include "Scenes/System.hpp"
-#include "TypeInfo.hpp"
 
 namespace ecs
 {
@@ -21,7 +21,12 @@ public:
 
 	~SystemHolder();
 
-	// Add a System
+	/**
+	 * Adds a System.
+	 * @tparam T The System type.
+	 * @param priority The System priority.
+	 * @param system The System.
+	 */
 	template<typename T>
 	void AddSystem(std::size_t priority, std::unique_ptr<T> &&system)
 	{
@@ -37,7 +42,11 @@ public:
 		m_systems[typeId] = std::move(system);
 	}
 
-	// Get a System
+	/**
+	 * Gets a System.
+	 * @tparam T The System type.
+	 * @return The System.
+	 */
 	template<typename T>
 	T &GetSystem()
 	{
@@ -51,7 +60,11 @@ public:
 		return *static_cast<T *>(it->second.get());
 	}
 
-	// Get a System
+	/**
+	 * Gets a System.
+	 * @tparam T The System type.
+	 * @return The System.
+	 */
 	template<typename T>
 	const T &GetSystem() const
 	{
@@ -65,7 +78,11 @@ public:
 		return *static_cast<T *>(it->second.get());
 	}
 
-	// Check whether a System exists or not
+	/**
+	 * Checks whether a System exists or not.
+	 * @tparam T The System type.
+	 * @return If the System exists.
+	 */
 	template<typename T>
 	bool HasSystem() const
 	{
@@ -74,7 +91,10 @@ public:
 		return it != m_systems.end() && it->second != nullptr;
 	}
 
-	// Remove a System
+	/**
+	 * Removes a System.
+	 * @tparam T The System type.
+	 */
 	template<typename T>
 	void RemoveSystem()
 	{
@@ -88,17 +108,23 @@ public:
 			system->second->DetachAll();
 		}
 
-		// Remove the priority value for this System
+		// Remove the priority value for this System.
 		RemoveSystemPriority(typeId);
 
-		// Then, remove the System
+		// Then, remove the System.
 		m_systems.erase(typeId);
 	}
 
-	// Remove all Systems
+	/**
+	 * Removes all Systems.
+	 */
 	void RemoveAllSystems();
 
-	// Iterate through all valid Systems
+	/**
+	 * Iterates through all valid Systems.
+	 * @tparam Func The function type.
+	 * @param func The function to pass each System into, System object and System ID.
+	 */
 	template<typename Func>
 	void ForEach(Func &&func)
 	{
@@ -121,13 +147,13 @@ public:
 	}
 
 private:
-	// Remove System from the priority list
+	// Remove System from the priority list.
 	void RemoveSystemPriority(const TypeId &id);
 
-	// List of all Systems
+	// List of all Systems.
 	std::unordered_map<TypeId, std::unique_ptr<System>> m_systems;
 
-	// List of systems priorities
+	// List of systems priorities.
 	std::multimap<std::size_t, TypeId, std::greater<std::size_t>> m_priorities;
 };
 }

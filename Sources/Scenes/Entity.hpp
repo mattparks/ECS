@@ -11,7 +11,7 @@ class World;
 class Entity
 {
 public:
-	// Entity ID type
+	// Entity ID type.
 	using Id = std::size_t;
 
 	Entity() = default;
@@ -20,51 +20,95 @@ public:
 
 	~Entity() = default;
 
-	// Cast Entity into its ID
+	/**
+	 * Casts the Entity into its ID.
+	 * @return The Entity ID.
+	 */
 	operator Id() const noexcept;
 
-	// Get the Entity ID
+	/**
+	 * Gets the Entity ID.
+	 * @return The Entity ID.
+	 */
 	Id GetId() const noexcept;
 
-	// Add the Component T to the Entity
+	/**
+	 * Adds the Component to the Entity.
+	 * @tparam T The Component type.
+	 * @tparam Args The arg type.
+	 * @param args The arguments.
+	 * @return The Component.
+	 */
 	template<typename T, typename... Args>
 	T &AddComponent(Args &&...args);
 
-	// Get the Component T from the Entity
+	/**
+	 * Gets the Component from the Entity.
+	 * @tparam T The Component type.
+	 * @return The Component.
+	 */
 	template<typename T>
 	T &GetComponent();
 
-	// Get the Component T from the Entity
+	/**
+	 * Gets the Component from the Entity.
+	 * @tparam T The Component type.
+	 * @return The Component.
+	 */
 	template<typename T>
 	const T &GetComponent() const;
 
-	// Check whether the Entity has the Component T or not
+	/**
+	 * Checks whether the Entity has the Component or not.
+	 * @tparam T The Component type.
+	 * @return If the Entity has the Component.
+	 */
 	template<typename T>
 	bool HasComponent() const;
 
-	// Remove the Component T from the Entity
+	/**
+	 * Removes the Component from the Entity.
+	 * @tparam T The Component type.
+	 */
 	template<typename T>
 	void RemoveComponent();
 
-	// Remove all components from the Entity
+	/**
+	 * Removes all components from the Entity.
+	 */
 	void RemoveAllComponents();
 
-	// Enable the Entity
+	/**
+	 * Enables the Entity.
+	 */
 	void Enable();
 
-	// Disable the Entity
+	/**Disables the Entity.
+	 *
+	 */
 	void Disable();
 
-	// Check whether the Entity is enabled or not
+	/**
+	 * Gets whether the Entity is enabled or not.
+	 * @return If the Entity is enabled.
+	 */
 	bool IsEnabled() const;
 
-	// Check whether the Entity is valid or not
+	/**
+	 * Gets whether the Entity is valid or not.
+	 * @return If the Entity is valid.
+	 */
 	bool IsValid() const;
 
-	// Get Entity name
+	/**
+	 * Gets the Entity name.
+	 * @return The Entity name.
+	 */
 	std::string GetName() const;
 
-	// Remove the Entity
+	/**
+	 * Removes the Entity.
+	 */
 	void Remove();
 
 	bool operator==(const Entity &other) const;
@@ -72,10 +116,10 @@ public:
 	bool operator!=(const Entity &other) const;
 
 private:
-	// Entity ID
+	// Entity ID.
 	Id m_id = 0;
 
-	// The World that this Entity belongs to
+	// The World that this Entity belongs to.
 	std::optional<Reference<World>> m_world;
 };
 }

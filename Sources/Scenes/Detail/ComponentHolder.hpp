@@ -20,7 +20,12 @@ public:
 
 	~ComponentHolder() = default;
 
-	// Add the component T to the Entity
+	/**
+	 * Adds the Component to the Entity.
+	 * @tparam T The Component type.
+	 * @param id The Entity ID.
+	 * @param component The component.
+	 */
 	template<typename T>
 	void AddComponent(const Entity::Id &id, std::unique_ptr<T> &&component)
 	{
@@ -40,7 +45,12 @@ public:
 		m_componentsMasks[id].set(typeId);
 	}
 
-	// Get the Component T from the Entity
+	/**
+	 * Gets the Component from the Entity.
+	 * @tparam T The Component type.
+	 * @param id The Entity ID.
+	 * @return The Component.
+	 */
 	template<typename T>
 	T &GetComponent(const Entity::Id &id)
 	{
@@ -54,11 +64,16 @@ public:
 		return *static_cast<T *>(component.value()->get());
 	}
 
-	// Check whether the Entity has the Component T or not
+	/**
+	 * Checks whether the Entity has the Component or not.
+	 * @tparam T The Component type.
+	 * @param id The Entity ID.
+	 * @return If the Entity has the Component.
+	 */
 	template<typename T>
 	bool HasComponent(const Entity::Id &id) const
 	{
-		// Is the Entity ID and the Component type ID known
+		// Is the Entity ID and the Component type ID known.
 		if (id < m_components.size())
 		{
 			auto typeId = GetComponentTypeId<T>();
@@ -73,7 +88,11 @@ public:
 		return false;
 	}
 
-	// Remove the Component T from the Entity
+	/**
+	 * Removes the Component from the Entity.
+	 * @tparam T The Component type.
+	 * @param id The Entity ID.
+	 */
 	template<typename T>
 	void RemoveComponent(const Entity::Id &id)
 	{
@@ -86,39 +105,51 @@ public:
 		}
 	}
 
-	// Remove all components from the Entity
+	/**
+	 * Removes all Components from the Entity.
+	 * @param id The Entity ID.
+	 */
 	void RemoveAllComponents(const Entity::Id &id);
 
-	// Get the Component mask for the given Entity
+	/**
+	 * Gets the Component mask for the given Entity.
+	 * @param id The Entity ID.
+	 * @return The Component mask.
+	 */
 	ComponentFilter::Mask GetComponentsMask(const Entity::Id &id) const;
 
-	// Resize the Component array
+	/**
+	 * Resizes the Component array.
+	 * @param size The new Component array size.
+	 */
 	void Resize(const std::size_t &size);
 
-	// Clear all Components
+	/**
+	 * Clear all Components.
+	 */
 	void Clear() noexcept;
 
 private:
-	template<typename T> 
-	std::optional<Reference < std::unique_ptr<Component>>> GetComponentPtr(const Entity::Id &id)
+	template<typename T>
+	std::optional<Reference<std::unique_ptr<Component>>> GetComponentPtr(const Entity::Id &id)
 	{
 		if (!HasComponent<T>(id))
 		{
-			return std::nullopt;
+			return {};
 		}
 
 		return m_components[id][GetComponentTypeId<T>()];
 	}
 
-	// The index of this array matches the Component type ID
+	// The index of this array matches the Component type ID.
 	using ComponentArray = std::array<std::unique_ptr<Component>, MAX_COMPONENTS>;
 
-	// List of all Components of all Entities
-	// The index of this array matches the Entity ID
+	// List of all Components of all Entities.
+	// The index of this array matches the Entity ID.
 	std::vector<ComponentArray> m_components;
 
-	// List of all masks of all Composents of all Entities
-	// The index of this array matches the Entity ID
+	// List of all masks of all Composents of all Entities.
+	// The index of this array matches the Entity ID.
 	std::vector<ComponentFilter::Mask> m_componentsMasks;
 };
 }

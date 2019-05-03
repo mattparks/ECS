@@ -12,7 +12,11 @@ class TypeInfo
 public:
 	TypeInfo() = delete;
 
-	// Get the type ID of K which is a base of T
+	/**
+	 * Get the type ID of K which is a base of T.
+	 * @tparam K The type ID K.
+	 * @return The type ID.
+	 */
 	template<typename K>
 	static TypeId GetTypeId() noexcept
 	{
@@ -21,7 +25,10 @@ public:
 	}
 
 private:
-	// Get the next type ID for T
+	/**
+	 * Get the next type ID for T
+	 * @return The next type ID for T.
+	 */
 	static TypeId NextTypeId() noexcept
 	{
 		const auto id = m_nextTypeId;
@@ -29,7 +36,7 @@ private:
 		return id;
 	}
 
-	// Next type ID for T
+	// Next type ID for T.
 	static TypeId m_nextTypeId;
 };
 

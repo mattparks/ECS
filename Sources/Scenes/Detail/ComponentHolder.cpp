@@ -15,7 +15,7 @@ void ComponentHolder::RemoveAllComponents(const Entity::Id &id)
 	}
 }
 
-ComponentFilter::Mask ComponentHolder::GetComponentsMask(const Entity::Id& id) const
+ComponentFilter::Mask ComponentHolder::GetComponentsMask(const Entity::Id &id) const
 {
 	if (id < m_componentsMasks.size())
 	{
