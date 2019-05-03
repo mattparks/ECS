@@ -2,7 +2,6 @@
 
 #include <exception>
 #include "Engine/Log.hpp"
-#include "Entity.hpp"
 #include "Entity.inl"
 
 namespace ecs

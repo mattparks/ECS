@@ -7,8 +7,8 @@
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
 #include "Scenes/Component.hpp"
+#include "Scenes/ComponentFilter.hpp"
 #include "Scenes/Entity.hpp"
-#include "ComponentFilter.hpp"
 
 namespace ecs
 {

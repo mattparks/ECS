@@ -1,7 +1,6 @@
 #include "Entity.inl"
 
 #include "World.hpp"
-#include "Entity.hpp"
 
 namespace ecs
 {

@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <Engine/Log.hpp>
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
@@ -37,18 +36,42 @@ class MaterialSkyboxSystem :
 public:
 	MaterialSkyboxSystem()
 	{
+		Log::Out("System created\n");
+
 		GetFilter().Require<Transform>();
 		//GetFilter().Require<Mesh | MeshAnimated>();
 		GetFilter().Require<MaterialSkybox>();
 
+		// TODO: Events might be repeats.
 		OnEntityAttach().Add([this](Entity entity)
 		{
-			Log::Out("Entity with skybox material created: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+			Log::Out("Entity attached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
 		}, this);
+		OnEntityDetach().Add([this](Entity entity)
+		{
+			Log::Out("Entity detached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		}, this);
+		OnEntityEnable().Add([this](Entity entity)
+		{
+			Log::Out("Entity enabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		}, this);
+		OnEntityDisable().Add([this](Entity entity)
+		{
+			Log::Out("Entity disabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		}, this);
+	}
+
+	~MaterialSkyboxSystem()
+	{
+		Log::Out("System deleted\n");
 	}
 
 	void Update(const float &delta) override
 	{
+		ForEach([this](Entity entity)
+		{
+			Log::Out("Entity updated\n");
+		});
 	}
 };
 
@@ -56,7 +79,7 @@ int main(int argc, char **argv)
 {
 	World world;
 
-	world.AddSystem<MaterialSkyboxSystem>(0);
+	world.AddSystem<MaterialSkyboxSystem>();
 
 	if (world.HasSystem<MaterialSkyboxSystem>())
 	{
@@ -81,6 +104,11 @@ int main(int argc, char **argv)
 	entitySkybox.AddComponent<MaterialSkybox>();
 
 	world.Update(1.0f / 60.0f);
+	//entitySkybox.Remove();
+	//entitySkybox.RemoveComponent<Transform>();
 
-	return 0;
+	// Pauses the console.
+	std::cout << "Press enter to continue...";
+	std::cin.get();
+	return EXIT_SUCCESS;
 }

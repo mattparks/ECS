@@ -7,9 +7,9 @@
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
 #include "Helpers/TypeInfo.hpp"
-#include "Detail/ComponentHolder.hpp"
-#include "Detail/EntityPool.hpp"
-#include "Detail/SystemHolder.hpp"
+#include "Holders/ComponentHolder.hpp"
+#include "Holders/EntityPool.hpp"
+#include "Holders/SystemHolder.hpp"
 #include "Entity.hpp"
 #include "System.hpp"
 

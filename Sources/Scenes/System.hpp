@@ -7,7 +7,7 @@
 #include "Helpers/Reference.hpp"
 #include "Helpers/Delegate.hpp"
 #include "Helpers/TypeInfo.hpp"
-#include "Detail/ComponentFilter.hpp"
+#include "ComponentFilter.hpp"
 #include "Entity.hpp"
 
 namespace ecs
@@ -21,24 +21,42 @@ public:
 
 	virtual ~System() = default;
 
-	// Iterates through all enabled Entities.
+	/**
+	 * Iterates through all enabled Entities.
+	 * @tparam Func The function type.
+	 * @param func The function.
+	 */
 	template<typename Func>
 	void ForEach(Func &&func);
 
-	// Detaches all entities,
+	/**
+	 * Detaches all entities.
+	 */
 	void DetachAll();
 
-	// Gets Entities attached to this System.
+	/**
+	 * Gets Entities attached to this System.
+	 * @return The Entities.
+	 */
 	const std::vector<Entity> &GetEntities() const { return m_enabledEntities; }
 
-	// Gets the World that the System belongs to.
+	/**
+	 * Gets the World that the System belongs to.
+	 * @return The World.
+	 */
 	World &GetWorld();
 
-	// Gets the World that the System belongs to.
+	/**
+	 * Gets the World that the System belongs to.
+	 * @return The World.
+	 */
 	const World &GetWorld() const;
 
 protected:
-	// Access to the filter.
+	/**
+	 * Gets the component filter.
+	 * @return The component filter.
+	 */
 	ComponentFilter &GetFilter() { return m_filter; }
 
 	Delegate<void(Entity)> &OnEntityAttach() { return m_onEntityAttach; }
@@ -60,22 +78,42 @@ private:
 		NotAttached, Enabled, Disabled
 	};
 
-	// Attach an Entity to the System.
+	/**
+	 * Attach an Entity to the System.
+	 * @param entity
+	 */
 	void AttachEntity(const Entity &entity);
 
-	// Detach an Entity from the System.
+	/**
+	 * Detach an Entity from the System.
+	 * @param entity The Entity.
+	 */
 	void DetachEntity(const Entity &entity);
 
-	// Enable Entity.
+	/**
+	 * Enable Entity.
+	 * @param entity The Entity.
+	 */
 	void EnableEntity(const Entity &entity);
 
-	// Disable Entity.
+	/**
+	 * Disable Entity.
+	 * @param entity The Entity.
+	 */
 	void DisableEntity(const Entity &entity);
 
-	// Get Entity status.
+	/**
+	 * Get Entity status.
+	 * @param id The Entity ID.
+	 * @return The status.
+	 */
 	EntityStatus GetEntityStatus(const Entity::Id &id) const;
 
-	// Set Entity status.
+	/**
+	 * Set Entity status.
+	 * @param id The Entity ID.
+	 * @param status The status.
+	 */
 	void SetEntityStatus(const Entity::Id &id, const EntityStatus &status);
 
 	// Enabled Entities attached to this System.
