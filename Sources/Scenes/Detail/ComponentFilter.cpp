@@ -2,17 +2,6 @@
 
 namespace ecs
 {
-void ComponentFilter::ExcludeAll() noexcept
-{
-	m_required.reset();
-	m_excluded.set();
-}
-
-void ComponentFilter::ExcludeNotRequired() noexcept
-{
-	m_excluded = ~m_required;
-}
-
 bool ComponentFilter::Check(const Mask &mask) const
 {
 	const auto excludeMask = m_excluded & mask;
@@ -33,5 +22,16 @@ bool ComponentFilter::Check(const Mask &mask) const
 	}
 
 	return true;
+}
+
+void ComponentFilter::ExcludeNotRequired() noexcept
+{
+	m_excluded = ~m_required;
+}
+
+void ComponentFilter::ExcludeAll() noexcept
+{
+	m_required.reset();
+	m_excluded.set();
 }
 }

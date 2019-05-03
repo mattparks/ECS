@@ -3,8 +3,6 @@
 #include <Engine/Log.hpp>
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
-#include <Scenes/Event.hpp>
-#include <Scenes/EventDispatcher.hpp>
 #include <Scenes/System.inl>
 #include <Scenes/World.inl>
 
@@ -42,11 +40,15 @@ public:
 		GetFilter().Require<Transform>();
 		//GetFilter().Require<Mesh | MeshAnimated>();
 		GetFilter().Require<MaterialSkybox>();
+
+		OnEntityAttach().Add([this](Entity entity)
+		{
+			Log::Out("Entity with skybox material created: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		}, this);
 	}
 
-	void OnEntityAttached(Entity entity)
+	void Update(const float &delta) override
 	{
-		Log::Out("Entity with skybox material created: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
 	}
 };
 

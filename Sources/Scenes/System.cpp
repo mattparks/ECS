@@ -5,24 +5,19 @@
 
 namespace ecs
 {
-System::~System()
-{
-	DisconnectAllEvents();
-}
-
 void System::DetachAll()
 {
 	// Enabled Entities.
 	for (auto &entity : m_enabledEntities)
 	{
-		DisableEvent(entity);
-		DetachEvent(entity);
+		m_onEntityDisable(entity);
+		m_onEntityDetach(entity);
 	}
 
 	// Disabled Entities.
 	for (auto &entity : m_disabledEntities)
 	{
-		DetachEvent(entity);
+		m_onEntityDetach(entity);
 	}
 
 	m_enabledEntities.clear();
@@ -35,11 +30,10 @@ void System::AttachEntity(const Entity &entity)
 {
 	if (GetEntityStatus(entity) == EntityStatus::NotAttached)
 	{
-		// Add Entity to the Disabled list.
-		// The Entity is not enabled by default.
+		// Add Entity to the Disabled list. The Entity is not enabled by default.
 		m_disabledEntities.emplace_back(entity);
 
-		AttachEvent(entity);
+		m_onEntityAttach(entity);
 		SetEntityStatus(entity, EntityStatus::Disabled);
 	}
 }
@@ -54,7 +48,7 @@ void System::DetachEntity(const Entity &entity)
 		{
 			// Remove Entity from Enabled list.
 			m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
-			DisableEvent(entity);
+			m_onEntityDisable(entity);
 		}
 		else
 		{
@@ -62,7 +56,7 @@ void System::DetachEntity(const Entity &entity)
 			m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
 		}
 
-		DetachEvent(entity);
+		m_onEntityDetach(entity);
 		SetEntityStatus(entity, EntityStatus::NotAttached);
 	}
 }
@@ -77,7 +71,7 @@ void System::EnableEntity(const Entity &entity)
 		// Then, add it to the Enabled list.
 		m_enabledEntities.emplace_back(entity);
 
-		EnableEvent(entity);
+		m_onEntityEnable(entity);
 		SetEntityStatus(entity, EntityStatus::Enabled);
 	}
 }
@@ -92,64 +86,9 @@ void System::DisableEntity(const Entity &entity)
 		// Then, add it to the Disabled list.
 		m_disabledEntities.emplace_back(entity);
 
-		DisableEvent(entity);
+		m_onEntityDisable(entity);
 		SetEntityStatus(entity, EntityStatus::Disabled);
 	}
-}
-
-void System::StartEvent()
-{
-	CallEvent(std::bind(&System::OnStart, this));
-}
-
-void System::ShutdownEvent()
-{
-	CallEvent(std::bind(&System::OnShutdown, this));
-}
-
-void System::PreUpdateEvent(const float &delta)
-{
-	CallEvent(std::bind(&System::OnPreUpdate, this, delta));
-}
-
-void System::UpdateEvent(const float &delta)
-{
-	CallEvent(std::bind(&System::OnUpdate, this, delta));
-}
-
-void System::PostUpdateEvent(const float &delta)
-{
-	CallEvent(std::bind(&System::OnPostUpdate, this, delta));
-}
-
-void System::AttachEvent(const Entity &entity)
-{
-	CallEvent(std::bind(&System::OnEntityAttached, this, entity));
-}
-
-void System::DetachEvent(const Entity &entity)
-{
-	CallEvent(std::bind(&System::OnEntityDetached, this, entity));
-}
-
-void System::EnableEvent(const Entity &entity)
-{
-	CallEvent(std::bind(&System::OnEntityEnabled, this, entity));
-}
-
-void System::DisableEvent(const Entity &entity)
-{
-	CallEvent(std::bind(&System::OnEntityDisabled, this, entity));
-}
-
-const std::vector<Entity> &System::GetEntities() const
-{
-	return m_enabledEntities;
-}
-
-std::size_t System::GetEntityCount() const noexcept
-{
-	return m_enabledEntities.size();
 }
 
 World &System::GetWorld()
@@ -170,50 +109,6 @@ const World &System::GetWorld() const
 	}
 
 	return m_world.value();
-}
-
-void System::OnStart() { }
-
-void System::OnShutdown() { }
-
-void System::OnPreUpdate(const float &delta) { }
-
-void System::OnUpdate(const float &delta) { }
-
-void System::OnPostUpdate(const float &delta) { }
-
-void System::OnEntityAttached(Entity entity) { }
-
-void System::OnEntityDetached(Entity entity) { }
-
-void System::OnEntityEnabled(Entity entity) { }
-
-void System::OnEntityDisabled(Entity entity) { }
-
-ComponentFilter &System::GetFilter()
-{
-	return m_filter;
-}
-
-void System::DisconnectEvent(const Event::Id &id)
-{
-	if (m_events.find(id) != m_events.end())
-	{
-		GetWorld().m_eventDispatcher.Clear(id);
-		m_events.erase(id);
-	}
-}
-
-void System::DisconnectAllEvents()
-{
-	auto &evtDispatcher = GetWorld().m_eventDispatcher;
-
-	for (auto id : m_events)
-	{
-		evtDispatcher.Clear(id);
-	}
-
-	m_events.clear();
 }
 
 System::EntityStatus System::GetEntityStatus(const Entity::Id &id) const

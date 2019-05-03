@@ -10,8 +10,6 @@ T &World::AddSystem(const std::size_t &priority, Args &&...args)
 {
 	m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
 
-	m_newSystems.emplace_back(GetSystem<T>());
-
 	// Sets the System World.
 	GetSystem<T>().m_world = *this;
 
@@ -40,11 +38,5 @@ template<typename T>
 void World::RemoveSystem()
 {
 	m_systems.RemoveSystem<T>();
-}
-
-template<typename Func>
-void World::UpdateSystems(Func &&func)
-{
-	m_systems.ForEach(std::forward<Func>(func));
 }
 }

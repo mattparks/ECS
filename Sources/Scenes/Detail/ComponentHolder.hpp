@@ -120,7 +120,7 @@ public:
 
 	/**
 	 * Resizes the Component array.
-	 * @param size The new Component array size.
+	 * @param size The new size.
 	 */
 	void Resize(const std::size_t &size);
 

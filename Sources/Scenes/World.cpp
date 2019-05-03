@@ -179,27 +179,9 @@ void World::RemoveAllEntities()
 
 void World::Update(const float &delta)
 {
-	// Start new Systems
-	for (auto &system : m_newSystems)
+	m_systems.ForEach([delta](System &system, TypeId)
 	{
-		system->StartEvent();
-	}
-
-	m_newSystems.clear();
-
-	UpdateSystems([delta](System &system, TypeId)
-	{
-		system.PreUpdateEvent(delta);
-	});
-
-	UpdateSystems([delta](System &system, TypeId)
-	{
-		system.UpdateEvent(delta);
-	});
-
-	UpdateSystems([delta](System &system, TypeId)
-	{
-		system.PostUpdateEvent(delta);
+		system.Update(delta);
 	});
 }
 
@@ -210,7 +192,6 @@ void World::Clear()
 	m_entities.clear();
 	m_names.clear();
 
-	m_eventDispatcher.ClearAll();
 	m_components.Clear();
 	m_pool.Reset();
 }

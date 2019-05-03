@@ -14,7 +14,7 @@ public:
 	// Entity ID type.
 	using Id = std::size_t;
 
-	Entity() = default;
+	Entity();
 
 	Entity(const Id &id, World &world);
 
@@ -24,13 +24,13 @@ public:
 	 * Casts the Entity into its ID.
 	 * @return The Entity ID.
 	 */
-	operator Id() const noexcept;
+	operator Id() const noexcept { return m_id; }
 
 	/**
 	 * Gets the Entity ID.
 	 * @return The Entity ID.
 	 */
-	Id GetId() const noexcept;
+	Id GetId() const noexcept { return m_id; }
 
 	/**
 	 * Adds the Component to the Entity.
@@ -79,6 +79,18 @@ public:
 	void RemoveAllComponents();
 
 	/**
+	 * Gets the Entity name.
+	 * @return The Entity name.
+	 */
+	std::string GetName() const;
+
+	/**
+	 * Gets whether the Entity is enabled or not.
+	 * @return If the Entity is enabled.
+	 */
+	bool IsEnabled() const;
+
+	/**
 	 * Enables the Entity.
 	 */
 	void Enable();
@@ -89,22 +101,10 @@ public:
 	void Disable();
 
 	/**
-	 * Gets whether the Entity is enabled or not.
-	 * @return If the Entity is enabled.
-	 */
-	bool IsEnabled() const;
-
-	/**
 	 * Gets whether the Entity is valid or not.
 	 * @return If the Entity is valid.
 	 */
 	bool IsValid() const;
-
-	/**
-	 * Gets the Entity name.
-	 * @return The Entity name.
-	 */
-	std::string GetName() const;
 
 	/**
 	 * Removes the Entity.
@@ -117,7 +117,7 @@ public:
 
 private:
 	// Entity ID.
-	Id m_id = 0;
+	Id m_id;
 
 	// The World that this Entity belongs to.
 	std::optional<Reference<World>> m_world;

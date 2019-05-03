@@ -1,9 +1,6 @@
 #pragma once
 
-#include <type_traits>
-#include "Engine/Log.hpp"
-#include "EventDispatcher.hpp"
-#include "World.hpp"
+#include "System.hpp"
 
 namespace ecs
 {
@@ -16,36 +13,6 @@ void System::ForEach(Func &&func)
 		{
 			func(entity);
 		}
-	}
-}
-
-template<typename T>
-void System::EmitEvent(const T &evt) const
-{
-	GetWorld().m_eventDispatcher.Emit(evt);
-}
-
-template<typename T, typename Func>
-Event::Id System::ConnectEvent(Func &&func)
-{
-	const auto id = GetWorld().m_eventDispatcher.Connect<T>(std::forward<Func>(func));
-
-	// Save connection ID.
-	m_events.insert(id);
-
-	return id;
-}
-
-template<typename Func>
-void System::CallEvent(Func &&func)
-{
-	try
-	{
-		func();
-	}
-	catch (const std::exception &e)
-	{
-		Log::Error(e.what());
 	}
 }
 

@@ -104,7 +104,6 @@ public:
 
 		if (system != m_systems.end() && system->second != nullptr)
 		{
-			system->second->OnShutdown();
 			system->second->DetachAll();
 		}
 

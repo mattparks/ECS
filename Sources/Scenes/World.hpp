@@ -11,7 +11,6 @@
 #include "Detail/EntityPool.hpp"
 #include "Detail/SystemHolder.hpp"
 #include "Entity.hpp"
-#include "EventDispatcher.hpp"
 #include "System.hpp"
 
 namespace ecs
@@ -154,6 +153,9 @@ public:
 	void Clear();
 
 private:
+	friend class Entity;
+	friend class System;
+
 	class EntityAttributes
 	{
 	public:
@@ -179,14 +181,6 @@ private:
 	};
 
 	/**
-	 * Runs updates on all Systems.
-	 * @tparam Func The function type.
-	 * @param func The function.
-	 */
-	template<typename Func>
-	void UpdateSystems(Func &&func);
-
-	/**
 	 * Extends the Entity and Component arrays.
 	 * @param size The new size.
 	 */
@@ -207,9 +201,6 @@ private:
 	 */
 	EntityAttachStatus TryEntityAttach(System &system, const TypeId &systemId, const Entity::Id &id);
 
-	friend class Entity;
-	friend class System;
-
 	// List of all Entities.
 	std::vector<EntityAttributes> m_entities;
 
@@ -222,13 +213,7 @@ private:
 	// List of all Systems of the World.
 	SystemHolder m_systems;
 
-	// List of all System waiting to be started.
-	std::vector<Reference<System>> m_newSystems;
-
 	// Entity ID Pool.
 	EntityPool m_pool;
-
-	// Event Dispacher.
-	EventDispatcher m_eventDispatcher;
 };
 }

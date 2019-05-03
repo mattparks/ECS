@@ -4,7 +4,7 @@
 #include "ConstExpr.hpp"
 #include "NonCopyable.hpp"
 
-namespace acid
+namespace ecs
 {
 template<typename>
 class Delegate;
@@ -82,7 +82,7 @@ template<typename TReturnType, typename ...TArgs>
 class Delegate<TReturnType(TArgs ...)>
 {
 public:
-	using Invoker = acid::Invoker<TReturnType, TArgs...>;
+	using Invoker = ecs::Invoker<TReturnType, TArgs...>;
 	using FunctionType = std::function<TReturnType(TArgs ...)>;
 	using ObserversType = std::vector<std::weak_ptr<bool>>;
 

@@ -2,12 +2,12 @@
 
 #include <memory>
 #include <optional>
-#include <pair>
+#include <utility>
 #include <vector>
 #include <map>
 #include <type_traits>
 
-namespace acid
+namespace ecs
 {
 template<typename T>
 struct is_optional :
