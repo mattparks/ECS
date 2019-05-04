@@ -54,7 +54,7 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw std::runtime_error("World does not have requested System");
+			throw std::runtime_error("Scene does not have requested System");
 		}
 
 		return *static_cast<T *>(it->second.get());
@@ -72,7 +72,7 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw std::runtime_error("World does not have requested System.");
+			throw std::runtime_error("Scene does not have requested System.");
 		}
 
 		return *static_cast<T *>(it->second.get());

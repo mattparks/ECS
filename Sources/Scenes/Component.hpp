@@ -10,7 +10,6 @@ constexpr std::size_t MAX_COMPONENTS = 64;
 
 class Component
 {
-public:
 };
 
 /**

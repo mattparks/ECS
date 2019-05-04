@@ -1,4 +1,4 @@
-#include "World.inl"
+#include "Scene.inl"
 
 #include <exception>
 #include "Engine/Log.hpp"
@@ -6,17 +6,17 @@
 
 namespace ecs
 {
-World::~World()
+Scene::~Scene()
 {
 	Clear();
 }
 
-void World::RemoveAllSystems()
+void Scene::RemoveAllSystems()
 {
 	m_systems.RemoveAllSystems();
 }
 
-Entity World::CreateEntity()
+Entity Scene::CreateEntity()
 {
 	const auto id = m_pool.Create();
 
@@ -32,7 +32,7 @@ Entity World::CreateEntity()
 	return m_entities[id].m_entity;
 }
 
-Entity World::CreateEntity(const std::string &name)
+Entity Scene::CreateEntity(const std::string &name)
 {
 	if (m_names.find(name) != m_names.end())
 	{
@@ -47,7 +47,7 @@ Entity World::CreateEntity(const std::string &name)
 	return entity;
 }
 
-std::optional<Entity> World::GetEntity(const Entity::Id &id) const
+std::optional<Entity> Scene::GetEntity(const Entity::Id &id) const
 {
 	if (!IsEntityValid(id))
 	{
@@ -57,7 +57,7 @@ std::optional<Entity> World::GetEntity(const Entity::Id &id) const
 	return m_entities[id].m_entity;
 }
 
-std::optional<Entity> World::GetEntity(const std::string &name) const
+std::optional<Entity> Scene::GetEntity(const std::string &name) const
 {
 	const auto it = m_names.find(name);
 
@@ -69,7 +69,7 @@ std::optional<Entity> World::GetEntity(const std::string &name) const
 	return GetEntity(it->second);
 }
 
-std::string World::GetEntityName(const Entity::Id &id) const
+std::string Scene::GetEntityName(const Entity::Id &id) const
 {
 	if (!IsEntityValid(id))
 	{
@@ -84,12 +84,12 @@ std::string World::GetEntityName(const Entity::Id &id) const
 	return {};
 }
 
-bool World::IsEntityEnabled(const Entity::Id &id) const
+bool Scene::IsEntityEnabled(const Entity::Id &id) const
 {
 	return IsEntityValid(id) && m_entities[id].m_enabled;
 }
 
-void World::EnableEntity(const Entity::Id &id)
+void Scene::EnableEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -108,7 +108,7 @@ void World::EnableEntity(const Entity::Id &id)
 	});
 }
 
-void World::DisableEntity(const Entity::Id &id)
+void Scene::DisableEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -127,12 +127,12 @@ void World::DisableEntity(const Entity::Id &id)
 	});
 }
 
-bool World::IsEntityValid(const Entity::Id &id) const
+bool Scene::IsEntityValid(const Entity::Id &id) const
 {
 	return id < m_entities.size() && m_entities[id].m_valid;
 }
 
-void World::RemoveEntity(const Entity::Id &id)
+void Scene::RemoveEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -164,7 +164,7 @@ void World::RemoveEntity(const Entity::Id &id)
 	m_pool.Store(id);
 }
 
-void World::RemoveAllEntities()
+void Scene::RemoveAllEntities()
 {
 	for (const auto &entity : m_entities)
 	{
@@ -176,7 +176,7 @@ void World::RemoveAllEntities()
 	}
 }
 
-void World::Update(const float &delta)
+void Scene::Update(const float &delta)
 {
 	m_systems.ForEach([delta](System &system, TypeId)
 	{
@@ -184,7 +184,7 @@ void World::Update(const float &delta)
 	});
 }
 
-void World::Clear()
+void Scene::Clear()
 {
 	RemoveAllSystems();
 
@@ -195,7 +195,7 @@ void World::Clear()
 	m_pool.Reset();
 }
 
-void World::Extend(const std::size_t &size)
+void Scene::Extend(const std::size_t &size)
 {
 	if (size > m_entities.size())
 	{
@@ -204,7 +204,7 @@ void World::Extend(const std::size_t &size)
 	}
 }
 
-void World::RefreshEntity(const Entity::Id &id)
+void Scene::RefreshEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
@@ -223,7 +223,7 @@ void World::RefreshEntity(const Entity::Id &id)
 	});
 }
 
-World::EntityAttachStatus World::TryEntityAttach(System &system, const TypeId &systemId, const Entity::Id &id)
+Scene::EntityAttachStatus Scene::TryEntityAttach(System &system, const TypeId &systemId, const Entity::Id &id)
 {
 	// Does the Entity match the requirements to be part of the System?
 	if (system.GetFilter().Check(m_components.GetComponentsMask(id)))

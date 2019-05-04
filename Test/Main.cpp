@@ -3,7 +3,7 @@
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
 #include <Scenes/System.inl>
-#include <Scenes/World.inl>
+#include <Scenes/Scene.inl>
 
 using namespace ecs;
 
@@ -77,18 +77,18 @@ public:
 
 int main(int argc, char **argv)
 {
-	World world;
+	Scene scene;
 
-	world.AddSystem<MaterialSkyboxSystem>();
+	scene.AddSystem<MaterialSkyboxSystem>();
 
-	if (world.HasSystem<MaterialSkyboxSystem>())
+	if (scene.HasSystem<MaterialSkyboxSystem>())
 	{
-		auto &materialSkyboxSystem = world.GetSystem<MaterialSkyboxSystem>();
+		auto &materialSkyboxSystem = scene.GetSystem<MaterialSkyboxSystem>();
 	}
 
-	auto entitySphere = world.CreateEntity("Sphere");
+	auto entitySphere = scene.CreateEntity("Sphere");
 
-	auto entitySphereRef = *world.GetEntity("Sphere");
+	auto entitySphereRef = *scene.GetEntity("Sphere");
 	entitySphereRef.AddComponent<Transform>();
 	entitySphereRef.AddComponent<MaterialDefault>();
 	Log::Out("Entity ref == entity: %i\n", entitySphere == entitySphereRef);
@@ -99,11 +99,11 @@ int main(int argc, char **argv)
 		auto &materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>();
 	}
 
-	auto entitySkybox = world.CreateEntity();
+	auto entitySkybox = scene.CreateEntity();
 	entitySkybox.AddComponent<Transform>();
 	entitySkybox.AddComponent<MaterialSkybox>();
 
-	world.Update(1.0f / 60.0f);
+	scene.Update(1.0f / 60.0f);
 	//entitySkybox.Remove();
 	//entitySkybox.RemoveComponent<Transform>();
 

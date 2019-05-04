@@ -15,13 +15,13 @@
 
 namespace ecs
 {
-class World :
+class Scene :
 	public NonCopyable
 {
 public:
-	World() = default;
+	Scene() = default;
 
-	~World();
+	~Scene();
 
 	/**
 	 * Adds a System.
@@ -53,7 +53,7 @@ public:
 	/**
 	 * Checks whether a System exists or not.
 	 * @tparam T The System type.
-	 * @return If the World has the System.
+	 * @return If the Scene has the System.
 	 */
 	template<typename T>
 	bool HasSystem() const;
@@ -142,13 +142,13 @@ public:
 	void RemoveAllEntities();
 
 	/**
-	 * Updates the World.
+	 * Updates the Scene.
 	 * @param delta The time delta between the last update.
 	 */
 	void Update(const float &delta);
 
 	/**
-	 * Clears the World by removing all Systems and Entities.
+	 * Clears the Scene by removing all Systems and Entities.
 	 */
 	void Clear();
 
@@ -207,10 +207,10 @@ private:
 	// List of all Entity names, associated to their Entities, for faster search.
 	std::unordered_map<std::string, Entity::Id> m_names;
 
-	// List of all Components of all Entities of the World.
+	// List of all Components of all Entities of the Scene.
 	ComponentHolder m_components;
 
-	// List of all Systems of the World.
+	// List of all Systems of the Scene.
 	SystemHolder m_systems;
 
 	// Entity ID Pool.

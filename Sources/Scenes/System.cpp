@@ -1,7 +1,7 @@
 #include "System.inl"
 
 #include <algorithm>
-#include "World.hpp"
+#include "Scene.hpp"
 
 namespace ecs
 {
@@ -91,24 +91,24 @@ void System::DisableEntity(const Entity &entity)
 	}
 }
 
-World &System::GetWorld()
+Scene &System::GetScene()
 {
-	if (!m_world.has_value())
+	if (!m_scene.has_value())
 	{
-		throw std::runtime_error("System is not attached to any World");
+		throw std::runtime_error("System is not attached to any Scene");
 	}
 
-	return m_world.value();
+	return m_scene.value();
 }
 
-const World &System::GetWorld() const
+const Scene &System::GetScene() const
 {
-	if (!m_world.has_value())
+	if (!m_scene.has_value())
 	{
-		throw std::runtime_error("System is not attached to any World");
+		throw std::runtime_error("System is not attached to any Scene");
 	}
 
-	return m_world.value();
+	return m_scene.value();
 }
 
 System::EntityStatus System::GetEntityStatus(const Entity::Id &id) const

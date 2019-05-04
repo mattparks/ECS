@@ -6,7 +6,7 @@
 
 namespace ecs
 {
-class World;
+class Scene;
 
 class Entity
 {
@@ -16,7 +16,7 @@ public:
 
 	Entity();
 
-	Entity(const Id &id, World &world);
+	Entity(const Id &id, Scene &scene);
 
 	~Entity() = default;
 
@@ -119,8 +119,8 @@ private:
 	// Entity ID.
 	Id m_id;
 
-	// The World that this Entity belongs to.
-	std::optional<Reference<World>> m_world;
+	// The Scene that this Entity belongs to.
+	std::optional<Reference<Scene>> m_scene;
 };
 }
 

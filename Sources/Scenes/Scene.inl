@@ -1,41 +1,41 @@
 #pragma once
 
 #include <memory>
-#include "World.hpp"
+#include "Scene.hpp"
 
 namespace ecs
 {
 template<typename T, typename... Args>
-T &World::AddSystem(const std::size_t &priority, Args &&...args)
+T &Scene::AddSystem(const std::size_t &priority, Args &&...args)
 {
 	m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
 
-	// Sets the System World.
-	GetSystem<T>().m_world = *this;
+	// Sets the System Scene.
+	GetSystem<T>().m_scene = *this;
 
 	return GetSystem<T>();
 }
 
 template<typename T>
-T &World::GetSystem()
+T &Scene::GetSystem()
 {
 	return m_systems.GetSystem<T>();
 }
 
 template<typename T>
-const T &World::GetSystem() const
+const T &Scene::GetSystem() const
 {
 	return m_systems.GetSystem<T>();
 }
 
 template<typename T>
-bool World::HasSystem() const
+bool Scene::HasSystem() const
 {
 	return m_systems.HasSystem<T>();
 }
 
 template<typename T>
-void World::RemoveSystem()
+void Scene::RemoveSystem()
 {
 	m_systems.RemoveSystem<T>();
 }

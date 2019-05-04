@@ -41,16 +41,16 @@ public:
 	const std::vector<Entity> &GetEntities() const { return m_enabledEntities; }
 
 	/**
-	 * Gets the World that the System belongs to.
-	 * @return The World.
+	 * Gets the Scene that the System belongs to.
+	 * @return The Scene.
 	 */
-	World &GetWorld();
+	Scene &GetScene();
 
 	/**
-	 * Gets the World that the System belongs to.
-	 * @return The World.
+	 * Gets the Scene that the System belongs to.
+	 * @return The Scene.
 	 */
-	const World &GetWorld() const;
+	const Scene &GetScene() const;
 
 protected:
 	/**
@@ -70,7 +70,7 @@ protected:
 	virtual void Update(const float &delta) = 0;
 
 private:
-	friend class World;
+	friend class Scene;
 	friend class SystemHolder;
 
 	enum class EntityStatus
@@ -125,8 +125,8 @@ private:
 	// Entities status (enabled/disabled).
 	std::unordered_map<Entity::Id, EntityStatus> m_status;
 
-	// The World that this System belongs to.
-	std::optional<Reference<World>> m_world;
+	// The Scene that this System belongs to.
+	std::optional<Reference<Scene>> m_scene;
 
 	// The mask that the Entities must matched to be attached to this System.
 	ComponentFilter m_filter;
