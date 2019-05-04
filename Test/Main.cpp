@@ -36,34 +36,39 @@ class MaterialSkyboxSystem :
 public:
 	MaterialSkyboxSystem()
 	{
-		Log::Out("System created\n");
-
 		GetFilter().Require<Transform>();
 		//GetFilter().Require<Mesh | MeshAnimated>();
 		GetFilter().Require<MaterialSkybox>();
-
-		// TODO: Events might be repeats.
-		OnEntityAttach().Add([this](Entity entity)
-		{
-			Log::Out("Entity attached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
-		}, this);
-		OnEntityDetach().Add([this](Entity entity)
-		{
-			Log::Out("Entity detached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
-		}, this);
-		OnEntityEnable().Add([this](Entity entity)
-		{
-			Log::Out("Entity enabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
-		}, this);
-		OnEntityDisable().Add([this](Entity entity)
-		{
-			Log::Out("Entity disabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
-		}, this);
 	}
 
-	~MaterialSkyboxSystem()
+	void OnStart() override
 	{
-		Log::Out("System deleted\n");
+		Log::Out("OnStart\n");
+	}
+
+	void OnShutdown() override
+	{
+		Log::Out("OnShutdown\n");
+	}
+
+	void OnEntityAttach(Entity entity) override
+	{
+		Log::Out("Entity attached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+	}
+
+	void OnEntityDetach(Entity entity) override
+	{
+		Log::Out("Entity detached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+	}
+
+	void OnEntityEnable(Entity entity) override
+	{
+		Log::Out("Entity enabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+	}
+
+	void OnEntityDisable(Entity entity) override
+	{
+		Log::Out("Entity disabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
 	}
 
 	void Update(const float &delta) override
@@ -105,7 +110,8 @@ int main(int argc, char **argv)
 
 	scene.Update(1.0f / 60.0f);
 	//entitySkybox.Remove();
-	//entitySkybox.RemoveComponent<Transform>();
+	entitySkybox.RemoveComponent<Transform>();
+	scene.Update(1.0f / 60.0f);
 
 	// Pauses the console.
 	std::cout << "Press enter to continue...";

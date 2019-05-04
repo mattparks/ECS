@@ -24,15 +24,12 @@ public:
 	~Scene();
 
 	/**
-	 * Adds a System.
+	 * Checks whether a System exists or not.
 	 * @tparam T The System type.
-	 * @tparam Args The constructor arg types.
-	 * @param priority The System priority.
-	 * @param args The constructor args.
-	 * @return The System.
+	 * @return If the Scene has the System.
 	 */
-	template<typename T, typename... Args>
-	T &AddSystem(const std::size_t &priority = 0, Args &&...args);
+	template<typename T>
+	bool HasSystem() const;
 
 	/**
 	 * Gets a System.
@@ -51,12 +48,15 @@ public:
 	const T &GetSystem() const;
 
 	/**
-	 * Checks whether a System exists or not.
+	 * Adds a System.
 	 * @tparam T The System type.
-	 * @return If the Scene has the System.
+	 * @tparam Args The constructor arg types.
+	 * @param priority The System priority.
+	 * @param args The constructor args.
+	 * @return The System.
 	 */
-	template<typename T>
-	bool HasSystem() const;
+	template<typename T, typename... Args>
+	T &AddSystem(const std::size_t &priority = 0, Args &&...args);
 
 	/**
 	 * Removes a System.
@@ -137,6 +137,12 @@ public:
 	void RemoveEntity(const Entity::Id &id);
 
 	/**
+	 * Refreshes the Entity and Systems list.
+	 * @param id The Entity ID.
+	 */
+	void RefreshEntity(const Entity::Id &id);
+
+	/**
 	 * Removes all Entities.
 	 */
 	void RemoveAllEntities();
@@ -175,22 +181,66 @@ private:
 		std::vector<TypeId> m_systems;
 	};
 
+	struct EntityAction
+	{
+		enum class Action
+		{
+			Enable, Disable, Remove, Refresh
+		};
+
+		// Entity ID.
+		Entity::Id id;
+
+		// Action to perform on this Entity.
+		Action action;
+	};
+
 	enum EntityAttachStatus
 	{
 		Attached, AlreadyAttached, Detached, NotAttached
 	};
 
 	/**
+	 * Update the Entity actions within the World.
+	 */
+	void UpdateEntities();
+
+	/**
+	 * Executes an action.
+	 * @param action The action to execute.
+	 */
+	void ExecuteAction(const EntityAction &action);
+
+	/**
+	 * Adds the Entity to the Systems it meets the requirements.
+	 * @param id The Entity ID.
+	 */
+	void ActionEnable(const Entity::Id &id);
+
+	/**
+	 * Removes the Entity from the Systems it meets the requirements.
+	 * @param id The Entity ID.
+	 */
+	void ActionDisable(const Entity::Id &id);
+
+	/**
+	 * Removes the Entity data from the World.
+	 * @param id The Entity ID.
+	 */
+	void ActionRemove(const Entity::Id &id);
+
+	/**
+	 * Attaches the Entity to the Systems it meets the requirements or detach it from the Systems it does not meet the requirements anymore.
+	 * Used after AddComponent and RemoveComponent.
+	 * @param id The Entity ID.
+	 */
+	void ActionRefresh(const Entity::Id &id);
+
+	/**
 	 * Extends the Entity and Component arrays.
 	 * @param size The new size.
 	 */
 	void Extend(const std::size_t &size);
-
-	/**
-	 * Refreshes the Entity and Systems list.
-	 * @param id The Entity ID.
-	 */
-	void RefreshEntity(const Entity::Id &id);
 
 	/**
 	 * Checks the requirements the Entity meets for each Systems.
@@ -204,6 +254,9 @@ private:
 	// List of all Entities.
 	std::vector<EntityAttributes> m_entities;
 
+	// List of Entities that have been modified.
+	std::vector<EntityAction> m_actions;
+
 	// List of all Entity names, associated to their Entities, for faster search.
 	std::unordered_map<std::string, Entity::Id> m_names;
 
@@ -212,6 +265,9 @@ private:
 
 	// List of all Systems of the Scene.
 	SystemHolder m_systems;
+
+	// List of all System waiting to be started.
+	std::vector<Reference<System>> m_newSystems;
 
 	// Entity ID Pool.
 	EntityPool m_pool;

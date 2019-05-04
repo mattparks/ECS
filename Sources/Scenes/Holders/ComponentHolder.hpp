@@ -7,7 +7,7 @@
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
 #include "Scenes/Component.hpp"
-#include "Scenes/ComponentFilter.hpp"
+#include "ComponentFilter.hpp"
 #include "Scenes/Entity.hpp"
 
 namespace ecs
@@ -19,6 +19,49 @@ public:
 	ComponentHolder() = default;
 
 	~ComponentHolder() = default;
+
+	/**
+	 * Checks whether the Entity has the Component or not.
+	 * @tparam T The Component type.
+	 * @param id The Entity ID.
+	 * @return If the Entity has the Component.
+	 */
+	template<typename T>
+	bool HasComponent(const Entity::Id &id) const
+	{
+		// Is the Entity ID and the Component type ID known.
+		if (id < m_components.size())
+		{
+			auto typeId = GetComponentTypeId<T>();
+
+			// Is the Component type ID known
+			if (typeId < m_components[id].size())
+			{
+				return m_components[id][typeId] != nullptr;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Gets the Component from the Entity.
+	 * @tparam T The Component type.
+	 * @param id The Entity ID.
+	 * @return The Component.
+	 */
+	template<typename T>
+	T &GetComponent(const Entity::Id &id)
+	{
+		auto component = GetComponentPtr<T>(id);
+
+		if (!component.has_value() || component.value().get() == nullptr)
+		{
+			throw std::runtime_error("Entity does not have requested Component");
+		}
+
+		return *static_cast<T *>(component.value()->get());
+	}
 
 	/**
 	 * Adds the Component to the Entity.
@@ -43,49 +86,6 @@ public:
 
 		m_components[id][typeId] = std::move(component);
 		m_componentsMasks[id].set(typeId);
-	}
-
-	/**
-	 * Gets the Component from the Entity.
-	 * @tparam T The Component type.
-	 * @param id The Entity ID.
-	 * @return The Component.
-	 */
-	template<typename T>
-	T &GetComponent(const Entity::Id &id)
-	{
-		auto component = GetComponentPtr<T>(id);
-
-		if (!component.has_value() || component.value().get() == nullptr)
-		{
-			throw std::runtime_error("Entity does not have requested Component");
-		}
-
-		return *static_cast<T *>(component.value()->get());
-	}
-
-	/**
-	 * Checks whether the Entity has the Component or not.
-	 * @tparam T The Component type.
-	 * @param id The Entity ID.
-	 * @return If the Entity has the Component.
-	 */
-	template<typename T>
-	bool HasComponent(const Entity::Id &id) const
-	{
-		// Is the Entity ID and the Component type ID known.
-		if (id < m_components.size())
-		{
-			auto typeId = GetComponentTypeId<T>();
-
-			// Is the Component type ID known
-			if (typeId < m_components[id].size())
-			{
-				return m_components[id][typeId] != nullptr;
-			}
-		}
-
-		return false;
 	}
 
 	/**

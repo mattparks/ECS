@@ -6,12 +6,10 @@
 
 namespace ecs
 {
-template<typename T, typename... Args>
-T &Entity::AddComponent(Args &&...args)
+template<typename T>
+bool Entity::HasComponent() const
 {
-	m_scene.value()->m_components.AddComponent<T>(m_id, std::make_unique<T>(std::forward<Args>(args)...));
-	m_scene.value()->RefreshEntity(m_id);
-	return GetComponent<T>();
+	return m_scene.value()->m_components.HasComponent<T>(m_id);
 }
 
 template<typename T>
@@ -26,10 +24,12 @@ const T &Entity::GetComponent() const
 	return m_scene.value()->m_components.GetComponent<T>(m_id);
 }
 
-template<typename T>
-bool Entity::HasComponent() const
+template<typename T, typename... Args>
+T &Entity::AddComponent(Args &&...args)
 {
-	return m_scene.value()->m_components.HasComponent<T>(m_id);
+	m_scene.value()->m_components.AddComponent<T>(m_id, std::make_unique<T>(std::forward<Args>(args)...));
+	m_scene.value()->RefreshEntity(m_id);
+	return GetComponent<T>();
 }
 
 template<typename T>

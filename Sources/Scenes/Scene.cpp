@@ -3,6 +3,7 @@
 #include <exception>
 #include "Engine/Log.hpp"
 #include "Entity.inl"
+#include "Scene.hpp"
 
 namespace ecs
 {
@@ -96,16 +97,7 @@ void Scene::EnableEntity(const Entity::Id &id)
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	m_systems.ForEach([&](System &system, TypeId systemId)
-	{
-		const auto attachStatus = TryEntityAttach(system, systemId, id);
-
-		if (attachStatus == EntityAttachStatus::AlreadyAttached || attachStatus == EntityAttachStatus::Attached)
-		{
-			// The Entity is attached to the System, we enable it.
-			system.EnableEntity(m_entities[id].m_entity);
-		}
-	});
+	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Enable });
 }
 
 void Scene::DisableEntity(const Entity::Id &id)
@@ -115,16 +107,7 @@ void Scene::DisableEntity(const Entity::Id &id)
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	m_entities[id].m_enabled = false;
-
-	m_systems.ForEach([&](System &system, TypeId systemId)
-	{
-		// Is the Entity attached to the System?
-		if (systemId < m_entities[id].m_systems.size() && m_entities[id].m_systems[systemId])
-		{
-			system.DisableEntity(m_entities[id].m_entity);
-		}
-	});
+	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Disable });
 }
 
 bool Scene::IsEntityValid(const Entity::Id &id) const
@@ -139,6 +122,134 @@ void Scene::RemoveEntity(const Entity::Id &id)
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
+	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Remove });
+}
+
+void Scene::RefreshEntity(const Entity::Id &id)
+{
+	if (!IsEntityValid(id))
+	{
+		throw std::runtime_error("Entity ID is not valid");
+	}
+
+	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Refresh });
+}
+
+void Scene::RemoveAllEntities()
+{
+	for (const auto &entity : m_entities)
+	{
+		// We may iterate through invalid entities.
+		if (entity.m_valid)
+		{
+			RemoveEntity(entity.m_entity.GetId());
+		}
+	}
+}
+
+void Scene::Update(const float &delta)
+{
+	// Start new Systems
+	for (auto &system : m_newSystems)
+	{
+		system->OnStart();
+	}
+
+	m_newSystems.clear();
+
+	UpdateEntities();
+	m_systems.ForEach([delta](System &system, TypeId)
+	{
+		system.Update(delta);
+	});
+}
+
+void Scene::Clear()
+{
+	RemoveAllSystems();
+
+	m_entities.clear();
+	m_actions.clear();
+	m_names.clear();
+
+	m_components.Clear();
+	m_pool.Reset();
+}
+
+void Scene::UpdateEntities()
+{
+	// Here, we copy m_actions to make possible to create, enable, etc.
+	// Entities within event handlers like system::onEntityAttached, etc.
+	const auto actionsList = m_actions;
+	m_actions.clear();
+
+	for (const auto &action : actionsList)
+	{
+		try
+		{
+			ExecuteAction(action);
+		}
+		catch (const std::exception &e)
+		{
+			Log::Error(e.what());
+		}
+	}
+}
+
+void Scene::ExecuteAction(const Scene::EntityAction &action)
+{
+	if (!IsEntityValid(action.id))
+	{
+		throw std::runtime_error("Entity action ID is not valid");
+	}
+
+	switch (action.action)
+	{
+	case EntityAction::Action::Enable:
+		ActionEnable(action.id);
+		break;
+	case EntityAction::Action::Disable:
+		ActionDisable(action.id);
+		break;
+	case EntityAction::Action::Remove:
+		ActionRemove(action.id);
+		break;
+	case EntityAction::Action::Refresh:
+		ActionRefresh(action.id);
+		break;
+	}
+}
+
+void Scene::ActionEnable(const Entity::Id &id)
+{
+	m_systems.ForEach([&](System &system, TypeId systemId)
+	{
+		const auto attachStatus = TryEntityAttach(system, systemId, id);
+
+		if (attachStatus == EntityAttachStatus::AlreadyAttached || attachStatus == EntityAttachStatus::Attached)
+		{
+			// The Entity is attached to the System, it is enabled.
+			system.EnableEntity(m_entities[id].m_entity);
+		}
+	});
+}
+
+void Scene::ActionDisable(const Entity::Id &id)
+{
+	m_entities[id].m_enabled = false;
+
+	m_systems.ForEach([&](System &system, TypeId systemId)
+	{
+		// Is the Entity attached to the System?
+		if (systemId < m_entities[id].m_systems.size() && m_entities[id].m_systems[systemId])
+		{
+			system.DisableEntity(m_entities[id].m_entity);
+		}
+	});
+}
+
+void Scene::ActionRemove(const Entity::Id &id)
+{
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
 		// Is the Entity attached to the System?
@@ -164,53 +275,8 @@ void Scene::RemoveEntity(const Entity::Id &id)
 	m_pool.Store(id);
 }
 
-void Scene::RemoveAllEntities()
+void Scene::ActionRefresh(const Entity::Id &id)
 {
-	for (const auto &entity : m_entities)
-	{
-		// We may iterate through invalid entities.
-		if (entity.m_valid)
-		{
-			RemoveEntity(entity.m_entity.GetId());
-		}
-	}
-}
-
-void Scene::Update(const float &delta)
-{
-	m_systems.ForEach([delta](System &system, TypeId)
-	{
-		system.Update(delta);
-	});
-}
-
-void Scene::Clear()
-{
-	RemoveAllSystems();
-
-	m_entities.clear();
-	m_names.clear();
-
-	m_components.Clear();
-	m_pool.Reset();
-}
-
-void Scene::Extend(const std::size_t &size)
-{
-	if (size > m_entities.size())
-	{
-		m_entities.resize(size);
-		m_components.Resize(size);
-	}
-}
-
-void Scene::RefreshEntity(const Entity::Id &id)
-{
-	if (!IsEntityValid(id))
-	{
-		throw std::runtime_error("Entity ID is not valid");
-	}
-
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
 		const auto attachStatus = TryEntityAttach(system, systemId, id);
@@ -221,6 +287,15 @@ void Scene::RefreshEntity(const Entity::Id &id)
 			system.EnableEntity(m_entities[id].m_entity);
 		}
 	});
+}
+
+void Scene::Extend(const std::size_t &size)
+{
+	if (size > m_entities.size())
+	{
+		m_entities.resize(size);
+		m_components.Resize(size);
+	}
 }
 
 Scene::EntityAttachStatus Scene::TryEntityAttach(System &system, const TypeId &systemId, const Entity::Id &id)

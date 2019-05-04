@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "Scene.hpp"
+#include "System.hpp"
 
 namespace ecs
 {
@@ -10,14 +11,14 @@ void System::DetachAll()
 	// Enabled Entities.
 	for (auto &entity : m_enabledEntities)
 	{
-		m_onEntityDisable(entity);
-		m_onEntityDetach(entity);
+		OnEntityDisable(entity);
+		OnEntityDetach(entity);
 	}
 
 	// Disabled Entities.
 	for (auto &entity : m_disabledEntities)
 	{
-		m_onEntityDetach(entity);
+		OnEntityDetach(entity);
 	}
 
 	m_enabledEntities.clear();
@@ -33,7 +34,7 @@ void System::AttachEntity(const Entity &entity)
 		// Add Entity to the Disabled list. The Entity is not enabled by default.
 		m_disabledEntities.emplace_back(entity);
 
-		m_onEntityAttach(entity);
+		OnEntityAttach(entity);
 		SetEntityStatus(entity, EntityStatus::Disabled);
 	}
 }
@@ -48,7 +49,7 @@ void System::DetachEntity(const Entity &entity)
 		{
 			// Remove Entity from Enabled list.
 			m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
-			m_onEntityDisable(entity);
+			OnEntityDisable(entity);
 		}
 		else
 		{
@@ -56,7 +57,7 @@ void System::DetachEntity(const Entity &entity)
 			m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
 		}
 
-		m_onEntityDetach(entity);
+		OnEntityDetach(entity);
 		SetEntityStatus(entity, EntityStatus::NotAttached);
 	}
 }
@@ -71,7 +72,7 @@ void System::EnableEntity(const Entity &entity)
 		// Then, add it to the Enabled list.
 		m_enabledEntities.emplace_back(entity);
 
-		m_onEntityEnable(entity);
+		OnEntityEnable(entity);
 		SetEntityStatus(entity, EntityStatus::Enabled);
 	}
 }
@@ -86,7 +87,7 @@ void System::DisableEntity(const Entity &entity)
 		// Then, add it to the Disabled list.
 		m_disabledEntities.emplace_back(entity);
 
-		m_onEntityDisable(entity);
+		OnEntityDisable(entity);
 		SetEntityStatus(entity, EntityStatus::Disabled);
 	}
 }
@@ -109,6 +110,34 @@ const Scene &System::GetScene() const
 	}
 
 	return m_scene.value();
+}
+
+void System::OnStart()
+{
+}
+
+void System::OnShutdown()
+{
+}
+
+void System::OnEntityAttach(Entity entity)
+{
+}
+
+void System::OnEntityDetach(Entity entity)
+{
+}
+
+void System::OnEntityEnable(Entity entity)
+{
+}
+
+void System::OnEntityDisable(Entity entity)
+{
+}
+
+void System::Update(const float &delta)
+{
 }
 
 System::EntityStatus System::GetEntityStatus(const Entity::Id &id) const

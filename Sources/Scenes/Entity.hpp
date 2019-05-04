@@ -33,14 +33,12 @@ public:
 	Id GetId() const noexcept { return m_id; }
 
 	/**
-	 * Adds the Component to the Entity.
+	 * Checks whether the Entity has the Component or not.
 	 * @tparam T The Component type.
-	 * @tparam Args The constructor arg types.
-	 * @param args The constructor arguments.
-	 * @return The Component.
+	 * @return If the Entity has the Component.
 	 */
-	template<typename T, typename... Args>
-	T &AddComponent(Args &&...args);
+	template<typename T>
+	bool HasComponent() const;
 
 	/**
 	 * Gets the Component from the Entity.
@@ -59,12 +57,14 @@ public:
 	const T &GetComponent() const;
 
 	/**
-	 * Checks whether the Entity has the Component or not.
+	 * Adds the Component to the Entity.
 	 * @tparam T The Component type.
-	 * @return If the Entity has the Component.
+	 * @tparam Args The constructor arg types.
+	 * @param args The constructor arguments.
+	 * @return The Component.
 	 */
-	template<typename T>
-	bool HasComponent() const;
+	template<typename T, typename... Args>
+	T &AddComponent(Args &&...args);
 
 	/**
 	 * Removes the Component from the Entity.

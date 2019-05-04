@@ -22,24 +22,16 @@ public:
 	~SystemHolder();
 
 	/**
-	 * Adds a System.
+	 * Checks whether a System exists or not.
 	 * @tparam T The System type.
-	 * @param priority The System priority.
-	 * @param system The System.
+	 * @return If the System exists.
 	 */
 	template<typename T>
-	void AddSystem(std::size_t priority, std::unique_ptr<T> &&system)
+	bool HasSystem() const
 	{
-		// Remove previous System, if exists
-		RemoveSystem<T>();
+		const auto it = m_systems.find(GetSystemTypeId<T>());
 
-		const auto typeId = GetSystemTypeId<T>();
-
-		// Insert the priority value
-		m_priorities.insert({ priority, typeId });
-
-		// Then, add the System
-		m_systems[typeId] = std::move(system);
+		return it != m_systems.end() && it->second != nullptr;
 	}
 
 	/**
@@ -79,16 +71,24 @@ public:
 	}
 
 	/**
-	 * Checks whether a System exists or not.
+	 * Adds a System.
 	 * @tparam T The System type.
-	 * @return If the System exists.
+	 * @param priority The System priority.
+	 * @param system The System.
 	 */
 	template<typename T>
-	bool HasSystem() const
+	void AddSystem(std::size_t priority, std::unique_ptr<T> &&system)
 	{
-		const auto it = m_systems.find(GetSystemTypeId<T>());
+		// Remove previous System, if it exists.
+		RemoveSystem<T>();
 
-		return it != m_systems.end() && it->second != nullptr;
+		const auto typeId = GetSystemTypeId<T>();
+
+		// Insert the priority value
+		m_priorities.insert({ priority, typeId });
+
+		// Then, add the System
+		m_systems[typeId] = std::move(system);
 	}
 
 	/**

@@ -5,16 +5,14 @@
 #include <vector>
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/Reference.hpp"
-#include "Helpers/Delegate.hpp"
 #include "Helpers/TypeInfo.hpp"
-#include "ComponentFilter.hpp"
+#include "Holders/ComponentFilter.hpp"
 #include "Entity.hpp"
 
 namespace ecs
 {
 class System :
-	public NonCopyable,
-	public Observer
+	public NonCopyable
 {
 public:
 	System() = default;
@@ -59,15 +57,19 @@ protected:
 	 */
 	ComponentFilter &GetFilter() { return m_filter; }
 
-	Delegate<void(Entity)> &OnEntityAttach() { return m_onEntityAttach; }
+	virtual void OnStart();
 
-	Delegate<void(Entity)> &OnEntityDetach() { return m_onEntityDetach; }
+	virtual void OnShutdown();
 
-	Delegate<void(Entity)> &OnEntityEnable() { return m_onEntityEnable; }
+	virtual void OnEntityAttach(Entity entity);
 
-	Delegate<void(Entity)> &OnEntityDisable() { return m_onEntityDisable; }
+	virtual void OnEntityDetach(Entity entity);
 
-	virtual void Update(const float &delta) = 0;
+	virtual void OnEntityEnable(Entity entity);
+
+	virtual void OnEntityDisable(Entity entity);
+
+	virtual void Update(const float &delta);
 
 private:
 	friend class Scene;
@@ -122,7 +124,7 @@ private:
 	// Disabled Entities attached to this System.
 	std::vector<Entity> m_disabledEntities;
 
-	// Entities status (enabled/disabled).
+	// Entities attach and enable status.
 	std::unordered_map<Entity::Id, EntityStatus> m_status;
 
 	// The Scene that this System belongs to.
@@ -130,12 +132,6 @@ private:
 
 	// The mask that the Entities must matched to be attached to this System.
 	ComponentFilter m_filter;
-
-	Delegate<void(Entity)> m_onEntityAttach;
-	Delegate<void(Entity)> m_onEntityDetach;
-	Delegate<void(Entity)> m_onEntityEnable;
-	Delegate<void(Entity)> m_onEntityDisable;
-
 };
 
 // Get the Type ID for the System T

@@ -13,6 +13,7 @@ void SystemHolder::RemoveAllSystems()
 	{
 		if (system.second != nullptr)
 		{
+			system.second->OnShutdown();
 			system.second->DetachAll();
 		}
 	}
