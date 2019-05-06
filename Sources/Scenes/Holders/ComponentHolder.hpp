@@ -5,7 +5,6 @@
 #include <optional>
 #include <vector>
 #include "Helpers/NonCopyable.hpp"
-#include "Helpers/Reference.hpp"
 #include "Scenes/Component.hpp"
 #include "ComponentFilter.hpp"
 #include "Scenes/Entity.hpp"
@@ -51,16 +50,23 @@ public:
 	 * @return The Component.
 	 */
 	template<typename T>
-	T &GetComponent(const Entity::Id &id)
+	T *GetComponent(const Entity::Id &id) const
 	{
-		auto component = GetComponentPtr<T>(id);
-
-		if (!component.has_value() || component.value().get() == nullptr)
+		if (!HasComponent<T>(id))
 		{
 			throw std::runtime_error("Entity does not have requested Component");
+			return nullptr;
 		}
 
-		return *static_cast<T *>(component.value()->get());
+		auto &component = m_components[id][GetComponentTypeId<T>()];
+
+		if (component.get() == nullptr)
+		{
+			throw std::runtime_error("Entity does not have requested Component");
+			return nullptr;
+		}
+
+		return static_cast<T *>(component.get());
 	}
 
 	/**
@@ -96,13 +102,14 @@ public:
 	template<typename T>
 	void RemoveComponent(const Entity::Id &id)
 	{
-		auto component = GetComponentPtr<T>(id);
-
-		if (component.has_value())
+		if (!HasComponent<T>(id))
 		{
-			component.value()->reset();
-			m_componentsMasks[id].reset(GetComponentTypeId<T>());
+			return;
 		}
+
+		auto &component = m_components[id][GetComponentTypeId<T>()];
+		component.reset();
+		m_componentsMasks[id].reset(GetComponentTypeId<T>());
 	}
 
 	/**
@@ -130,17 +137,6 @@ public:
 	void Clear() noexcept;
 
 private:
-	template<typename T>
-	std::optional<Reference<std::unique_ptr<Component>>> GetComponentPtr(const Entity::Id &id)
-	{
-		if (!HasComponent<T>(id))
-		{
-			return {};
-		}
-
-		return m_components[id][GetComponentTypeId<T>()];
-	}
-
 	// The index of this array matches the Component type ID.
 	using ComponentArray = std::array<std::unique_ptr<Component>, MAX_COMPONENTS>;
 

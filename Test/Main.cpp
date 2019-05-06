@@ -53,22 +53,22 @@ public:
 
 	void OnEntityAttach(Entity entity) override
 	{
-		Log::Out("Entity attached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		Log::Out("Entity attached: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
 	}
 
 	void OnEntityDetach(Entity entity) override
 	{
-		Log::Out("Entity detached: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		Log::Out("Entity detached: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
 	}
 
 	void OnEntityEnable(Entity entity) override
 	{
-		Log::Out("Entity enabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		Log::Out("Entity enabled: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
 	}
 
 	void OnEntityDisable(Entity entity) override
 	{
-		Log::Out("Entity disabled: %f\n", entity.GetComponent<MaterialSkybox>().m_pipeline);
+		Log::Out("Entity disabled: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
 	}
 
 	void Update(const float &delta) override
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 
 	if (scene.HasSystem<MaterialSkyboxSystem>())
 	{
-		auto &materialSkyboxSystem = scene.GetSystem<MaterialSkyboxSystem>();
+		auto materialSkyboxSystem = scene.GetSystem<MaterialSkyboxSystem>();
 	}
 
 	auto entitySphere = scene.CreateEntity("Sphere");
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 	if (entitySphere.HasComponent<MaterialDefault>())
 	{
 		Log::Out("Entity has default material!\n");
-		auto &materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>();
+		auto materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>();
 	}
 
 	auto entitySkybox = scene.CreateEntity();

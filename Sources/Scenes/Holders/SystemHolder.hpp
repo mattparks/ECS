@@ -40,34 +40,17 @@ public:
 	 * @return The System.
 	 */
 	template<typename T>
-	T &GetSystem()
+	T *GetSystem() const
 	{
 		auto it = m_systems.find(GetSystemTypeId<T>());
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
 			throw std::runtime_error("Scene does not have requested System");
+			return nullptr;
 		}
 
-		return *static_cast<T *>(it->second.get());
-	}
-
-	/**
-	 * Gets a System.
-	 * @tparam T The System type.
-	 * @return The System.
-	 */
-	template<typename T>
-	const T &GetSystem() const
-	{
-		auto it = m_systems.find(GetSystemTypeId<T>());
-
-		if (it == m_systems.end() || it->second == nullptr)
-		{
-			throw std::runtime_error("Scene does not have requested System.");
-		}
-
-		return *static_cast<T *>(it->second.get());
+		return static_cast<T *>(it->second.get());
 	}
 
 	/**

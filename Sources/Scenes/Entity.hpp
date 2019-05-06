@@ -46,15 +46,7 @@ public:
 	 * @return The Component.
 	 */
 	template<typename T>
-	T &GetComponent();
-
-	/**
-	 * Gets the Component from the Entity.
-	 * @tparam T The Component type.
-	 * @return The Component.
-	 */
-	template<typename T>
-	const T &GetComponent() const;
+	T *GetComponent() const;
 
 	/**
 	 * Adds the Component to the Entity.
@@ -64,7 +56,7 @@ public:
 	 * @return The Component.
 	 */
 	template<typename T, typename... Args>
-	T &AddComponent(Args &&...args);
+	T *AddComponent(Args &&...args);
 
 	/**
 	 * Removes the Component from the Entity.

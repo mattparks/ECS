@@ -13,19 +13,13 @@ bool Entity::HasComponent() const
 }
 
 template<typename T>
-T &Entity::GetComponent()
-{
-	return m_scene.value()->m_components.GetComponent<T>(m_id);
-}
-
-template<typename T>
-const T &Entity::GetComponent() const
+T *Entity::GetComponent() const
 {
 	return m_scene.value()->m_components.GetComponent<T>(m_id);
 }
 
 template<typename T, typename... Args>
-T &Entity::AddComponent(Args &&...args)
+T *Entity::AddComponent(Args &&...args)
 {
 	m_scene.value()->m_components.AddComponent<T>(m_id, std::make_unique<T>(std::forward<Args>(args)...));
 	m_scene.value()->RefreshEntity(m_id);

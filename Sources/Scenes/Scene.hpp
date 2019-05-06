@@ -37,15 +37,7 @@ public:
 	 * @return The System.
 	 */
 	template<typename T>
-	T &GetSystem();
-
-	/**
-	 * Gets a System.
-	 * @tparam T The System type.
-	 * @return The System.
-	 */
-	template<typename T>
-	const T &GetSystem() const;
+	T *GetSystem() const;
 
 	/**
 	 * Adds a System.
@@ -56,7 +48,7 @@ public:
 	 * @return The System.
 	 */
 	template<typename T, typename... Args>
-	T &AddSystem(const std::size_t &priority = 0, Args &&...args);
+	T *AddSystem(const std::size_t &priority = 0, Args &&...args);
 
 	/**
 	 * Removes a System.
@@ -267,7 +259,7 @@ private:
 	SystemHolder m_systems;
 
 	// List of all System waiting to be started.
-	std::vector<Reference<System>> m_newSystems;
+	std::vector<System *> m_newSystems;
 
 	// Entity ID Pool.
 	EntityPool m_pool;

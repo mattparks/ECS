@@ -20,6 +20,11 @@ public:
 	{
 	}
 
+	Reference(T *reference) noexcept :
+		m_reference(reference)
+	{
+	}
+
 	~Reference() = default;
 
 	/**
