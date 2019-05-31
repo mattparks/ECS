@@ -1,47 +1,29 @@
+# 3.11.0 required for cxx_std_17 and FetchContent
 cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
-project(ECS VERSION 0.0.1 LANGUAGES C CXX)
+project(ECS VERSION 0.0.2 LANGUAGES C CXX)
 
+option(BUILD_SHARED_LIBS "Build Shared Libraries" ON)
+
+# Sets the install directories defined by GNU
 include(GNUInstallDirs)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
-file(GLOB_RECURSE ECS_HEADER_FILES 
-		"${CMAKE_SOURCE_DIR}/Sources/*.hpp" 
-		"${CMAKE_SOURCE_DIR}/Sources/*.inl"
-		)
-file(GLOB_RECURSE ECS_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Sources/*.cpp")
-set(ECS_SOURCES
-		${ECS_HEADER_FILES}
-		${ECS_SOURCE_FILES}
-		)
+# Add property to allow making project folders in IDEs
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# Position-independent code
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+# To build shared libraries in Windows, we set CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS to ON
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+# Under some compilers CMAKE_DEBUG_POSTFIX is set to "d", removed to clean dll names
+set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Set Debug library postfix")
+set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "Set Release library postfix")
+set(CMAKE_RELWITHDEBINFO_POSTFIX "" CACHE STRING "Set RelWithDebInfo library postfix")
+# Removes any dll prefix name on windows, unix will keep a prefix set as "lib"
+if(WIN32)
+	set(CMAKE_SHARED_LIBRARY_PREFIX "")
+endif()
 
-add_library(ECS ${ECS_SOURCES})
-target_compile_features(ECS PUBLIC cxx_std_17)
-set_target_properties(ECS PROPERTIES
-		POSITION_INDEPENDENT_CODE ON
-		FOLDER "ECS"
-		)
-target_compile_definitions(ECS
-		PUBLIC
-		$<$<CXX_COMPILER_ID:MSVC>:_SCL_SECURE_NO_WARNINGS _CRT_SECURE_NO_WARNINGS>
-		$<$<CXX_COMPILER_ID:GNU>:__USE_MINGW_ANSI_STDIO=0>
-		)
-target_include_directories(ECS PRIVATE "${CMAKE_SOURCE_DIR}/Sources")
-
-file(GLOB_RECURSE TEST_HEADER_FILES "${CMAKE_SOURCE_DIR}/Test/*.hpp")
-file(GLOB_RECURSE TEST_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Test/*.cpp")
-set(TEST_SOURCES
-		${TEST_HEADER_FILES}
-		${TEST_SOURCE_FILES}
-		)
-
-add_executable(ECS_Test ${TEST_SOURCES})
-target_compile_features(ECS_Test PUBLIC cxx_std_17)
-set_target_properties(ECS_Test PROPERTIES
-		POSITION_INDEPENDENT_CODE ON
-		FOLDER "ECS"
-		)
-add_dependencies(ECS_Test ECS)
-target_link_libraries(ECS_Test PRIVATE ECS)
-target_include_directories(ECS_Test PRIVATE "${CMAKE_SOURCE_DIR}/Sources")
+add_subdirectory(Sources)
+add_subdirectory(Test)
