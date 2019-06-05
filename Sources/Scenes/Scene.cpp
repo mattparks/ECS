@@ -24,7 +24,7 @@ Entity Scene::CreateEntity()
 	// Resize containers if necessary.
 	Extend(id + 1);
 
-	m_entities[id].m_entity = Entity(id, *this);
+	m_entities[id].m_entity = Entity{id, *this};
 	m_entities[id].m_enabled = true;
 	m_entities[id].m_valid = true;
 
@@ -196,7 +196,7 @@ void Scene::UpdateEntities()
 	}
 }
 
-void Scene::ExecuteAction(const Scene::EntityAction &action)
+void Scene::ExecuteAction(const EntityAction &action)
 {
 	if (!IsEntityValid(action.id))
 	{
@@ -226,7 +226,7 @@ void Scene::ActionEnable(const Entity::Id &id)
 	{
 		const auto attachStatus = TryEntityAttach(system, systemId, id);
 
-		if (attachStatus == EntityAttachStatus::AlreadyAttached || attachStatus == EntityAttachStatus::Attached)
+		if (attachStatus == AlreadyAttached || attachStatus == Attached)
 		{
 			// The Entity is attached to the System, it is enabled.
 			system.EnableEntity(m_entities[id].m_entity);
@@ -281,7 +281,7 @@ void Scene::ActionRefresh(const Entity::Id &id)
 	{
 		const auto attachStatus = TryEntityAttach(system, systemId, id);
 
-		if (m_entities[id].m_enabled && attachStatus == EntityAttachStatus::Attached)
+		if (m_entities[id].m_enabled && attachStatus == Attached)
 		{
 			// If the Entity has been attached and is enabled, enable it into the System.
 			system.EnableEntity(m_entities[id].m_entity);

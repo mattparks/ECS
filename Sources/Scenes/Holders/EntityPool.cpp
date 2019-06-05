@@ -2,7 +2,7 @@
 
 namespace ecs
 {
-ecs::Entity::Id EntityPool::Create()
+Entity::Id EntityPool::Create()
 {
 	Entity::Id id;
 

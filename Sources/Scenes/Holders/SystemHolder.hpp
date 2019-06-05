@@ -47,7 +47,6 @@ public:
 		if (it == m_systems.end() || it->second == nullptr)
 		{
 			throw std::runtime_error("Scene does not have requested System");
-			return nullptr;
 		}
 
 		return static_cast<T *>(it->second.get());

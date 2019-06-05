@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <vector>
 #include "Helpers/NonCopyable.hpp"
-#include "Helpers/Reference.hpp"
 #include "Helpers/TypeInfo.hpp"
 #include "Holders/ComponentHolder.hpp"
 #include "Holders/EntityPool.hpp"

@@ -55,7 +55,6 @@ public:
 		if (!HasComponent<T>(id))
 		{
 			throw std::runtime_error("Entity does not have requested Component");
-			return nullptr;
 		}
 
 		auto &component = m_components[id][GetComponentTypeId<T>()];
@@ -63,7 +62,6 @@ public:
 		if (component.get() == nullptr)
 		{
 			throw std::runtime_error("Entity does not have requested Component");
-			return nullptr;
 		}
 
 		return static_cast<T *>(component.get());

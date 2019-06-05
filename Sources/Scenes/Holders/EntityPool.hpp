@@ -36,6 +36,6 @@ private:
 	std::vector<Entity::Id> m_storedIds;
 
 	// The next available Entity ID.
-	Entity::Id m_nextId = 0;
+	Entity::Id m_nextId{};
 };
 }

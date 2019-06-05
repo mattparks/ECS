@@ -4,11 +4,6 @@
 
 namespace ecs
 {
-Entity::Entity() :
-	m_id(0)
-{
-}
-
 Entity::Entity(const Id &id, Scene &scene) :
 	m_id(id),
 	m_scene(scene)

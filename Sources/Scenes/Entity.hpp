@@ -14,7 +14,7 @@ public:
 	// Entity ID type.
 	using Id = std::size_t;
 
-	Entity();
+	Entity() = default;
 
 	Entity(const Id &id, Scene &scene);
 
@@ -109,7 +109,7 @@ public:
 
 private:
 	// Entity ID.
-	Id m_id;
+	Id m_id{};
 
 	// The Scene that this Entity belongs to.
 	std::optional<Reference<Scene>> m_scene;
