@@ -160,10 +160,10 @@ private:
 		Entity m_entity;
 
 		// Is this Entity enabled.
-		bool m_enabled = true;
+		bool m_enabled{true};
 
 		// Is this Entity valid (hasn't been removed).
-		bool m_valid = true;
+		bool m_valid{true};
 
 		// Entity name.
 		std::optional<std::string> m_name;
@@ -172,8 +172,9 @@ private:
 		std::vector<TypeId> m_systems;
 	};
 
-	struct EntityAction
+	class EntityAction
 	{
+	public:
 		enum class Action
 		{
 			Enable, Disable, Remove, Refresh
@@ -186,7 +187,7 @@ private:
 		Action action;
 	};
 
-	enum EntityAttachStatus
+	enum class EntityAttachStatus
 	{
 		Attached, AlreadyAttached, Detached, NotAttached
 	};

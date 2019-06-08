@@ -29,7 +29,7 @@ public:
 	template<typename T>
 	bool HasSystem() const
 	{
-		const auto it = m_systems.find(GetSystemTypeId<T>());
+		const auto it{m_systems.find(GetSystemTypeId<T>())};
 
 		return it != m_systems.end() && it->second != nullptr;
 	}
@@ -42,7 +42,7 @@ public:
 	template<typename T>
 	T *GetSystem() const
 	{
-		auto it = m_systems.find(GetSystemTypeId<T>());
+		auto it{m_systems.find(GetSystemTypeId<T>())};
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
@@ -64,7 +64,7 @@ public:
 		// Remove previous System, if it exists.
 		RemoveSystem<T>();
 
-		const auto typeId = GetSystemTypeId<T>();
+		const auto typeId{GetSystemTypeId<T>()};
 
 		// Insert the priority value
 		m_priorities.insert({ priority, typeId });
@@ -80,9 +80,9 @@ public:
 	template<typename T>
 	void RemoveSystem()
 	{
-		const auto typeId = GetSystemTypeId<T>();
+		const auto typeId{GetSystemTypeId<T>()};
 
-		auto system = m_systems.find(typeId);
+		auto system{m_systems.find(typeId)};
 
 		if (system != m_systems.end() && system->second != nullptr)
 		{
@@ -111,7 +111,7 @@ public:
 	{
 		for (const auto &typeId : m_priorities)
 		{
-			auto &system = m_systems[typeId.second];
+			auto &system{m_systems[typeId.second]};
 
 			if (system != nullptr)
 			{

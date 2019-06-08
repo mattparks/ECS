@@ -5,8 +5,8 @@
 namespace ecs
 {
 Entity::Entity(const Id &id, Scene &scene) :
-	m_id(id),
-	m_scene(scene)
+	m_id{id},
+	m_scene{scene}
 {
 }
 

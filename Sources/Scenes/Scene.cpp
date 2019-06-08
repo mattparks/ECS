@@ -19,7 +19,7 @@ void Scene::RemoveAllSystems()
 
 Entity Scene::CreateEntity()
 {
-	const auto id = m_pool.Create();
+	const auto id{m_pool.Create()};
 
 	// Resize containers if necessary.
 	Extend(id + 1);
@@ -40,7 +40,7 @@ Entity Scene::CreateEntity(const std::string &name)
 		throw std::runtime_error("Entity name already in use");
 	}
 
-	const auto entity = CreateEntity();
+	const auto entity{CreateEntity()};
 
 	m_names[name] = entity.GetId();
 	m_entities[entity.GetId()].m_name = name;
@@ -60,7 +60,7 @@ std::optional<Entity> Scene::GetEntity(const Entity::Id &id) const
 
 std::optional<Entity> Scene::GetEntity(const std::string &name) const
 {
-	const auto it = m_names.find(name);
+	const auto it{m_names.find(name)};
 
 	if (it == m_names.end())
 	{
@@ -180,8 +180,8 @@ void Scene::UpdateEntities()
 {
 	// Here, we copy m_actions to make possible to create, enable, etc.
 	// Entities within event handlers like system::onEntityAttached, etc.
-	const auto actionsList = m_actions;
-	m_actions.clear();
+	const auto actionsList{std::move(m_actions)};
+	m_actions = decltype(m_actions){};
 
 	for (const auto &action : actionsList)
 	{
@@ -224,9 +224,9 @@ void Scene::ActionEnable(const Entity::Id &id)
 {
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
-		const auto attachStatus = TryEntityAttach(system, systemId, id);
+		const auto attachStatus{TryEntityAttach(system, systemId, id)};
 
-		if (attachStatus == AlreadyAttached || attachStatus == Attached)
+		if (attachStatus == EntityAttachStatus::AlreadyAttached || attachStatus == EntityAttachStatus::Attached)
 		{
 			// The Entity is attached to the System, it is enabled.
 			system.EnableEntity(m_entities[id].m_entity);
@@ -279,9 +279,9 @@ void Scene::ActionRefresh(const Entity::Id &id)
 {
 	m_systems.ForEach([&](System &system, TypeId systemId)
 	{
-		const auto attachStatus = TryEntityAttach(system, systemId, id);
+		const auto attachStatus{TryEntityAttach(system, systemId, id)};
 
-		if (m_entities[id].m_enabled && attachStatus == Attached)
+		if (m_entities[id].m_enabled && attachStatus == EntityAttachStatus::Attached)
 		{
 			// If the Entity has been attached and is enabled, enable it into the System.
 			system.EnableEntity(m_entities[id].m_entity);
@@ -315,11 +315,11 @@ Scene::EntityAttachStatus Scene::TryEntityAttach(System &system, const TypeId &s
 			system.AttachEntity(m_entities[id].m_entity);
 
 			// The Entity has been attached to the System.
-			return Attached;
+			return EntityAttachStatus::Attached;
 		}
 
 		// Otherwise, if the Entity is already attached to the System.
-		return AlreadyAttached;
+		return EntityAttachStatus::AlreadyAttached;
 	}
 
 	// If the Entity is already attached to the System but doest not match the requirements anymore, we detach it from the System.
@@ -329,10 +329,10 @@ Scene::EntityAttachStatus Scene::TryEntityAttach(System &system, const TypeId &s
 		m_entities[id].m_systems[systemId] = false;
 
 		// The Entity has been detached from the System.
-		return Detached;
+		return EntityAttachStatus::Detached;
 	}
 
 	// Nothing happened because the Entity is not attached to the System and does not match the requirements to be part of it.
-	return NotAttached;
+	return EntityAttachStatus::NotAttached;
 }
 }

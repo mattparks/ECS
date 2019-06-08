@@ -4,7 +4,7 @@ namespace ecs
 {
 bool ComponentFilter::Check(const Mask &mask) const
 {
-	const auto excludeMask = m_excluded & mask;
+	const auto excludeMask{m_excluded & mask};
 
 	// Checks if there is an excluded component.
 	if (excludeMask.any())
@@ -12,7 +12,7 @@ bool ComponentFilter::Check(const Mask &mask) const
 		return false;
 	}
 
-	for (std::size_t i = 0; i < m_required.size(); ++i)
+	for (std::size_t i{0}; i < m_required.size(); ++i)
 	{
 		if (m_required[i] && !mask[i])
 		{

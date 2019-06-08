@@ -41,7 +41,7 @@ void System::AttachEntity(const Entity &entity)
 
 void System::DetachEntity(const Entity &entity)
 {
-	const auto status = GetEntityStatus(entity);
+	const auto status{GetEntityStatus(entity)};
 
 	if (status != EntityStatus::NotAttached)
 	{
@@ -142,7 +142,7 @@ void System::Update(const float &delta)
 
 System::EntityStatus System::GetEntityStatus(const Entity::Id &id) const
 {
-	const auto it = m_status.find(id);
+	const auto it{m_status.find(id)};
 
 	if (it != m_status.end())
 	{

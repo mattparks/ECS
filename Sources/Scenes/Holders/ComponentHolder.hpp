@@ -31,7 +31,7 @@ public:
 		// Is the Entity ID and the Component type ID known.
 		if (id < m_components.size())
 		{
-			auto typeId = GetComponentTypeId<T>();
+			auto typeId{GetComponentTypeId<T>()};
 
 			// Is the Component type ID known
 			if (typeId < m_components[id].size())
@@ -57,7 +57,7 @@ public:
 			throw std::runtime_error("Entity does not have requested Component");
 		}
 
-		auto &component = m_components[id][GetComponentTypeId<T>()];
+		auto &component{m_components[id][GetComponentTypeId<T>()]};
 
 		if (component.get() == nullptr)
 		{
@@ -81,7 +81,7 @@ public:
 			throw std::runtime_error("Entity ID is out of range");
 		}
 
-		const auto typeId = GetComponentTypeId<T>();
+		const auto typeId{GetComponentTypeId<T>()};
 
 		if (typeId >= m_components[id].size())
 		{
@@ -105,7 +105,7 @@ public:
 			return;
 		}
 
-		auto &component = m_components[id][GetComponentTypeId<T>()];
+		auto &component{m_components[id][GetComponentTypeId<T>()]};
 		component.reset();
 		m_componentsMasks[id].reset(GetComponentTypeId<T>());
 	}

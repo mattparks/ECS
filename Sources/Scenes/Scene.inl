@@ -22,7 +22,7 @@ T *Scene::AddSystem(const std::size_t &priority, Args &&...args)
 {
 	m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
 
-	auto system = GetSystem<T>();
+	auto system{GetSystem<T>()};
 	m_newSystems.emplace_back(system);
 
 	// Sets the System Scene.
