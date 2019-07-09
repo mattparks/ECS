@@ -1,5 +1,4 @@
 #include <iostream>
-#include <Engine/Log.hpp>
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
 #include <Scenes/System.inl>
@@ -20,14 +19,14 @@ class MaterialDefault :
 	public Component
 {
 public:
-	float m_pipeline = -11.9f;
+	float m_pipeline{-11.9f};
 };
 
 class MaterialSkybox :
 	public Component
 {
 public:
-	float m_pipeline = 4.1f;
+	float m_pipeline{4.1f};
 };
 
 class MaterialSkyboxSystem :
@@ -43,39 +42,39 @@ public:
 
 	void OnStart() override
 	{
-		Log::Out("OnStart\n");
+		std::cout << "OnStart\n";
 	}
 
 	void OnShutdown() override
 	{
-		Log::Out("OnShutdown\n");
+		std::cout << "OnShutdown\n";
 	}
 
 	void OnEntityAttach(Entity entity) override
 	{
-		Log::Out("Entity attached: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
+		std::cout << "Entity attached: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
 	void OnEntityDetach(Entity entity) override
 	{
-		Log::Out("Entity detached: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
+		std::cout << "Entity detached: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
 	void OnEntityEnable(Entity entity) override
 	{
-		Log::Out("Entity enabled: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
+		std::cout << "Entity enabled: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
 	void OnEntityDisable(Entity entity) override
 	{
-		Log::Out("Entity disabled: %f\n", entity.GetComponent<MaterialSkybox>()->m_pipeline);
+		std::cout << "Entity disabled: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
 	void Update(const float &delta) override
 	{
-		ForEach([this](Entity entity)
+		ForEach([](Entity entity)
 		{
-			Log::Out("Entity updated\n");
+			std::cout << "Entity updated\n";
 		});
 	}
 };
@@ -86,25 +85,23 @@ int main(int argc, char **argv)
 
 	scene.AddSystem<MaterialSkyboxSystem>();
 
-	if (scene.HasSystem<MaterialSkyboxSystem>())
+	if (auto materialSkyboxSystem{scene.GetSystem<MaterialSkyboxSystem>()}; materialSkyboxSystem != nullptr)
 	{
-		auto materialSkyboxSystem = scene.GetSystem<MaterialSkyboxSystem>();
 	}
 
-	auto entitySphere = scene.CreateEntity("Sphere");
+	auto entitySphere{scene.CreateEntity("Sphere")};
 
-	auto entitySphereRef = *scene.GetEntity("Sphere");
+	auto entitySphereRef{*scene.GetEntity("Sphere")};
 	entitySphereRef.AddComponent<Transform>();
 	entitySphereRef.AddComponent<MaterialDefault>();
-	Log::Out("Entity ref == entity: %i\n", entitySphere == entitySphereRef);
+	std::cout << "Entity ref == entity: ", entitySphere == entitySphereRef << '\n';
 
-	if (entitySphere.HasComponent<MaterialDefault>())
+	if (auto materialSkyboxComponent{entitySphere.GetComponent<MaterialDefault>()}; materialSkyboxComponent != nullptr)
 	{
-		Log::Out("Entity has default material!\n");
-		auto materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>();
+		std::cout << "Entity has default material!\n";
 	}
 
-	auto entitySkybox = scene.CreateEntity();
+	auto entitySkybox{scene.CreateEntity()};
 	entitySkybox.AddComponent<Transform>();
 	entitySkybox.AddComponent<MaterialSkybox>();
 

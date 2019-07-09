@@ -1,7 +1,7 @@
 #include "Scene.inl"
 
+#include <iostream>
 #include <exception>
-#include "Engine/Log.hpp"
 #include "Entity.inl"
 #include "Scene.hpp"
 
@@ -37,7 +37,7 @@ Entity Scene::CreateEntity(const std::string &name)
 {
 	if (m_names.find(name) != m_names.end())
 	{
-		throw std::runtime_error("Entity name already in use");
+		throw std::runtime_error{"Entity name already in use"};
 	}
 
 	const auto entity{CreateEntity()};
@@ -74,7 +74,7 @@ std::string Scene::GetEntityName(const Entity::Id &id) const
 {
 	if (!IsEntityValid(id))
 	{
-		throw std::runtime_error("Entity ID is not valid");
+		throw std::runtime_error{"Entity ID is not valid"};
 	}
 
 	if (m_entities[id].m_name.has_value())
@@ -94,7 +94,7 @@ void Scene::EnableEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
-		throw std::runtime_error("Entity ID is not valid");
+		throw std::runtime_error{"Entity ID is not valid"};
 	}
 
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Enable });
@@ -104,7 +104,7 @@ void Scene::DisableEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
-		throw std::runtime_error("Entity ID is not valid");
+		throw std::runtime_error{"Entity ID is not valid"};
 	}
 
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Disable });
@@ -119,7 +119,7 @@ void Scene::RemoveEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
-		throw std::runtime_error("Entity ID is not valid");
+		throw std::runtime_error{"Entity ID is not valid"};
 	}
 
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Remove });
@@ -129,7 +129,7 @@ void Scene::RefreshEntity(const Entity::Id &id)
 {
 	if (!IsEntityValid(id))
 	{
-		throw std::runtime_error("Entity ID is not valid");
+		throw std::runtime_error{"Entity ID is not valid"};
 	}
 
 	m_actions.emplace_back(EntityAction{ id, EntityAction::Action::Refresh });
@@ -191,7 +191,7 @@ void Scene::UpdateEntities()
 		}
 		catch (const std::exception &e)
 		{
-			Log::Error(e.what());
+			std::cout << e.what() << '\n';
 		}
 	}
 }
@@ -200,7 +200,7 @@ void Scene::ExecuteAction(const EntityAction &action)
 {
 	if (!IsEntityValid(action.id))
 	{
-		throw std::runtime_error("Entity action ID is not valid");
+		throw std::runtime_error{"Entity action ID is not valid"};
 	}
 
 	switch (action.action)

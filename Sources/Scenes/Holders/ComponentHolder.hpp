@@ -54,14 +54,16 @@ public:
 	{
 		if (!HasComponent<T>(id))
 		{
-			throw std::runtime_error("Entity does not have requested Component");
+			//throw std::runtime_error{"Entity does not have requested Component"};
+			return nullptr;
 		}
 
 		auto &component{m_components[id][GetComponentTypeId<T>()]};
 
 		if (component.get() == nullptr)
 		{
-			throw std::runtime_error("Entity does not have requested Component");
+			//throw std::runtime_error{"Entity does not have requested Component"};
+			return nullptr;
 		}
 
 		return static_cast<T *>(component.get());
@@ -78,14 +80,14 @@ public:
 	{
 		if (id >= m_components.size())
 		{
-			throw std::runtime_error("Entity ID is out of range");
+			throw std::runtime_error{"Entity ID is out of range"};
 		}
 
 		const auto typeId{GetComponentTypeId<T>()};
 
 		if (typeId >= m_components[id].size())
 		{
-			throw std::runtime_error("Component type ID is out of range");
+			throw std::runtime_error{"Component type ID is out of range"};
 		}
 
 		m_components[id][typeId] = std::move(component);

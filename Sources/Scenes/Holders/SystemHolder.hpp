@@ -1,12 +1,12 @@
 #pragma once
 
+#include <iostream>
 #include <functional>
 #include <memory>
 #include <map>
 #include <unordered_map>
 #include <algorithm>
 #include <stdexcept>
-#include "Engine/Log.hpp"
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/TypeInfo.hpp"
 #include "Scenes/System.hpp"
@@ -46,7 +46,8 @@ public:
 
 		if (it == m_systems.end() || it->second == nullptr)
 		{
-			throw std::runtime_error("Scene does not have requested System");
+			//throw std::runtime_error{"Scene does not have requested System"};
+			return nullptr;
 		}
 
 		return static_cast<T *>(it->second.get());
@@ -121,7 +122,7 @@ public:
 				}
 				catch (const std::exception &e)
 				{
-					Log::Error(e.what());
+					std::cerr << e.what() << '\n';
 				}
 			}
 		}

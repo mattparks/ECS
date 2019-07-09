@@ -96,7 +96,7 @@ Scene &System::GetScene()
 {
 	if (!m_scene.has_value())
 	{
-		throw std::runtime_error("System is not attached to any Scene");
+		throw std::runtime_error{"System is not attached to any Scene"};
 	}
 
 	return m_scene.value();
@@ -106,7 +106,7 @@ const Scene &System::GetScene() const
 {
 	if (!m_scene.has_value())
 	{
-		throw std::runtime_error("System is not attached to any Scene");
+		throw std::runtime_error{"System is not attached to any Scene"};
 	}
 
 	return m_scene.value();
