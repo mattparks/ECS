@@ -1,14 +1,12 @@
 #pragma once
 
-#include <cstddef>
+#include "StdAfx.hpp"
 
-namespace ecs
-{
+namespace acid {
 using TypeId = std::size_t;
 
 template<typename T>
-class TypeInfo
-{
+class TypeInfo {
 public:
 	TypeInfo() = delete;
 
@@ -18,8 +16,7 @@ public:
 	 * @return The type ID.
 	 */
 	template<typename K>
-	static TypeId GetTypeId() noexcept
-	{
+	static TypeId GetTypeId() noexcept {
 		static const auto id = NextTypeId();
 		return id;
 	}
@@ -29,8 +26,7 @@ private:
 	 * Get the next type ID for T
 	 * @return The next type ID for T.
 	 */
-	static TypeId NextTypeId() noexcept
-	{
+	static TypeId NextTypeId() noexcept {
 		const auto id = m_nextTypeId;
 		++m_nextTypeId;
 		return id;
@@ -40,5 +36,6 @@ private:
 	static TypeId m_nextTypeId;
 };
 
-template<typename K> TypeId TypeInfo<K>::m_nextTypeId = 0;
+template<typename K>
+TypeId TypeInfo<K>::m_nextTypeId = 0;
 }

@@ -4,89 +4,88 @@
 #include <Scenes/System.inl>
 #include <Scenes/Scene.inl>
 
-using namespace ecs;
+using namespace acid;
 
-class Transform :
-	public Component
-{
+class Transform : public Component::Registrar<Transform> {
 public:
-	float m_x, m_y, m_z;
-	float m_pitch, m_yaw, m_roll;
-	float m_scale;
+	float m_x = 0.0f, m_y = 0.0f, m_z = 0.0f;
+	float m_pitch = 0.0f, m_yaw = 0.0f, m_roll = 0.0f;
+	float m_scale = 0.0f;
+
+private:
+	static bool registered;
 };
 
-class MaterialDefault :
-	public Component
-{
+bool Transform::registered = Register("transform");
+
+class MaterialDefault : public Component::Registrar<MaterialDefault> {
 public:
-	float m_pipeline{-11.9f};
+	float m_pipeline = -11.9f;
+
+private:
+	static bool registered;
 };
 
-class MaterialSkybox :
-	public Component
-{
+bool MaterialDefault::registered = Register("materialDefault");
+
+class MaterialSkybox : public Component::Registrar<MaterialSkybox> {
 public:
-	float m_pipeline{4.1f};
+	float m_pipeline = 4.1f;
+
+private:
+	static bool registered;
 };
 
-class MaterialSkyboxSystem :
-	public System
-{
+bool MaterialSkybox::registered = Register("materialSkybox");
+
+class MaterialSkyboxSystem : public System {
 public:
-	MaterialSkyboxSystem()
-	{
+	MaterialSkyboxSystem() {
 		GetFilter().Require<Transform>();
 		//GetFilter().Require<Mesh | MeshAnimated>();
 		GetFilter().Require<MaterialSkybox>();
 	}
 
-	void OnStart() override
-	{
+	void OnStart() override {
 		std::cout << "OnStart\n";
 	}
 
-	void OnShutdown() override
-	{
+	void OnShutdown() override {
 		std::cout << "OnShutdown\n";
 	}
 
-	void OnEntityAttach(Entity entity) override
-	{
+	void OnEntityAttach(Entity entity) override {
 		std::cout << "Entity attached: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
-	void OnEntityDetach(Entity entity) override
-	{
+	void OnEntityDetach(Entity entity) override {
 		std::cout << "Entity detached: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
-	void OnEntityEnable(Entity entity) override
-	{
+	void OnEntityEnable(Entity entity) override {
 		std::cout << "Entity enabled: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
-	void OnEntityDisable(Entity entity) override
-	{
+	void OnEntityDisable(Entity entity) override {
 		std::cout << "Entity disabled: " << entity.GetComponent<MaterialSkybox>()->m_pipeline << '\n';
 	}
 
-	void Update(const float &delta) override
-	{
-		ForEach([](Entity entity)
-		{
+	void Update(float delta) override {
+		ForEach([](Entity entity) {
 			std::cout << "Entity updated\n";
 		});
 	}
 };
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
+	//auto materialDefault = Component::Create("MaterialDefault");
+	//auto md = static_cast<MaterialDefault *>(materialDefault.get());
+
 	Scene scene;
 
 	scene.AddSystem<MaterialSkyboxSystem>();
 
-	if (auto materialSkyboxSystem{scene.GetSystem<MaterialSkyboxSystem>()}; materialSkyboxSystem != nullptr)
-	{
+	if (auto materialSkyboxSystem = scene.GetSystem<MaterialSkyboxSystem>()) {
 	}
 
 	auto entitySphere{scene.CreateEntity("Sphere")};
@@ -94,14 +93,13 @@ int main(int argc, char **argv)
 	auto entitySphereRef{*scene.GetEntity("Sphere")};
 	entitySphereRef.AddComponent<Transform>();
 	entitySphereRef.AddComponent<MaterialDefault>();
-	std::cout << "Entity ref == entity: ", entitySphere == entitySphereRef << '\n';
+	std::cout << "Entity ref == entity: " << (entitySphereRef == entitySphere) << '\n';
 
-	if (auto materialSkyboxComponent{entitySphere.GetComponent<MaterialDefault>()}; materialSkyboxComponent != nullptr)
-	{
+	if (auto materialSkyboxComponent = entitySphere.GetComponent<MaterialDefault>()) {
 		std::cout << "Entity has default material!\n";
 	}
 
-	auto entitySkybox{scene.CreateEntity()};
+	auto entitySkybox = scene.CreateEntity();
 	entitySkybox.AddComponent<Transform>();
 	entitySkybox.AddComponent<MaterialSkybox>();
 

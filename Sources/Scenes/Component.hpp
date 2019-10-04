@@ -1,15 +1,16 @@
 #pragma once
 
 #include <type_traits>
+#include <string>
 #include "Helpers/TypeInfo.hpp"
+#include "Helpers/Factory.hpp"
 
-namespace ecs
-{
+namespace acid {
 // The maximum number of Components an Entity can holds.
 constexpr std::size_t MAX_COMPONENTS{64};
 
-class Component
-{
+class Component :
+	public Factory<Component> {
 };
 
 /**
@@ -18,8 +19,7 @@ class Component
  * @return The Type ID.
  */
 template<typename T>
-TypeId GetComponentTypeId() noexcept
-{
+TypeId GetComponentTypeId() noexcept {
 	static_assert(std::is_base_of<Component, T>::value, "T must be a Component.");
 
 	return TypeInfo<Component>::GetTypeId<T>();

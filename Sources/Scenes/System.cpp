@@ -4,20 +4,16 @@
 #include "Scene.hpp"
 #include "System.hpp"
 
-namespace ecs
-{
-void System::DetachAll()
-{
+namespace acid {
+void System::DetachAll() {
 	// Enabled Entities.
-	for (auto &entity : m_enabledEntities)
-	{
+	for (auto &entity : m_enabledEntities) {
 		OnEntityDisable(entity);
 		OnEntityDetach(entity);
 	}
 
 	// Disabled Entities.
-	for (auto &entity : m_disabledEntities)
-	{
+	for (auto &entity : m_disabledEntities) {
 		OnEntityDetach(entity);
 	}
 
@@ -27,10 +23,8 @@ void System::DetachAll()
 	m_status.clear();
 }
 
-void System::AttachEntity(const Entity &entity)
-{
-	if (GetEntityStatus(entity) == EntityStatus::NotAttached)
-	{
+void System::AttachEntity(const Entity &entity) {
+	if (GetEntityStatus(entity) == EntityStatus::NotAttached) {
 		// Add Entity to the Disabled list. The Entity is not enabled by default.
 		m_disabledEntities.emplace_back(entity);
 
@@ -39,20 +33,15 @@ void System::AttachEntity(const Entity &entity)
 	}
 }
 
-void System::DetachEntity(const Entity &entity)
-{
-	const auto status{GetEntityStatus(entity)};
+void System::DetachEntity(const Entity &entity) {
+	const auto status = GetEntityStatus(entity);
 
-	if (status != EntityStatus::NotAttached)
-	{
-		if (status == EntityStatus::Enabled)
-		{
+	if (status != EntityStatus::NotAttached) {
+		if (status == EntityStatus::Enabled) {
 			// Remove Entity from Enabled list.
 			m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
 			OnEntityDisable(entity);
-		}
-		else
-		{
+		} else {
 			// Remove Entity from Disabled list.
 			m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
 		}
@@ -62,10 +51,8 @@ void System::DetachEntity(const Entity &entity)
 	}
 }
 
-void System::EnableEntity(const Entity &entity)
-{
-	if (GetEntityStatus(entity) == EntityStatus::Disabled)
-	{
+void System::EnableEntity(const Entity &entity) {
+	if (GetEntityStatus(entity) == EntityStatus::Disabled) {
 		// Remove Entity from Disabled list.
 		m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
 
@@ -77,10 +64,8 @@ void System::EnableEntity(const Entity &entity)
 	}
 }
 
-void System::DisableEntity(const Entity &entity)
-{
-	if (GetEntityStatus(entity) == EntityStatus::Enabled)
-	{
+void System::DisableEntity(const Entity &entity) {
+	if (GetEntityStatus(entity) == EntityStatus::Enabled) {
 		// Remove Entity from Enabled list.
 		m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
 
@@ -92,74 +77,57 @@ void System::DisableEntity(const Entity &entity)
 	}
 }
 
-Scene &System::GetScene()
-{
-	if (!m_scene.has_value())
-	{
-		throw std::runtime_error{"System is not attached to any Scene"};
+Scene &System::GetScene() {
+	if (!m_scene.has_value()) {
+		throw std::runtime_error("System is not attached to any Scene");
 	}
 
 	return m_scene.value();
 }
 
-const Scene &System::GetScene() const
-{
-	if (!m_scene.has_value())
-	{
-		throw std::runtime_error{"System is not attached to any Scene"};
+const Scene &System::GetScene() const {
+	if (!m_scene.has_value()) {
+		throw std::runtime_error("System is not attached to any Scene");
 	}
 
 	return m_scene.value();
 }
 
-void System::OnStart()
-{
+void System::OnStart() {
 }
 
-void System::OnShutdown()
-{
+void System::OnShutdown() {
 }
 
-void System::OnEntityAttach(Entity entity)
-{
+void System::OnEntityAttach(Entity entity) {
 }
 
-void System::OnEntityDetach(Entity entity)
-{
+void System::OnEntityDetach(Entity entity) {
 }
 
-void System::OnEntityEnable(Entity entity)
-{
+void System::OnEntityEnable(Entity entity) {
 }
 
-void System::OnEntityDisable(Entity entity)
-{
+void System::OnEntityDisable(Entity entity) {
 }
 
-void System::Update(const float &delta)
-{
+void System::Update(float delta) {
 }
 
-System::EntityStatus System::GetEntityStatus(const Entity::Id &id) const
-{
-	const auto it{m_status.find(id)};
+System::EntityStatus System::GetEntityStatus(Entity::Id id) const {
+	const auto it = m_status.find(id);
 
-	if (it != m_status.end())
-	{
+	if (it != m_status.end()) {
 		return it->second;
 	}
 
 	return EntityStatus::NotAttached;
 }
 
-void System::SetEntityStatus(const Entity::Id &id, const EntityStatus &status)
-{
-	if (status == EntityStatus::NotAttached)
-	{
+void System::SetEntityStatus(Entity::Id id, const EntityStatus &status) {
+	if (status == EntityStatus::NotAttached) {
 		m_status.erase(id);
-	}
-	else
-	{
+	} else {
 		m_status[id] = status;
 	}
 }

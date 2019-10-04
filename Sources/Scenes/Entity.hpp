@@ -4,19 +4,16 @@
 #include "Helpers/Reference.hpp"
 #include "Component.hpp"
 
-namespace ecs
-{
+namespace acid {
 class Scene;
 
-class Entity
-{
+class Entity {
 public:
 	// Entity ID type.
 	using Id = std::size_t;
 
 	Entity() = default;
-
-	Entity(const Id &id, Scene &scene);
+	Entity(Id id, Scene &scene);
 
 	~Entity() = default;
 
@@ -104,26 +101,22 @@ public:
 	void Remove();
 
 	bool operator==(const Entity &other) const;
-
 	bool operator!=(const Entity &other) const;
 
 private:
 	// Entity ID.
-	Id m_id{};
+	Id m_id = 0;
 
 	// The Scene that this Entity belongs to.
 	std::optional<Reference<Scene>> m_scene;
 };
 }
 
-namespace std
-{
+namespace std {
 template<>
-struct hash<ecs::Entity>
-{
-	size_t operator()(const ecs::Entity &entity) const noexcept
-	{
-		return hash<ecs::Entity::Id>()(entity.GetId());
+struct hash<acid::Entity> {
+	size_t operator()(const acid::Entity &entity) const noexcept {
+		return hash<acid::Entity::Id>()(entity.GetId());
 	}
 };
 }

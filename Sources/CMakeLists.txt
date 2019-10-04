@@ -1,12 +1,4 @@
-file(GLOB_RECURSE ECS_HEADER_FILES 
-		"${CMAKE_SOURCE_DIR}/Sources/*.hpp" 
-		"${CMAKE_SOURCE_DIR}/Sources/*.inl"
-		)
-file(GLOB_RECURSE ECS_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Sources/*.cpp")
-set(ECS_SOURCES
-		${ECS_HEADER_FILES}
-		${ECS_SOURCE_FILES}
-		)
+file(GLOB_RECURSE ECS_SOURCES "${CMAKE_SOURCE_DIR}/Sources/*.hpp" "${CMAKE_SOURCE_DIR}/Sources/*.cpp")
 
 add_library(ECS ${ECS_SOURCES})
 

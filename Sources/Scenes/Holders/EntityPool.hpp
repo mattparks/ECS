@@ -1,14 +1,10 @@
 #pragma once
 
-#include <vector>
 #include "Helpers/NonCopyable.hpp"
 #include "Scenes/Entity.hpp"
 
-namespace ecs
-{
-class EntityPool :
-	public NonCopyable
-{
+namespace acid {
+class EntityPool : public NonCopyable {
 public:
 	EntityPool() = default;
 
@@ -24,7 +20,7 @@ public:
 	 * Stores an Entity ID.
 	 * @param id The Entity ID.
 	 */
-	void Store(const Entity::Id &id);
+	void Store(Entity::Id id);
 
 	/**
 	 * Removes all Entity IDs stored within the pool and resets the next Entity ID value.
@@ -36,6 +32,6 @@ private:
 	std::vector<Entity::Id> m_storedIds;
 
 	// The next available Entity ID.
-	Entity::Id m_nextId{};
+	Entity::Id m_nextId = 0;
 };
 }

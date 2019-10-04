@@ -1,28 +1,15 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-#include <utility>
+#include "StdAfx.hpp"
 
-namespace ecs
-{
+namespace acid {
 template<typename T>
-class Reference
-{
+class Reference {
 public:
-	Reference() noexcept :
-		m_reference(nullptr)
-	{
-	}
+	Reference() noexcept = default;
 
 	Reference(T &reference) noexcept :
-		m_reference(std::addressof(reference))
-	{
-	}
-
-	Reference(T *reference) noexcept :
-		m_reference(reference)
-	{
+		m_reference(std::addressof(reference)) {
 	}
 
 	~Reference() = default;
@@ -58,23 +45,20 @@ public:
 	 * @return The invoked result.
 	 */
 	template<typename... Args>
-	std::invoke_result_t<T &, Args...> operator()(Args &&...args) const
-	{
+	std::invoke_result_t<T &, Args...> operator()(Args &&...args) const {
 		return std::invoke(get(), std::forward<Args>(args)...);
 	}
 
-	bool operator==(const Reference &other) const noexcept
-	{
+	bool operator==(const Reference &other) const noexcept {
 		return m_reference == other.m_reference;
 	}
 
-	bool operator!=(const Reference &other) const noexcept
-	{
+	bool operator!=(const Reference &other) const noexcept {
 		return !(*this == other);
 	}
 
 private:
 	// Address of the referenced object.
-	T *m_reference;
+	T *m_reference = nullptr;
 };
 }

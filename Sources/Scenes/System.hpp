@@ -8,11 +8,10 @@
 #include "Holders/ComponentFilter.hpp"
 #include "Entity.hpp"
 
-namespace ecs
-{
-class System :
-	public NonCopyable
-{
+namespace acid {
+class System : public NonCopyable {
+	friend class Scene;
+	friend class SystemHolder;
 public:
 	System() = default;
 
@@ -57,25 +56,15 @@ protected:
 	ComponentFilter &GetFilter() { return m_filter; }
 
 	virtual void OnStart();
-
 	virtual void OnShutdown();
-
 	virtual void OnEntityAttach(Entity entity);
-
 	virtual void OnEntityDetach(Entity entity);
-
 	virtual void OnEntityEnable(Entity entity);
-
 	virtual void OnEntityDisable(Entity entity);
-
-	virtual void Update(const float &delta);
+	virtual void Update(float delta);
 
 private:
-	friend class Scene;
-	friend class SystemHolder;
-
-	enum class EntityStatus
-	{
+	enum class EntityStatus {
 		NotAttached, Enabled, Disabled
 	};
 
@@ -108,14 +97,14 @@ private:
 	 * @param id The Entity ID.
 	 * @return The status.
 	 */
-	EntityStatus GetEntityStatus(const Entity::Id &id) const;
+	EntityStatus GetEntityStatus(Entity::Id id) const;
 
 	/**
 	 * Set Entity status.
 	 * @param id The Entity ID.
 	 * @param status The status.
 	 */
-	void SetEntityStatus(const Entity::Id &id, const EntityStatus &status);
+	void SetEntityStatus(Entity::Id id, const EntityStatus &status);
 
 	// Enabled Entities attached to this System.
 	std::vector<Entity> m_enabledEntities;

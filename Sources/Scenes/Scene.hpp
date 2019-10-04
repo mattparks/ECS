@@ -12,11 +12,9 @@
 #include "Entity.hpp"
 #include "System.hpp"
 
-namespace ecs
-{
+namespace acid {
 class Scene :
-	public NonCopyable
-{
+	public NonCopyable {
 public:
 	Scene() = default;
 
@@ -47,7 +45,7 @@ public:
 	 * @return The System.
 	 */
 	template<typename T, typename... Args>
-	T *AddSystem(const std::size_t &priority = 0, Args &&...args);
+	T *AddSystem(std::size_t priority = 0, Args &&...args);
 
 	/**
 	 * Removes a System.
@@ -79,7 +77,7 @@ public:
 	 * @param id The Entity ID.
 	 * @return The entity.
 	 */
-	std::optional<Entity> GetEntity(const Entity::Id &id) const;
+	std::optional<Entity> GetEntity(Entity::Id id) const;
 
 	/**
 	 * Gets a Entity by name.
@@ -93,45 +91,45 @@ public:
 	 * @param id The Entity ID.
 	 * @return The Entity name.
 	 */
-	std::string GetEntityName(const Entity::Id &id) const;
+	std::string GetEntityName(Entity::Id id) const;
 
 	/**
 	 * Gets whether the Entity is enabled or not.
 	 * @param id The Entity ID.
 	 * @return If the Entity is enabled.
 	 */
-	bool IsEntityEnabled(const Entity::Id &id) const;
+	bool IsEntityEnabled(Entity::Id id) const;
 
 	/**
 	 * Enables a Entity.
 	 * @param id The Entity ID.
 	 */
-	void EnableEntity(const Entity::Id &id);
+	void EnableEntity(Entity::Id id);
 
 	/**
 	 * Disables a Entity.
 	 * @param id The Entity ID.
 	 */
-	void DisableEntity(const Entity::Id &id);
+	void DisableEntity(Entity::Id id);
 
 	/**
 	 * Gets whether an Entity is valid or not.
 	 * @param id The Entity ID.
 	 * @return If the Entity is valid.
 	 */
-	bool IsEntityValid(const Entity::Id &id) const;
+	bool IsEntityValid(Entity::Id id) const;
 
 	/**
 	 * Removes a Entity.
 	 * @param id The Entity ID.
 	 */
-	void RemoveEntity(const Entity::Id &id);
+	void RemoveEntity(Entity::Id id);
 
 	/**
 	 * Refreshes the Entity and Systems list.
 	 * @param id The Entity ID.
 	 */
-	void RefreshEntity(const Entity::Id &id);
+	void RefreshEntity(Entity::Id id);
 
 	/**
 	 * Removes all Entities.
@@ -142,7 +140,7 @@ public:
 	 * Updates the Scene.
 	 * @param delta The time delta between the last update.
 	 */
-	void Update(const float &delta);
+	void Update(float delta);
 
 	/**
 	 * Clears the Scene by removing all Systems and Entities.
@@ -153,17 +151,16 @@ private:
 	friend class Entity;
 	friend class System;
 
-	class EntityAttributes
-	{
+	class EntityAttributes {
 	public:
 		// Entity.
 		Entity m_entity;
 
 		// Is this Entity enabled.
-		bool m_enabled{true};
+		bool m_enabled = true;
 
 		// Is this Entity valid (hasn't been removed).
-		bool m_valid{true};
+		bool m_valid = true;
 
 		// Entity name.
 		std::optional<std::string> m_name;
@@ -172,13 +169,16 @@ private:
 		std::vector<TypeId> m_systems;
 	};
 
-	class EntityAction
-	{
+	class EntityAction {
 	public:
-		enum class Action
-		{
+		enum class Action {
 			Enable, Disable, Remove, Refresh
 		};
+
+		EntityAction(Entity::Id id, Action action) :
+			id(id),
+			action(action) {
+		}
 
 		// Entity ID.
 		Entity::Id id;
@@ -187,8 +187,7 @@ private:
 		Action action;
 	};
 
-	enum class EntityAttachStatus
-	{
+	enum class EntityAttachStatus {
 		Attached, AlreadyAttached, Detached, NotAttached
 	};
 
@@ -207,32 +206,32 @@ private:
 	 * Adds the Entity to the Systems it meets the requirements.
 	 * @param id The Entity ID.
 	 */
-	void ActionEnable(const Entity::Id &id);
+	void ActionEnable(Entity::Id id);
 
 	/**
 	 * Removes the Entity from the Systems it meets the requirements.
 	 * @param id The Entity ID.
 	 */
-	void ActionDisable(const Entity::Id &id);
+	void ActionDisable(Entity::Id id);
 
 	/**
 	 * Removes the Entity data from the World.
 	 * @param id The Entity ID.
 	 */
-	void ActionRemove(const Entity::Id &id);
+	void ActionRemove(Entity::Id id);
 
 	/**
 	 * Attaches the Entity to the Systems it meets the requirements or detach it from the Systems it does not meet the requirements anymore.
 	 * Used after AddComponent and RemoveComponent.
 	 * @param id The Entity ID.
 	 */
-	void ActionRefresh(const Entity::Id &id);
+	void ActionRefresh(Entity::Id id);
 
 	/**
 	 * Extends the Entity and Component arrays.
 	 * @param size The new size.
 	 */
-	void Extend(const std::size_t &size);
+	void Extend(std::size_t size);
 
 	/**
 	 * Checks the requirements the Entity meets for each Systems.
@@ -241,7 +240,7 @@ private:
 	 * @param id The Entity ID.
 	 * @return The attachment status.
 	 */
-	EntityAttachStatus TryEntityAttach(System &system, const TypeId &systemId, const Entity::Id &id);
+	EntityAttachStatus TryEntityAttach(System &system, TypeId systemId, Entity::Id id);
 
 	// List of all Entities.
 	std::vector<EntityAttributes> m_entities;

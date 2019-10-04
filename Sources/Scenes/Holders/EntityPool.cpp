@@ -1,18 +1,13 @@
 #include "EntityPool.hpp"
 
-namespace ecs
-{
-Entity::Id EntityPool::Create()
-{
+namespace acid {
+Entity::Id EntityPool::Create() {
 	Entity::Id id;
 
-	if (m_storedIds.empty())
-	{
+	if (m_storedIds.empty()) {
 		id = m_nextId;
 		++m_nextId;
-	}
-	else
-	{
+	} else {
 		id = m_storedIds.back();
 		m_storedIds.pop_back();
 	}
@@ -20,17 +15,14 @@ Entity::Id EntityPool::Create()
 	return id;
 }
 
-void EntityPool::Store(const Entity::Id &id)
-{
-	if (id < m_nextId)
-	{
+void EntityPool::Store(Entity::Id id) {
+	if (id < m_nextId) {
 		// Cannot store an ID that haven't been generated before.
 		m_storedIds.emplace_back(id);
 	}
 }
 
-void EntityPool::Reset() noexcept
-{
+void EntityPool::Reset() noexcept {
 	m_storedIds.clear();
 	m_nextId = 0;
 }

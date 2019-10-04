@@ -3,10 +3,8 @@
 #include <bitset>
 #include "Scenes/Component.hpp"
 
-namespace ecs
-{
-class ComponentFilter
-{
+namespace acid {
+class ComponentFilter {
 public:
 	using Mask = std::bitset<MAX_COMPONENTS>;
 
@@ -26,8 +24,7 @@ public:
 	 * @tparam T The Component type.
 	 */
 	template<typename T>
-	void Require()
-	{
+	void Require() {
 		m_required.set(GetComponentTypeId<T>());
 		m_excluded.reset(GetComponentTypeId<T>());
 	}
@@ -37,8 +34,7 @@ public:
 	 * @tparam T The Component type.
 	 */
 	template<typename T>
-	void Exclude()
-	{
+	void Exclude() {
 		m_required.reset(GetComponentTypeId<T>());
 		m_excluded.set(GetComponentTypeId<T>());
 	}
@@ -58,8 +54,7 @@ public:
 	 * @tparam T The Component type.
 	 */
 	template<typename T>
-	void Ignore()
-	{
+	void Ignore() {
 		m_required.reset(GetComponentTypeId<T>());
 		m_excluded.reset(GetComponentTypeId<T>());
 	}

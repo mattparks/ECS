@@ -3,26 +3,22 @@
 #include <memory>
 #include "Scene.hpp"
 
-namespace ecs
-{
+namespace acid {
 template<typename T>
-bool Scene::HasSystem() const
-{
+bool Scene::HasSystem() const {
 	return m_systems.HasSystem<T>();
 }
 
 template<typename T>
-T *Scene::GetSystem() const
-{
+T *Scene::GetSystem() const {
 	return m_systems.GetSystem<T>();
 }
 
 template<typename T, typename... Args>
-T *Scene::AddSystem(const std::size_t &priority, Args &&...args)
-{
+T *Scene::AddSystem(std::size_t priority, Args &&...args) {
 	m_systems.AddSystem<T>(priority, std::make_unique<T>(std::forward<Args>(args)...));
 
-	auto system{GetSystem<T>()};
+	auto system = GetSystem<T>();
 	m_newSystems.emplace_back(system);
 
 	// Sets the System Scene.
@@ -31,8 +27,7 @@ T *Scene::AddSystem(const std::size_t &priority, Args &&...args)
 }
 
 template<typename T>
-void Scene::RemoveSystem()
-{
+void Scene::RemoveSystem() {
 	m_systems.RemoveSystem<T>();
 }
 }
