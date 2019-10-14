@@ -1,7 +1,5 @@
 #pragma once
 
-#include "StdAfx.hpp"
-
 namespace acid {
 template<typename Base, class... Args>
 class Factory {
@@ -11,9 +9,14 @@ public:
 	using TCreateMethod = std::function<TCreateReturn(Args...)>;
 	using TRegistryMap = std::unordered_map<std::string, TCreateMethod>;
 
+	virtual ~Factory() = default;
+
 	static TCreateReturn Create(const std::string &name, Args &&... args) {
 		auto it = Registry().find(name);
-		return it == Registry().end() ? nullptr : it->second(std::forward<Args>(args)...);
+		if (it == Registry().end()) {
+			return nullptr;
+		}
+		return it->second(std::forward<Args>(args)...);
 	}
 
 	static TRegistryMap &Registry() {

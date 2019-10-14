@@ -1,6 +1,5 @@
 #include "System.inl"
 
-#include <algorithm>
 #include "Scene.hpp"
 #include "System.hpp"
 

@@ -13,8 +13,9 @@
 #include "System.hpp"
 
 namespace acid {
-class Scene :
-	public NonCopyable {
+class Scene : public NonCopyable {
+	friend class Entity;
+	friend class System;
 public:
 	Scene() = default;
 
@@ -148,9 +149,6 @@ public:
 	void Clear();
 
 private:
-	friend class Entity;
-	friend class System;
-
 	class EntityAttributes {
 	public:
 		// Entity.
