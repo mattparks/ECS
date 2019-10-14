@@ -1,7 +1,5 @@
 #pragma once
 
-#include <optional>
-#include "Helpers/Reference.hpp"
 #include "Component.hpp"
 
 namespace acid {
@@ -13,7 +11,7 @@ public:
 	using Id = std::size_t;
 
 	Entity() = default;
-	Entity(Id id, Scene &scene);
+	Entity(Id id, Scene *scene);
 
 	~Entity() = default;
 
@@ -108,7 +106,7 @@ private:
 	Id m_id = 0;
 
 	// The Scene that this Entity belongs to.
-	std::optional<Reference<Scene>> m_scene;
+	Scene *m_scene = nullptr;
 };
 }
 
@@ -120,3 +118,5 @@ struct hash<acid::Entity> {
 	}
 };
 }
+
+//#include "Entity.inl"

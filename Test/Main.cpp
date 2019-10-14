@@ -1,8 +1,8 @@
 #include <iostream>
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
-#include <Scenes/System.inl>
-#include <Scenes/Scene.inl>
+#include <Scenes/System.hpp>
+#include <Scenes/Scene.hpp>
 
 using namespace acid;
 

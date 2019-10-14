@@ -1,9 +1,5 @@
 #pragma once
 
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
 #include "Helpers/NonCopyable.hpp"
 #include "Helpers/TypeInfo.hpp"
 #include "Holders/ComponentHolder.hpp"
@@ -262,3 +258,5 @@ private:
 	EntityPool m_pool;
 };
 }
+
+#include "Scene.inl"

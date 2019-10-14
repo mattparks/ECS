@@ -1,9 +1,6 @@
-#include "Scene.inl"
-
-#include <iostream>
-#include <exception>
-#include "Entity.inl"
 #include "Scene.hpp"
+
+#include "Entity.inl"
 
 namespace acid {
 Scene::~Scene() {
@@ -20,7 +17,7 @@ Entity Scene::CreateEntity() {
 	// Resize containers if necessary.
 	Extend(id + 1);
 
-	m_entities[id].m_entity = Entity(id, *this);
+	m_entities[id].m_entity = Entity(id, this);
 	m_entities[id].m_enabled = true;
 	m_entities[id].m_valid = true;
 
