@@ -157,22 +157,31 @@ public:
 	}
 };
 
+class TestScene : public Scene {
+public:
+	TestScene() : Scene(nullptr) {}
+	void Start() override {}
+	void Update() override {}
+	bool IsPaused() const override { return false; }
+
+};
+
 int main(int argc, char **argv) {
 	//auto materialDefault = Component::Create("materialDefault");
 	//auto md = static_cast<MaterialDefault *>(materialDefault.get());
 
-	Scene scene;
+	std::unique_ptr<Scene> scene = std::make_unique<TestScene>();
 
-	scene.AddSystem<PhysicsSystem>();
-	scene.AddSystem<MeshSystem>();
+	scene->AddSystem<PhysicsSystem>();
+	scene->AddSystem<MeshSystem>();
 
-	if (auto meshSystem = scene.GetSystem<MeshSystem>()) {
+	if (auto meshSystem = scene->GetSystem<MeshSystem>()) {
 		std::cout << "Scene has mesh system\n";
 	}
 
-	auto entitySphere = scene.CreateEntity("sphere");
+	auto entitySphere = scene->CreateEntity("sphere");
 
-	auto entitySphereRef = *scene.GetEntity("sphere");
+	auto entitySphereRef = *scene->GetEntity("sphere");
 	entitySphereRef.AddComponent<Transform>();
 	entitySphereRef.AddComponent<Rigidbody>(std::make_unique<ColliderSphere>(2.0f));
 	entitySphereRef.AddComponent<Mesh>(std::make_unique<Model>("Sphere.obj"), std::make_unique<MaterialDefault>());
@@ -182,14 +191,14 @@ int main(int argc, char **argv) {
 		std::cout << "Entity has mesh\n";
 	}
 
-	auto entitySkybox = scene.CreateEntity();
+	auto entitySkybox = scene->CreateEntity();
 	entitySkybox.AddComponent<Transform>();
 	entitySkybox.AddComponent<Mesh>(std::make_unique<Model>("Cube.obj"), std::make_unique<MaterialSkybox>());
 
-	scene.Update(1.0f / 60.0f);
+	scene->Update(1.0f / 60.0f);
 	//entitySkybox.Remove();
 	entitySkybox.RemoveComponent<Transform>();
-	scene.Update(1.0f / 60.0f);
+	scene->Update(1.0f / 60.0f);
 
 	// Pauses the console.
 	std::cout << "Press enter to continue...";

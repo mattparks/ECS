@@ -5,17 +5,45 @@
 #include "Holders/ComponentHolder.hpp"
 #include "Holders/EntityPool.hpp"
 #include "Holders/SystemHolder.hpp"
+#include "Camera.hpp"
 #include "Entity.hpp"
 #include "System.hpp"
 
 namespace acid {
 class Scene : public NonCopyable {
+	friend class Scenes;
 	friend class Entity;
 	friend class System;
 public:
-	Scene() = default;
+	/**
+	 * Creates a new scene.
+	 * @param camera The scenes camera.
+	 */
+	explicit Scene(std::unique_ptr<Camera> &&camera);
 
-	~Scene();
+	virtual ~Scene();
+
+	/**
+	 * Run when switching to this scene from another.
+	 */
+	virtual void Start() = 0;
+
+	/**
+	 * Run when updating the scene.
+	 */
+	virtual void Update() = 0;
+
+	/**
+	 * Gets if the scene is paused.
+	 * @return If the scene is paused.
+	 */
+	virtual bool IsPaused() const = 0;
+
+	/**
+	 * Gets the current camera object.
+	 * @return The current camera.
+	 */
+	Camera *GetCamera() const { return m_camera.get(); }
 
 	/**
 	 * Checks whether a System exists or not.
@@ -68,6 +96,13 @@ public:
 	 * @return The Entity.
 	 */
 	Entity CreateEntity(const std::string &name);
+
+	/**
+	 * Creates a new Entity from a prefab.
+	 * @param filename The Entity prefab file.
+	 * @return The Entity.
+	 */
+	Entity CreatePrefabEntity(const std::string &filename);
 
 	/**
 	 * Gets a Entity by ID.
@@ -235,6 +270,12 @@ private:
 	 * @return The attachment status.
 	 */
 	EntityAttachStatus TryEntityAttach(System &system, TypeId systemId, Entity::Id id);
+
+	// If this scene object has been started yet.
+	bool m_started = false;
+
+	// The camera of this scene.
+	std::unique_ptr<Camera> m_camera;
 
 	// List of all Entities.
 	std::vector<EntityAttributes> m_entities;

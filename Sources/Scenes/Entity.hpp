@@ -54,6 +54,15 @@ public:
 	T *AddComponent(Args &&...args);
 
 	/**
+	 * Adds the Component to the Entity.
+	 * @tparam T The Component type.
+	 * @param component The component to add to the Entity.
+	 * @return The Component.
+	 */
+	template<typename T>
+	T *AddComponent(std::unique_ptr<T> &&component);
+
+	/**
 	 * Removes the Component from the Entity.
 	 * @tparam T The Component type.
 	 */

@@ -3,6 +3,10 @@
 #include "Entity.inl"
 
 namespace acid {
+Scene::Scene(std::unique_ptr<Camera> &&camera) :
+	m_camera(std::move(camera)) {
+}
+
 Scene::~Scene() {
 	Clear();
 }
@@ -36,6 +40,14 @@ Entity Scene::CreateEntity(const std::string &name) {
 	m_names[name] = entity.GetId();
 	m_entities[entity.GetId()].m_name = name;
 
+	return entity;
+}
+
+Entity Scene::CreatePrefabEntity(const std::string &filename) {
+	auto entity = CreateEntity();
+	// TODO
+	//auto prefab = EntityPrefab(filename);
+	//prefab >> entity;
 	return entity;
 }
 
