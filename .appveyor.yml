@@ -1,4 +1,4 @@
-version: 0.0.1{build}
+version: '0.0.2{build}'
 
 clone_depth: 5
 
@@ -37,10 +37,18 @@ install:
   - appveyor DownloadFile %NINJA_URL% -FileName ninja.zip
   - 7z x ninja.zip -oC:\ninja > nul
   - set PATH=C:\ninja;%PATH%
-  - ninja --version
 
 build_script:
   - call "%MSVC_HOME%\VC\Auxiliary\Build\vcvarsall.bat" %ARCHITECTURE%
   - mkdir Build\%BUILD_OUT% && cd Build\%BUILD_OUT%
-  - cmake ../../ -GNinja -DCMAKE_BUILD_TYPE=%CFG% -DACID_LINK_RESOURCES=OFF
+  - cmake ../../ -GNinja -DCMAKE_BUILD_TYPE=%CFG%
   - ninja
+  - cd ../../
+  
+after_build:
+  - mkdir Artifacts\%CFG%_%ARCHITECTURE%
+  - xcopy Build\%BUILD_OUT%\bin Artifacts\%CFG%_%ARCHITECTURE%\ /s/h/e/k/f/c
+
+artifacts:
+  - path: Artifacts\%CFG%_%ARCHITECTURE%\
+    name: "Acid Examples $(appveyor_build_version) (%CFG% %ARCHITECTURE%)"

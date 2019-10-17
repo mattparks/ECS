@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Helpers/NonCopyable.hpp"
+#include "Helpers/Delegate.hpp"
 #include "Helpers/TypeInfo.hpp"
 #include "Holders/ComponentHolder.hpp"
 #include "Holders/EntityPool.hpp"
@@ -10,7 +10,7 @@
 #include "System.hpp"
 
 namespace acid {
-class Scene : public NonCopyable {
+class ACID_EXPORT Scene : public virtual Observer {
 	friend class Scenes;
 	friend class Entity;
 	friend class System;

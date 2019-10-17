@@ -5,7 +5,7 @@
 namespace acid {
 class Scene;
 
-class Entity {
+class ACID_EXPORT Entity {
 public:
 	// Entity ID type.
 	using Id = std::size_t;

@@ -6,7 +6,7 @@
 #include "Entity.hpp"
 
 namespace acid {
-class System : public NonCopyable {
+class ACID_EXPORT System : public NonCopyable {
 	friend class Scene;
 	friend class SystemHolder;
 public:

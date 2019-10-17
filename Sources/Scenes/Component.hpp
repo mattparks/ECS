@@ -7,7 +7,7 @@ namespace acid {
 // The maximum number of Components an Entity can holds.
 constexpr std::size_t MAX_COMPONENTS = 64;
 
-class Component : public Factory<Component> {
+class ACID_EXPORT Component : public Factory<Component> {
 };
 
 /**
