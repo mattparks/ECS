@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Helpers/NonCopyable.hpp"
-#include "Helpers/TypeInfo.hpp"
+#include "Utils/NonCopyable.hpp"
+#include "Utils/TypeInfo.hpp"
 #include "Holders/ComponentFilter.hpp"
 #include "Entity.hpp"
 
@@ -31,20 +31,20 @@ public:
 	 * Gets Entities attached to this System.
 	 * @return The Entities.
 	 */
-	const std::vector<Entity> &GetEntities() const { return m_enabledEntities; }
+	const std::vector<Entity> &GetEntities() const { return enabledEntities; }
 
 	/**
 	 * Gets the Scene that the System belongs to.
 	 * @return The Scene.
 	 */
-	const Scene *GetScene() const { return m_scene; }
+	const Scene *GetScene() const { return scene; }
 
 protected:
 	/**
 	 * Gets the component filter.
 	 * @return The component filter.
 	 */
-	ComponentFilter &GetFilter() { return m_filter; }
+	ComponentFilter &GetFilter() { return filter; }
 
 	virtual void OnStart();
 	virtual void OnShutdown();
@@ -97,20 +97,20 @@ private:
 	 */
 	void SetEntityStatus(Entity::Id id, const EntityStatus &status);
 
-	// Enabled Entities attached to this System.
-	std::vector<Entity> m_enabledEntities;
+	/// Enabled Entities attached to this System.
+	std::vector<Entity> enabledEntities;
 
-	// Disabled Entities attached to this System.
-	std::vector<Entity> m_disabledEntities;
+	/// Disabled Entities attached to this System.
+	std::vector<Entity> disabledEntities;
 
-	// Entities attach and enable status.
-	std::unordered_map<Entity::Id, EntityStatus> m_status;
+	/// Entities attach and enable status.
+	std::unordered_map<Entity::Id, EntityStatus> status;
 
-	// The Scene that this System belongs to.
-	Scene *m_scene = nullptr;
+	/// The Scene that this System belongs to.
+	Scene *scene = nullptr;
 
-	// The mask that the Entities must matched to be attached to this System.
-	ComponentFilter m_filter;
+	/// The mask that the Entities must matched to be attached to this System.
+	ComponentFilter filter;
 };
 
 // Get the Type ID for the System T

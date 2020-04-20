@@ -6,26 +6,26 @@
 namespace acid {
 void System::DetachAll() {
 	// Enabled Entities.
-	for (auto &entity : m_enabledEntities) {
+	for (auto &entity : enabledEntities) {
 		OnEntityDisable(entity);
 		OnEntityDetach(entity);
 	}
 
 	// Disabled Entities.
-	for (auto &entity : m_disabledEntities) {
+	for (auto &entity : disabledEntities) {
 		OnEntityDetach(entity);
 	}
 
-	m_enabledEntities.clear();
-	m_disabledEntities.clear();
+	enabledEntities.clear();
+	disabledEntities.clear();
 
-	m_status.clear();
+	status.clear();
 }
 
 void System::AttachEntity(const Entity &entity) {
 	if (GetEntityStatus(entity) == EntityStatus::NotAttached) {
 		// Add Entity to the Disabled list. The Entity is not enabled by default.
-		m_disabledEntities.emplace_back(entity);
+		disabledEntities.emplace_back(entity);
 
 		OnEntityAttach(entity);
 		SetEntityStatus(entity, EntityStatus::Disabled);
@@ -38,11 +38,11 @@ void System::DetachEntity(const Entity &entity) {
 	if (status != EntityStatus::NotAttached) {
 		if (status == EntityStatus::Enabled) {
 			// Remove Entity from Enabled list.
-			m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
+			enabledEntities.erase(std::remove(enabledEntities.begin(), enabledEntities.end(), entity), enabledEntities.end());
 			OnEntityDisable(entity);
 		} else {
 			// Remove Entity from Disabled list.
-			m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
+			disabledEntities.erase(std::remove(disabledEntities.begin(), disabledEntities.end(), entity), disabledEntities.end());
 		}
 
 		OnEntityDetach(entity);
@@ -53,10 +53,10 @@ void System::DetachEntity(const Entity &entity) {
 void System::EnableEntity(const Entity &entity) {
 	if (GetEntityStatus(entity) == EntityStatus::Disabled) {
 		// Remove Entity from Disabled list.
-		m_disabledEntities.erase(std::remove(m_disabledEntities.begin(), m_disabledEntities.end(), entity), m_disabledEntities.end());
+		disabledEntities.erase(std::remove(disabledEntities.begin(), disabledEntities.end(), entity), disabledEntities.end());
 
 		// Then, add it to the Enabled list.
-		m_enabledEntities.emplace_back(entity);
+		enabledEntities.emplace_back(entity);
 
 		OnEntityEnable(entity);
 		SetEntityStatus(entity, EntityStatus::Enabled);
@@ -66,10 +66,10 @@ void System::EnableEntity(const Entity &entity) {
 void System::DisableEntity(const Entity &entity) {
 	if (GetEntityStatus(entity) == EntityStatus::Enabled) {
 		// Remove Entity from Enabled list.
-		m_enabledEntities.erase(std::remove(m_enabledEntities.begin(), m_enabledEntities.end(), entity), m_enabledEntities.end());
+		enabledEntities.erase(std::remove(enabledEntities.begin(), enabledEntities.end(), entity), enabledEntities.end());
 
 		// Then, add it to the Disabled list.
-		m_disabledEntities.emplace_back(entity);
+		disabledEntities.emplace_back(entity);
 
 		OnEntityDisable(entity);
 		SetEntityStatus(entity, EntityStatus::Disabled);
@@ -98,9 +98,9 @@ void System::Update(float delta) {
 }
 
 System::EntityStatus System::GetEntityStatus(Entity::Id id) const {
-	const auto it = m_status.find(id);
+	const auto it = status.find(id);
 
-	if (it != m_status.end()) {
+	if (it != status.end()) {
 		return it->second;
 	}
 
@@ -109,9 +109,9 @@ System::EntityStatus System::GetEntityStatus(Entity::Id id) const {
 
 void System::SetEntityStatus(Entity::Id id, const EntityStatus &status) {
 	if (status == EntityStatus::NotAttached) {
-		m_status.erase(id);
+		this->status.erase(id);
 	} else {
-		m_status[id] = status;
+		this->status[id] = status;
 	}
 }
 }

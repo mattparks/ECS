@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Helpers/Delegate.hpp"
-#include "Helpers/TypeInfo.hpp"
+#include "Utils/Delegate.hpp"
+#include "Utils/TypeInfo.hpp"
 #include "Holders/ComponentHolder.hpp"
 #include "Holders/EntityPool.hpp"
 #include "Holders/SystemHolder.hpp"
@@ -20,7 +20,6 @@ public:
 	 * @param camera The scenes camera.
 	 */
 	explicit Scene(std::unique_ptr<Camera> &&camera);
-
 	virtual ~Scene();
 
 	/**
@@ -43,7 +42,7 @@ public:
 	 * Gets the current camera object.
 	 * @return The current camera.
 	 */
-	Camera *GetCamera() const { return m_camera.get(); }
+	Camera *GetCamera() const { return camera.get(); }
 
 	/**
 	 * Checks whether a System exists or not.
@@ -182,20 +181,20 @@ public:
 private:
 	class EntityAttributes {
 	public:
-		// Entity.
-		Entity m_entity;
+		/// Entity.
+		Entity entity;
 
-		// Is this Entity enabled.
-		bool m_enabled = true;
+		/// Is this Entity enabled.
+		bool enabled = true;
 
-		// Is this Entity valid (hasn't been removed).
-		bool m_valid = true;
+		/// Is this Entity valid (hasn't been removed).
+		bool valid = true;
 
-		// Entity name.
-		std::optional<std::string> m_name;
+		/// Entity name.
+		std::optional<std::string> name;
 
-		// The Systems this Entity is attached.
-		std::vector<TypeId> m_systems;
+		/// The Systems this Entity is attached.
+		std::vector<TypeId> systems;
 	};
 
 	class EntityAction {
@@ -209,10 +208,10 @@ private:
 			action(action) {
 		}
 
-		// Entity ID.
+		/// Entity ID.
 		Entity::Id id;
 
-		// Action to perform on this Entity.
+		/// Action to perform on this Entity.
 		Action action;
 	};
 
@@ -271,32 +270,32 @@ private:
 	 */
 	EntityAttachStatus TryEntityAttach(System &system, TypeId systemId, Entity::Id id);
 
-	// If this scene object has been started yet.
-	bool m_started = false;
+	/// If this scene object has been started yet.
+	bool started = false;
 
-	// The camera of this scene.
-	std::unique_ptr<Camera> m_camera;
+	/// The camera of this scene.
+	std::unique_ptr<Camera> camera;
 
-	// List of all Entities.
-	std::vector<EntityAttributes> m_entities;
+	/// List of all Entities.
+	std::vector<EntityAttributes> entities;
 
-	// List of Entities that have been modified.
-	std::vector<EntityAction> m_actions;
+	/// List of Entities that have been modified.
+	std::vector<EntityAction> actions;
 
-	// List of all Entity names, associated to their Entities, for faster search.
-	std::unordered_map<std::string, Entity::Id> m_names;
+	/// List of all Entity names, associated to their Entities, for faster search.
+	std::unordered_map<std::string, Entity::Id> names;
 
-	// List of all Components of all Entities of the Scene.
-	ComponentHolder m_components;
+	/// List of all Components of all Entities of the Scene.
+	ComponentHolder components;
 
-	// List of all Systems of the Scene.
-	SystemHolder m_systems;
+	/// List of all Systems of the Scene.
+	SystemHolder systems;
 
-	// List of all System waiting to be started.
-	std::vector<System *> m_newSystems;
+	/// List of all System waiting to be started.
+	std::vector<System *> newSystems;
 
-	// Entity ID Pool.
-	EntityPool m_pool;
+	/// Entity ID Pool.
+	EntityPool pool;
 };
 }
 

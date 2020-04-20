@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Helpers/TypeInfo.hpp"
-#include "Helpers/Factory.hpp"
+#include "Utils/TypeInfo.hpp"
+#include "Utils/Factory.hpp"
+
+#include "Export.hpp"
 
 namespace acid {
 // The maximum number of Components an Entity can holds.

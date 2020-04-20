@@ -1,4 +1,5 @@
-#include <iostream>
+#include <filesystem>
+
 #include <Scenes/Component.hpp>
 #include <Scenes/Entity.inl>
 #include <Scenes/System.hpp>
@@ -8,9 +9,9 @@ using namespace acid;
 
 class Transform : public Component::Registrar<Transform> {
 public:
-	float m_x = 0.0f, m_y = 0.0f, m_z = 0.0f;
-	float m_pitch = 0.0f, m_yaw = 0.0f, m_roll = 0.0f;
-	float m_scale = 0.0f;
+	float x = 0.0f, y = 0.0f, z = 0.0f;
+	float pitch = 0.0f, yaw = 0.0f, roll = 0.0f;
+	float scale = 0.0f;
 
 private:
 	static inline bool registered = Register("transform");
@@ -18,38 +19,38 @@ private:
 
 class Collider {
 public:
-	const Transform &GetLocalTransform() const { return m_localTransform; }
+	const Transform &GetLocalTransform() const { return localTransform; }
 	virtual void SetLocalTransform(const Transform &localTransform) = 0;
 
 protected:
-	Transform m_localTransform;
+	Transform localTransform;
 };
 
 class ColliderSphere : public Collider {
 public:
 	explicit ColliderSphere(float radius) :
-		m_radius(radius) {
+		radius(radius) {
 	}
 
 	void SetLocalTransform(const Transform &localTransform) override {
-		std::cout << "Sphere r=" << m_radius << " set local transform value\n";
-		m_localTransform = localTransform;
+		std::cout << "Sphere r=" << radius << " set local transform value\n";
+		this->localTransform = localTransform;
 	}
 
-	float m_radius;
+	float radius;
 };
 
 class Rigidbody : public Component::Registrar<Rigidbody> {
 public:
 	Rigidbody() = default;
 	explicit Rigidbody(std::unique_ptr<Collider> && collider) {
-		m_colliders.emplace_back(std::move(collider));
+		colliders.emplace_back(std::move(collider));
 	}
 	explicit Rigidbody(std::vector<std::unique_ptr<Collider>> &&colliders) :
-		m_colliders(std::move(colliders)) {
+		colliders(std::move(colliders)) {
 	}
 	
-	std::vector<std::unique_ptr<Collider>> m_colliders;
+	std::vector<std::unique_ptr<Collider>> colliders;
 
 	static inline bool registered = Register("rigidbody");
 };
@@ -64,11 +65,11 @@ public:
 	void Update(float delta) override {
 		ForEach([](Entity entity) {
 			if (auto rigidbody = entity.GetComponent<Rigidbody>()) {
-				rigidbody->m_colliders[0]->SetLocalTransform(*entity.GetComponent<Transform>());
+				rigidbody->colliders[0]->SetLocalTransform(*entity.GetComponent<Transform>());
 			}
 		});
 		/*ForEach([](Entity entity, Transform *transform, Rigidbody *rigidbody) {
-			rigidbody->m_colliders[0]->SetLocalTransform(*transform);
+			rigidbody->colliders[0]->SetLocalTransform(*transform);
 		});*/
 	}
 };
@@ -76,19 +77,19 @@ public:
 class Model {
 public:
 	explicit Model(std::filesystem::path filename) :
-		m_filename(std::move(filename)) {
+		filename(std::move(filename)) {
 	}
 
-	std::filesystem::path m_filename;
+	std::filesystem::path filename;
 };
 
 class Material {
 public:
 	explicit Material(float pipeline) :
-		m_pipeline(pipeline) {
+		pipeline(pipeline) {
 	}
 
-	float m_pipeline;
+	float pipeline;
 };
 
 class MaterialDefault : public Material {
@@ -135,19 +136,19 @@ public:
 	}
 
 	void OnEntityAttach(Entity entity) override {
-		std::cout << "Entity attached: " << entity.GetComponent<Mesh>()->material->m_pipeline << '\n';
+		std::cout << "Entity attached: " << entity.GetComponent<Mesh>()->material->pipeline << '\n';
 	}
 
 	void OnEntityDetach(Entity entity) override {
-		std::cout << "Entity detached: " << entity.GetComponent<Mesh>()->material->m_pipeline << '\n';
+		std::cout << "Entity detached: " << entity.GetComponent<Mesh>()->material->pipeline << '\n';
 	}
 
 	void OnEntityEnable(Entity entity) override {
-		std::cout << "Entity enabled: " << entity.GetComponent<Mesh>()->material->m_pipeline << '\n';
+		std::cout << "Entity enabled: " << entity.GetComponent<Mesh>()->material->pipeline << '\n';
 	}
 
 	void OnEntityDisable(Entity entity) override {
-		std::cout << "Entity disabled: " << entity.GetComponent<Mesh>()->material->m_pipeline << '\n';
+		std::cout << "Entity disabled: " << entity.GetComponent<Mesh>()->material->pipeline << '\n';
 	}
 
 	void Update(float delta) override {

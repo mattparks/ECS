@@ -9,7 +9,6 @@ public:
 	using Mask = std::bitset<MAX_COMPONENTS>;
 
 	ComponentFilter() = default;
-
 	~ComponentFilter() = default;
 
 	/**
@@ -25,8 +24,8 @@ public:
 	 */
 	template<typename T>
 	void Require() {
-		m_required.set(GetComponentTypeId<T>());
-		m_excluded.reset(GetComponentTypeId<T>());
+		required.set(GetComponentTypeId<T>());
+		excluded.reset(GetComponentTypeId<T>());
 	}
 
 	/**
@@ -35,8 +34,8 @@ public:
 	 */
 	template<typename T>
 	void Exclude() {
-		m_required.reset(GetComponentTypeId<T>());
-		m_excluded.set(GetComponentTypeId<T>());
+		required.reset(GetComponentTypeId<T>());
+		excluded.set(GetComponentTypeId<T>());
 	}
 
 	/**
@@ -55,12 +54,12 @@ public:
 	 */
 	template<typename T>
 	void Ignore() {
-		m_required.reset(GetComponentTypeId<T>());
-		m_excluded.reset(GetComponentTypeId<T>());
+		required.reset(GetComponentTypeId<T>());
+		excluded.reset(GetComponentTypeId<T>());
 	}
 
 private:
-	Mask m_required;
-	Mask m_excluded;
+	Mask required;
+	Mask excluded;
 };
 }

@@ -19,13 +19,13 @@ public:
 	 * Casts the Entity into its ID.
 	 * @return The Entity ID.
 	 */
-	operator Id() const noexcept { return m_id; }
+	operator Id() const noexcept { return id; }
 
 	/**
 	 * Gets the Entity ID.
 	 * @return The Entity ID.
 	 */
-	Id GetId() const noexcept { return m_id; }
+	Id GetId() const noexcept { return id; }
 
 	/**
 	 * Checks whether the Entity has the Component or not.
@@ -111,11 +111,11 @@ public:
 	bool operator!=(const Entity &other) const;
 
 private:
-	// Entity ID.
-	Id m_id = 0;
+	/// Entity ID.
+	Id id = 0;
 
-	// The Scene that this Entity belongs to.
-	Scene *m_scene = nullptr;
+	/// The Scene that this Entity belongs to.
+	Scene *scene = nullptr;
 };
 }
 

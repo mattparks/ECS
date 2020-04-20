@@ -4,26 +4,26 @@ namespace acid {
 Entity::Id EntityPool::Create() {
 	Entity::Id id;
 
-	if (m_storedIds.empty()) {
-		id = m_nextId;
-		++m_nextId;
+	if (storedIds.empty()) {
+		id = nextId;
+		++nextId;
 	} else {
-		id = m_storedIds.back();
-		m_storedIds.pop_back();
+		id = storedIds.back();
+		storedIds.pop_back();
 	}
 
 	return id;
 }
 
 void EntityPool::Store(Entity::Id id) {
-	if (id < m_nextId) {
+	if (id < nextId) {
 		// Cannot store an ID that haven't been generated before.
-		m_storedIds.emplace_back(id);
+		storedIds.emplace_back(id);
 	}
 }
 
 void EntityPool::Reset() noexcept {
-	m_storedIds.clear();
-	m_nextId = 0;
+	storedIds.clear();
+	nextId = 0;
 }
 }

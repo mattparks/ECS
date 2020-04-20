@@ -1,5 +1,12 @@
 #pragma once
 
+#include <functional>
+#include <iomanip>
+#include <unordered_map>
+#include <iostream>
+
+//#include "Engine/Log.hpp"
+
 namespace acid {
 template<typename Base, class... Args>
 class Factory {
@@ -14,6 +21,8 @@ public:
 	static TCreateReturn Create(const std::string &name, Args &&... args) {
 		auto it = Registry().find(name);
 		if (it == Registry().end()) {
+			std::cerr << "Failed to create " << std::quoted(name) << " from factory\n";
+			//Log::Error("Failed to create ", std::quoted(name), " from factory\n");
 			return nullptr;
 		}
 		return it->second(std::forward<Args>(args)...);

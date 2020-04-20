@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Helpers/NonCopyable.hpp"
+#include <array>
+
+#include "Utils/NonCopyable.hpp"
 #include "Scenes/Component.hpp"
-#include "ComponentFilter.hpp"
 #include "Scenes/Entity.hpp"
+#include "ComponentFilter.hpp"
 
 namespace acid {
 class ACID_EXPORT ComponentHolder : public NonCopyable {
 public:
 	ComponentHolder() = default;
-
 	~ComponentHolder() = default;
 
 	/**
@@ -21,12 +22,12 @@ public:
 	template<typename T>
 	bool HasComponent(Entity::Id id) const {
 		// Is the Entity ID and the Component type ID known.
-		if (id < m_components.size()) {
+		if (id < components.size()) {
 			auto typeId = GetComponentTypeId<T>();
 
 			// Is the Component type ID known
-			if (typeId < m_components[id].size()) {
-				return m_components[id][typeId] != nullptr;
+			if (typeId < components[id].size()) {
+				return components[id][typeId] != nullptr;
 			}
 		}
 
@@ -46,7 +47,7 @@ public:
 			return nullptr;
 		}
 
-		auto &component = m_components[id][GetComponentTypeId<T>()];
+		auto &component = components[id][GetComponentTypeId<T>()];
 
 		if (!component.get()) {
 			//throw std::runtime_error("Entity does not have requested Component");
@@ -64,18 +65,18 @@ public:
 	 */
 	template<typename T>
 	void AddComponent(Entity::Id id, std::unique_ptr<T> &&component) {
-		if (id >= m_components.size()) {
+		if (id >= components.size()) {
 			throw std::runtime_error("Entity ID is out of range");
 		}
 
 		const auto typeId = GetComponentTypeId<T>();
 
-		if (typeId >= m_components[id].size()) {
+		if (typeId >= components[id].size()) {
 			throw std::runtime_error("Component type ID is out of range");
 		}
 
-		m_components[id][typeId] = std::move(component);
-		m_componentsMasks[id].set(typeId);
+		components[id][typeId] = std::move(component);
+		componentsMasks[id].set(typeId);
 	}
 
 	/**
@@ -89,9 +90,9 @@ public:
 			return;
 		}
 
-		auto &component = m_components[id][GetComponentTypeId<T>()];
+		auto &component = components[id][GetComponentTypeId<T>()];
 		component.reset();
-		m_componentsMasks[id].reset(GetComponentTypeId<T>());
+		componentsMasks[id].reset(GetComponentTypeId<T>());
 	}
 
 	/**
@@ -119,15 +120,15 @@ public:
 	void Clear() noexcept;
 
 private:
-	// The index of this array matches the Component type ID.
+	/// The index of this array matches the Component type ID.
 	using ComponentArray = std::array<std::unique_ptr<Component>, MAX_COMPONENTS>;
 
-	// List of all Components of all Entities.
-	// The index of this array matches the Entity ID.
-	std::vector<ComponentArray> m_components;
+	/// List of all Components of all Entities.
+	/// The index of this array matches the Entity ID.
+	std::vector<ComponentArray> components;
 
-	// List of all masks of all Composents of all Entities.
-	// The index of this array matches the Entity ID.
-	std::vector<ComponentFilter::Mask> m_componentsMasks;
+	/// List of all masks of all Composents of all Entities.
+	/// The index of this array matches the Entity ID.
+	std::vector<ComponentFilter::Mask> componentsMasks;
 };
 }

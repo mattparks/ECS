@@ -1,10 +1,12 @@
 #include "Scene.hpp"
 
+#include <iostream>
+
 #include "Entity.inl"
 
 namespace acid {
 Scene::Scene(std::unique_ptr<Camera> &&camera) :
-	m_camera(std::move(camera)) {
+	camera(std::move(camera)) {
 }
 
 Scene::~Scene() {
@@ -12,33 +14,33 @@ Scene::~Scene() {
 }
 
 void Scene::RemoveAllSystems() {
-	m_systems.RemoveAllSystems();
+	systems.RemoveAllSystems();
 }
 
 Entity Scene::CreateEntity() {
-	const auto id = m_pool.Create();
+	const auto id = pool.Create();
 
 	// Resize containers if necessary.
 	Extend(id + 1);
 
-	m_entities[id].m_entity = Entity(id, this);
-	m_entities[id].m_enabled = true;
-	m_entities[id].m_valid = true;
+	entities[id].entity = Entity(id, this);
+	entities[id].enabled = true;
+	entities[id].valid = true;
 
-	EnableEntity(m_entities[id].m_entity);
+	EnableEntity(entities[id].entity);
 
-	return m_entities[id].m_entity;
+	return entities[id].entity;
 }
 
 Entity Scene::CreateEntity(const std::string &name) {
-	if (m_names.find(name) != m_names.end()) {
+	if (names.find(name) != names.end()) {
 		throw std::runtime_error("Entity name already in use");
 	}
 
 	const auto entity = CreateEntity();
 
-	m_names[name] = entity.GetId();
-	m_entities[entity.GetId()].m_name = name;
+	names[name] = entity.GetId();
+	entities[entity.GetId()].name = name;
 
 	return entity;
 }
@@ -56,13 +58,13 @@ std::optional<Entity> Scene::GetEntity(Entity::Id id) const {
 		return std::nullopt;
 	}
 
-	return m_entities[id].m_entity;
+	return entities[id].entity;
 }
 
 std::optional<Entity> Scene::GetEntity(const std::string &name) const {
-	const auto it = m_names.find(name);
+	const auto it = names.find(name);
 
-	if (it == m_names.end()) {
+	if (it == names.end()) {
 		return std::nullopt;
 	}
 
@@ -74,15 +76,15 @@ std::string Scene::GetEntityName(Entity::Id id) const {
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	if (m_entities[id].m_name.has_value()) {
-		return m_entities[id].m_name.value();
+	if (entities[id].name.has_value()) {
+		return entities[id].name.value();
 	}
 
 	return {};
 }
 
 bool Scene::IsEntityEnabled(Entity::Id id) const {
-	return IsEntityValid(id) && m_entities[id].m_enabled;
+	return IsEntityValid(id) && entities[id].enabled;
 }
 
 void Scene::EnableEntity(Entity::Id id) {
@@ -90,7 +92,7 @@ void Scene::EnableEntity(Entity::Id id) {
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	m_actions.emplace_back(EntityAction(id, EntityAction::Action::Enable));
+	actions.emplace_back(EntityAction(id, EntityAction::Action::Enable));
 }
 
 void Scene::DisableEntity(Entity::Id id) {
@@ -98,11 +100,11 @@ void Scene::DisableEntity(Entity::Id id) {
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	m_actions.emplace_back(EntityAction(id, EntityAction::Action::Disable));
+	actions.emplace_back(EntityAction(id, EntityAction::Action::Disable));
 }
 
 bool Scene::IsEntityValid(Entity::Id id) const {
-	return id < m_entities.size() && m_entities[id].m_valid;
+	return id < entities.size() && entities[id].valid;
 }
 
 void Scene::RemoveEntity(Entity::Id id) {
@@ -110,7 +112,7 @@ void Scene::RemoveEntity(Entity::Id id) {
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	m_actions.emplace_back(EntityAction(id, EntityAction::Action::Remove));
+	actions.emplace_back(EntityAction(id, EntityAction::Action::Remove));
 }
 
 void Scene::RefreshEntity(Entity::Id id) {
@@ -118,28 +120,28 @@ void Scene::RefreshEntity(Entity::Id id) {
 		throw std::runtime_error("Entity ID is not valid");
 	}
 
-	m_actions.emplace_back(EntityAction(id, EntityAction::Action::Refresh));
+	actions.emplace_back(EntityAction(id, EntityAction::Action::Refresh));
 }
 
 void Scene::RemoveAllEntities() {
-	for (const auto &entity : m_entities) {
+	for (const auto &entity : entities) {
 		// We may iterate through invalid entities.
-		if (entity.m_valid) {
-			RemoveEntity(entity.m_entity.GetId());
+		if (entity.valid) {
+			RemoveEntity(entity.entity.GetId());
 		}
 	}
 }
 
 void Scene::Update(float delta) {
 	// Start new Systems
-	for (auto &system : m_newSystems) {
+	for (auto &system : newSystems) {
 		system->OnStart();
 	}
 
-	m_newSystems.clear();
+	newSystems.clear();
 
 	UpdateEntities();
-	m_systems.ForEach([delta](System &system, TypeId) {
+	systems.ForEach([delta](System &system, TypeId) {
 		system.Update(delta);
 	});
 }
@@ -147,19 +149,19 @@ void Scene::Update(float delta) {
 void Scene::Clear() {
 	RemoveAllSystems();
 
-	m_entities.clear();
-	m_actions.clear();
-	m_names.clear();
+	entities.clear();
+	actions.clear();
+	names.clear();
 
-	m_components.Clear();
-	m_pool.Reset();
+	components.Clear();
+	pool.Reset();
 }
 
 void Scene::UpdateEntities() {
-	// Here, we copy m_actions to make possible to create, enable, etc.
+	// Here, we copy actions to make possible to create, enable, etc.
 	// Entities within event handlers like system::onEntityAttached, etc.
-	const auto actionsList = std::move(m_actions);
-	m_actions = decltype(m_actions)();
+	const auto actionsList = std::move(actions);
+	actions = decltype(actions)();
 
 	for (const auto &action : actionsList) {
 		try {
@@ -192,79 +194,79 @@ void Scene::ExecuteAction(const EntityAction &action) {
 }
 
 void Scene::ActionEnable(Entity::Id id) {
-	m_systems.ForEach([&](System &system, TypeId systemId) {
+	systems.ForEach([&](System &system, TypeId systemId) {
 		const auto attachStatus = TryEntityAttach(system, systemId, id);
 
 		if (attachStatus == EntityAttachStatus::AlreadyAttached || attachStatus == EntityAttachStatus::Attached) {
 			// The Entity is attached to the System, it is enabled.
-			system.EnableEntity(m_entities[id].m_entity);
+			system.EnableEntity(entities[id].entity);
 		}
 	});
 }
 
 void Scene::ActionDisable(Entity::Id id) {
-	m_entities[id].m_enabled = false;
+	entities[id].enabled = false;
 
-	m_systems.ForEach([&](System &system, TypeId systemId) {
+	systems.ForEach([&](System &system, TypeId systemId) {
 		// Is the Entity attached to the System?
-		if (systemId < m_entities[id].m_systems.size() && m_entities[id].m_systems[systemId]) {
-			system.DisableEntity(m_entities[id].m_entity);
+		if (systemId < entities[id].systems.size() && entities[id].systems[systemId]) {
+			system.DisableEntity(entities[id].entity);
 		}
 	});
 }
 
 void Scene::ActionRemove(Entity::Id id) {
-	m_systems.ForEach([&](System &system, TypeId systemId) {
+	systems.ForEach([&](System &system, TypeId systemId) {
 		// Is the Entity attached to the System?
-		if (systemId < m_entities[id].m_systems.size() && m_entities[id].m_systems[systemId]) {
-			system.DetachEntity(m_entities[id].m_entity);
-			m_entities[id].m_systems[systemId] = false;
+		if (systemId < entities[id].systems.size() && entities[id].systems[systemId]) {
+			system.DetachEntity(entities[id].entity);
+			entities[id].systems[systemId] = false;
 		}
 	});
 
 	// Invalidate the Entity and reset its attributes.
-	m_entities[id].m_valid = false;
-	m_entities[id].m_systems.clear();
+	entities[id].valid = false;
+	entities[id].systems.clear();
 
 	// Remove its name from the list
-	if (m_entities[id].m_name.has_value()) {
-		m_names.erase(m_entities[id].m_name.value());
-		m_entities[id].m_name.reset();
+	if (entities[id].name.has_value()) {
+		names.erase(entities[id].name.value());
+		entities[id].name.reset();
 	}
 
-	m_components.RemoveAllComponents(id);
-	m_pool.Store(id);
+	components.RemoveAllComponents(id);
+	pool.Store(id);
 }
 
 void Scene::ActionRefresh(Entity::Id id) {
-	m_systems.ForEach([&](System &system, TypeId systemId) {
+	systems.ForEach([&](System &system, TypeId systemId) {
 		const auto attachStatus = TryEntityAttach(system, systemId, id);
 
-		if (m_entities[id].m_enabled && attachStatus == EntityAttachStatus::Attached) {
+		if (entities[id].enabled && attachStatus == EntityAttachStatus::Attached) {
 			// If the Entity has been attached and is enabled, enable it into the System.
-			system.EnableEntity(m_entities[id].m_entity);
+			system.EnableEntity(entities[id].entity);
 		}
 	});
 }
 
 void Scene::Extend(std::size_t size) {
-	if (size > m_entities.size()) {
-		m_entities.resize(size);
-		m_components.Resize(size);
+	if (size > entities.size()) {
+		entities.resize(size);
+		components.Resize(size);
 	}
 }
 
 Scene::EntityAttachStatus Scene::TryEntityAttach(System &system, TypeId systemId, Entity::Id id) {
 	// Does the Entity match the requirements to be part of the System?
-	if (system.GetFilter().Check(m_components.GetComponentsMask(id))) {
+	if (system.GetFilter().Check(components.GetComponentsMask(id))) {
 		// Is the Entity not already attached to the System?
-		if (systemId >= m_entities[id].m_systems.size() || !m_entities[id].m_systems[systemId]) {
-			if (systemId >= m_entities[id].m_systems.size()) {
-				m_entities[id].m_systems.resize(systemId + 1, false);
+		if (systemId >= entities[id].systems.size() || !entities[id].systems[systemId]) {
+			if (systemId >= entities[id].systems.size()) {
+				entities[id].systems.resize(systemId + 1, false);
 			}
 
-			m_entities[id].m_systems[systemId] = true;
-			system.AttachEntity(m_entities[id].m_entity);
+			entities[id].systems[systemId] = true;
+			system.AttachEntity(entities[id].entity);
 
 			// The Entity has been attached to the System.
 			return EntityAttachStatus::Attached;
@@ -275,9 +277,9 @@ Scene::EntityAttachStatus Scene::TryEntityAttach(System &system, TypeId systemId
 	}
 
 	// If the Entity is already attached to the System but doest not match the requirements anymore, we detach it from the System.
-	if (systemId < m_entities[id].m_systems.size() && m_entities[id].m_systems[systemId]) {
-		system.DetachEntity(m_entities[id].m_entity);
-		m_entities[id].m_systems[systemId] = false;
+	if (systemId < entities[id].systems.size() && entities[id].systems[systemId]) {
+		system.DetachEntity(entities[id].entity);
+		entities[id].systems[systemId] = false;
 
 		// The Entity has been detached from the System.
 		return EntityAttachStatus::Detached;

@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Helpers/NonCopyable.hpp"
-#include "Helpers/TypeInfo.hpp"
+#include <map>
+
+#include "Utils/NonCopyable.hpp"
+#include "Utils/TypeInfo.hpp"
 #include "Scenes/System.hpp"
 
 namespace acid {
 class ACID_EXPORT SystemHolder : public NonCopyable {
 public:
 	SystemHolder() = default;
-
 	~SystemHolder();
 
 	/**
@@ -18,9 +19,9 @@ public:
 	 */
 	template<typename T>
 	bool HasSystem() const {
-		const auto it = m_systems.find(GetSystemTypeId<T>());
+		const auto it = systems.find(GetSystemTypeId<T>());
 
-		return it != m_systems.end() && it->second;
+		return it != systems.end() && it->second;
 	}
 
 	/**
@@ -30,9 +31,9 @@ public:
 	 */
 	template<typename T>
 	T *GetSystem() const {
-		auto it = m_systems.find(GetSystemTypeId<T>());
+		auto it = systems.find(GetSystemTypeId<T>());
 
-		if (it == m_systems.end() || !it->second) {
+		if (it == systems.end() || !it->second) {
 			//throw std::runtime_error("Scene does not have requested System");
 			return nullptr;
 		}
@@ -54,10 +55,10 @@ public:
 		const auto typeId = GetSystemTypeId<T>();
 
 		// Insert the priority value
-		m_priorities.insert({priority, typeId});
+		priorities.insert({priority, typeId});
 
 		// Then, add the System
-		m_systems[typeId] = std::move(system);
+		systems[typeId] = std::move(system);
 	}
 
 	/**
@@ -68,9 +69,9 @@ public:
 	void RemoveSystem() {
 		const auto typeId = GetSystemTypeId<T>();
 
-		auto system = m_systems.find(typeId);
+		auto system = systems.find(typeId);
 
-		if (system != m_systems.end() && system->second) {
+		if (system != systems.end() && system->second) {
 			system->second->DetachAll();
 		}
 
@@ -78,7 +79,7 @@ public:
 		RemoveSystemPriority(typeId);
 
 		// Then, remove the System.
-		m_systems.erase(typeId);
+		systems.erase(typeId);
 	}
 
 	/**
@@ -93,8 +94,8 @@ public:
 	 */
 	template<typename Func>
 	void ForEach(Func &&func) {
-		for (const auto &typeId : m_priorities) {
-			if (auto &system = m_systems[typeId.second]) {
+		for (const auto &typeId : priorities) {
+			if (auto &system = systems[typeId.second]) {
 				try {
 					func(*system, typeId.second);
 				} catch (const std::exception & e) {
@@ -105,13 +106,13 @@ public:
 	}
 
 private:
-	// Remove System from the priority list.
+	/// Remove System from the priority list.
 	void RemoveSystemPriority(TypeId id);
 
-	// List of all Systems.
-	std::unordered_map<TypeId, std::unique_ptr<System>> m_systems;
+	/// List of all Systems.
+	std::unordered_map<TypeId, std::unique_ptr<System>> systems;
 
-	// List of systems priorities.
-	std::multimap<std::size_t, TypeId, std::greater<>> m_priorities;
+	/// List of systems priorities.
+	std::multimap<std::size_t, TypeId, std::greater<>> priorities;
 };
 }

@@ -4,41 +4,41 @@
 
 namespace acid {
 Entity::Entity(Id id, Scene *scene) :
-	m_id(id),
-	m_scene(scene) {
+	id(id),
+	scene(scene) {
 }
 
 void Entity::RemoveAllComponents() {
-	m_scene->m_components.RemoveAllComponents(m_id);
-	m_scene->RefreshEntity(m_id);
+	scene->components.RemoveAllComponents(id);
+	scene->RefreshEntity(id);
 }
 
 std::string Entity::GetName() const {
-	return m_scene->GetEntityName(m_id);
+	return scene->GetEntityName(id);
 }
 
 bool Entity::IsEnabled() const {
-	return m_scene->IsEntityEnabled(m_id);
+	return scene->IsEntityEnabled(id);
 }
 
 void Entity::Enable() {
-	m_scene->EnableEntity(m_id);
+	scene->EnableEntity(id);
 }
 
 void Entity::Disable() {
-	m_scene->DisableEntity(m_id);
+	scene->DisableEntity(id);
 }
 
 bool Entity::IsValid() const {
-	return m_scene && m_scene->IsEntityValid(m_id);
+	return scene && scene->IsEntityValid(id);
 }
 
 void Entity::Remove() {
-	m_scene->RemoveEntity(m_id);
+	scene->RemoveEntity(id);
 }
 
 bool Entity::operator==(const Entity &other) const {
-	return m_id == other.m_id && m_scene == other.m_scene;
+	return id == other.id && scene == other.scene;
 }
 
 bool Entity::operator!=(const Entity &other) const {

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Helpers/NonCopyable.hpp"
+#include "Utils/NonCopyable.hpp"
 #include "Scenes/Entity.hpp"
 
 namespace acid {
 class ACID_EXPORT EntityPool : public NonCopyable {
 public:
 	EntityPool() = default;
-
 	~EntityPool() = default;
 
 	/**
@@ -28,10 +27,10 @@ public:
 	void Reset() noexcept;
 
 private:
-	// List of stored Entities IDs that are not in use.
-	std::vector<Entity::Id> m_storedIds;
+	/// List of stored Entities IDs that are not in use.
+	std::vector<Entity::Id> storedIds;
 
-	// The next available Entity ID.
-	Entity::Id m_nextId = 0;
+	/// The next available Entity ID.
+	Entity::Id nextId = 0;
 };
 }

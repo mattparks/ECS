@@ -6,21 +6,21 @@ SystemHolder::~SystemHolder() {
 }
 
 void SystemHolder::RemoveAllSystems() {
-	for (auto &system : m_systems) {
+	for (auto &system : systems) {
 		if (system.second) {
 			system.second->OnShutdown();
 			system.second->DetachAll();
 		}
 	}
 
-	m_systems.clear();
-	m_priorities.clear();
+	systems.clear();
+	priorities.clear();
 }
 
 void SystemHolder::RemoveSystemPriority(TypeId id) {
-	for (auto it = m_priorities.begin(); it != m_priorities.end();) {
+	for (auto it = priorities.begin(); it != priorities.end();) {
 		if (it->second == id) {
-			it = m_priorities.erase(it);
+			it = priorities.erase(it);
 		} else {
 			++it;
 		}

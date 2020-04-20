@@ -5,7 +5,7 @@
 namespace acid {
 template<typename Func>
 void System::ForEach(Func &&func) {
-	for (const auto &entity : m_enabledEntities) {
+	for (const auto &entity : enabledEntities) {
 		if (entity.IsValid()) {
 			func(entity);
 		}
